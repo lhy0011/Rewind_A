@@ -3,3 +3,6 @@
 *.ipch
 /Rewind_A/Build
 /Rewind_A/.vs
+/Plugins
+*.sln
+*_BuiltData.uasset
