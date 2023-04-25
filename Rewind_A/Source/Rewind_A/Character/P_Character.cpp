@@ -23,7 +23,7 @@ AP_Character::AP_Character()
     // Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
     PrimaryActorTick.bCanEverTick = true;
 
-    ConstructorHelpers::FObjectFinder<USkeletalMesh> mesh(TEXT("SkeletalMesh'/Game/Sci_Fi_Character_08/Mesh/Character/SK_Sci_Fi_Character_08_Full_01'"));
+    ConstructorHelpers::FObjectFinder<USkeletalMesh> mesh(TEXT("SkeletalMesh'/Game/Rewind/Character/Main_Character/FBX/Main_Character.Main_Character'"));
 
 
     //UE_LOG(LogTemp, Log, mesh__FILE__);
@@ -34,6 +34,7 @@ AP_Character::AP_Character()
         GetMesh()->SetSkeletalMesh(mesh.Object);
         GetMesh()->SetRelativeLocation(FVector(0.f, 0.f, -85.f));
         GetMesh()->SetRelativeRotation(FRotator(0.f, -90.f, 0.f));
+        GetMesh()->SetWorldScale3D(FVector(0.1f, 0.1f, 0.1f));
     }
 
     // 카메라, 스프링암 추가
@@ -62,7 +63,7 @@ AP_Character::AP_Character()
 
 
     // 사용할 AnimInstance 설정
-    ConstructorHelpers::FClassFinder<UAnimInstance> ABP(TEXT("AnimBlueprint'/Game/Rewind/Animation/ABP_Character.ABP_Character_C'"));
+    ConstructorHelpers::FClassFinder<UAnimInstance> ABP(TEXT("AnimBlueprint'/Game/Rewind/Character/Main_Character/Animation/MC_AnimBP'"));
 
     if (ABP.Succeeded())
     {
@@ -517,7 +518,7 @@ void AP_Character::CharacterTimeRecall()
         //    , GetMesh()->GetComponentRotation()
         //    , param);
         //PoseCopyInst->SetSkeletalMeshComponent(GetMesh());
-        //PoseCopyInst->SetLifeTime(3.f); // 요걸 사용하면 되겟다
+        //PoseCopyInst->SetLifeTime(3.f);
 
         CHP = SCHP[CCC];
         SetActorLocation(RecallLocation[CCC]);

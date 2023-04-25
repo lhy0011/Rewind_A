@@ -42,7 +42,6 @@ void AAfterIMG_R::SetSkeletalMeshComponent(USkeletalMeshComponent* _SKMC)
 	// 원본 물체가 사용하는 재질 개수를 확인
 	UINT iMtrlCount = m_PoseCopy->GetNumMaterials();
 
-	// 원본 물체랑 똑같이 각 부위별로 재질을 세팅( 동적으로 만들어서 세팅, 각 액터별로 다른 효과가 생길 상황을 염두)
 	for (UINT i = 0; i < iMtrlCount; ++i)
 	{
 		m_PoseCopy->CreateDynamicMaterialInstance(i, m_DefaltMtrl);
