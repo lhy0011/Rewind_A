@@ -7,6 +7,7 @@
 #include "P_AnimInst.h"
 #include "AfterIMG.h"
 #include "AfterIMG_R.h"
+#include "Weapon.h"
 #include "../Item/InteractableItem.h"
 #include "../Item/HealingPotion.h"
 
@@ -75,6 +76,14 @@ AP_Character::AP_Character()
     //{
     //    m_arrMontage.Add(Montage.Object);
     //}
+
+
+    static ConstructorHelpers::FObjectFinder<UAnimMontage> ATMontage(TEXT("/Script/Engine.AnimMontage'/Game/Rewind/Character/Main_Character/Animation/MC_Attack'"));
+    if (ATMontage.Succeeded())
+    {
+        AttackMontage = ATMontage.Object;
+    }
+
     CHP = 10;
     CDamage = 10.f;
     CPotion = 0;
@@ -85,22 +94,6 @@ AP_Character::AP_Character()
     RecallUse = 1.f;
     ControlUse = 1.f;
     tp1, tp2, tp3, tp4 = 0.f;
-
-    // UI
-
-    //HPWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("HPWIDGET"));
-    //HPWidget->SetWidgetSpace(EWidgetSpace::Screen);
-    //static ConstructorHelpers::FClassFinder<UUserWidget> UI_HUD(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/Rewind/UI/HP.HP_C'"));
-    //if (UI_HUD.Succeeded()) {
-    //    HPWidget->SetWidgetClass(UI_HUD.Class);
-    //}
-
-  //  static ConstructorHelpers::FClassFinder<UUIMainHUD>
-
-
-    // 콜리전
-    //GetCapsuleComponent()->SetCollisionProfileName(TEXT("ABCharacter"));
-
 
 
     // 상호작용 변수
@@ -142,6 +135,25 @@ void AP_Character::BeginPlay()
 
     m_AnimInst = Cast<UP_AnimInst>(GetMesh()->GetAnimInstance());
 
+    // 무기 장착
+    AWeapon* sword = GetWorld()->SpawnActor<AWeapon>(AWeapon::StaticClass());
+
+    if (sword) {
+        FName SocketName = TEXT("Sword");
+        sword->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, SocketName);
+
+        FVector RelativeLocation = FVector(0.0f, 0.0f, 0.0f);
+        FRotator RelativeRotation = FRotator(0.0f, 0.0f, -90.0f);
+        FVector RelativeScale = FVector(0.0025f, 0.0025f, 0.0025f); 
+        // 세부 조정 필요
+
+
+        FTransform RelativeTransform = FTransform(RelativeRotation, RelativeLocation, RelativeScale);
+        sword->WeaponMesh->SetRelativeTransform(RelativeTransform);
+
+    }
+
+
 
     GetWorld()->GetTimerManager().SetTimer(MyTimerHandle, this, &AP_Character::RecallCountNsave, 1.f, true, 1.f);
 
@@ -174,7 +186,7 @@ void AP_Character::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
     PlayerInputComponent->BindAxis(TEXT("RotationZ"), this, &AP_Character::CharacterRotationZ);
     PlayerInputComponent->BindAxis(TEXT("RotationY"), this, &AP_Character::CharacterRotationY);
 
-    PlayerInputComponent->BindAction(TEXT("TempAttack"), EInputEvent::IE_Pressed, this, &AP_Character::CharacterTempAttack);
+    PlayerInputComponent->BindAction(TEXT("PAttack"), EInputEvent::IE_Pressed, this, &AP_Character::CharacterAttack);
     PlayerInputComponent->BindAction(TEXT("Jump"), EInputEvent::IE_Pressed, this, &AP_Character::CharacterJump);
     PlayerInputComponent->BindAction(TEXT("SaveLocation"), EInputEvent::IE_Pressed, this, &AP_Character::CharacterSaveLocation);
     PlayerInputComponent->BindAction(TEXT("TPLocation1"), EInputEvent::IE_Pressed, this, &AP_Character::CharacterTPL1);
@@ -466,19 +478,26 @@ void AP_Character::CharacterRotationY(float _fScale)
 }
 
 
-void AP_Character::CharacterTempAttack()
+void AP_Character::CharacterAttack()
 {
-    //if (m_arrMontage.IsEmpty()) {
-    //    return;
-    //}
 
-    //UE_LOG(LogTemp, Log, TEXT("TempAttack"));
 
+    UE_LOG(LogTemp, Log, TEXT("TempAttack"));
+
+
+    //
     //ChangeState(EPLAYER_STATE::ATTACK);
 
-    //// 공격 몽타주 재생
-    //// m_AnimInst->Montage_JumpToSection(TEXT(""), m_arrMontage[0]);
-    //m_AnimInst->Montage_Play(m_arrMontage[0]);
+    if (AttackMontage)
+    {
+        UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+        if (AnimInstance && !AnimInstance->Montage_IsPlaying(AttackMontage))
+        {
+            AnimInstance->Montage_Play(AttackMontage);
+        }
+    }
+
+
 }
 
 void AP_Character::CharacterTimeControl()
@@ -630,7 +649,7 @@ void AP_Character::SaveCurPose() // AfterIMG
     //    , GetMesh()->GetComponentRotation()
     //    , param);
 /*    PoseCopyInst->SetSkeletalMeshComponent(GetMesh());
-    PoseCopyInst->SetLifeTime(100.f);*/ // 요걸 사용하면 되겟다
+    PoseCopyInst->SetLifeTime(100.f);*/ // 
 
     if (tp1 < 0.5f) {
         tp1AIMG = GetWorld()->SpawnActor<AAfterIMG>(AAfterIMG::StaticClass()
@@ -667,11 +686,6 @@ void AP_Character::SaveCurPose() // AfterIMG
   
 }
 
-void AP_Character::SaveCharacterState()
-{
-
-
-}
 
 void AP_Character::SaveCurLocation()
 {

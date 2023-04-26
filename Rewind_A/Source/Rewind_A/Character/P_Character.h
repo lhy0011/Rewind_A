@@ -159,7 +159,7 @@ public:
 	void CharacterRotationZ(float _fScale);
 	void CharacterRotationY(float _fScale);
 
-	void CharacterTempAttack();
+	void CharacterAttack();
 	void CharacterTimeControl();
 	void CharacterTimeControlB(); // 키를 뗐을 때 되돌리는거
 	void CharacterTimeRecall();
@@ -173,11 +173,12 @@ public:
 
 	void SaveCurPose();
 
-	void SaveCharacterState();
 
 private:
 	void SaveCurLocation();
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Animation", meta = (AllowPrivateAccess = "true"))
+		UAnimMontage* AttackMontage;
 
 
 	//cooldown
@@ -199,7 +200,8 @@ private:
 	AAfterIMG* tp3AIMG;
 	AAfterIMG* tp4AIMG;
 
-
+	// 타이머 변수
+	FTimerHandle TimerHandle;
 
 
 	UFUNCTION(BlueprintCallable)
@@ -236,8 +238,6 @@ private:
 
 
 
-	//UPROPERTY(EditAnywhere, Category = UI)
-	//	UClass WidgetUClass
 
 
 };
