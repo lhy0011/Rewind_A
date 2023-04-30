@@ -1,0 +1,49 @@
+/Intermediate
+/Binaries
+/DerivedDataCache
+
+# Visual Studio cache files
+.vs/
+
+# Visual Studio Code cache files
+.vscode/
+
+# Logs
+/Saved/Logs
+/Saved/Crashes
+
+# Xcode cache files
+*.xcuserdatad
+xcuserdata/
+
+*.ipch
+/Plugins
+*_BuiltData.uasset
+
+# Compiled Asset Cache
+/CachedAssetRegistry.bin
+
+# Configuration files
+*.suo
+*.sln.docstates
+*.tmp
+*.bak
+*.swp
+*.swo
+
+# Auto-generated files
+/Saved/AutoScreenshot.png
+*.ini.local
+
+# User-specific files
+/Saved/Config/CleanSourceConfigs/
+/Saved/StagedBuilds
+*.opensdf
+*.opendb
+*.xcodeproj
+*.xcworkspace
+*.xccheckout
+*.plist
+*.manifest
+*.uprojectdirs
+

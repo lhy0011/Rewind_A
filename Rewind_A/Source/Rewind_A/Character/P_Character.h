@@ -83,6 +83,12 @@ private:
 	UFUNCTION(BlueprintCallable)
 		int getCPotion() const { return CPotion; }
 
+	FTimerHandle TimerHandle_ResetIsAttacking;
+	bool  isAttacking;
+
+	UFUNCTION()
+	void ResetIsAttacking();
+
 
 public:
 	EPLAYER_STATE GetState() { return m_eState; }

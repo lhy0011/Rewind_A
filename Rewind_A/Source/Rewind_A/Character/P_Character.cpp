@@ -18,17 +18,13 @@ int CCC = 0;
 
 // Sets default values
 AP_Character::AP_Character()
-    //: m_eState(EPLAYER_STATE::IDLE)
+    : m_eState(EPLAYER_STATE::IDLE)
     //, m_AnimInst(nullptr)
 {
     // Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
     PrimaryActorTick.bCanEverTick = true;
 
     ConstructorHelpers::FObjectFinder<USkeletalMesh> mesh(TEXT("SkeletalMesh'/Game/Rewind/Character/Main_Character/FBX/Main_Character.Main_Character'"));
-
-
-    //UE_LOG(LogTemp, Log, mesh__FILE__);
-
 
     if (mesh.Succeeded())
     {
@@ -71,13 +67,6 @@ AP_Character::AP_Character()
         GetMesh()->SetAnimInstanceClass(ABP.Class);
     }
 
-    //ConstructorHelpers::FObjectFinder<UAnimMontage> Montage(TEXT("/Script/Engine.AnimMontage'/Game/Rewind/Animation/AM_Attack.AM_Attack'"));
-    //if (Montage.Succeeded())
-    //{
-    //    m_arrMontage.Add(Montage.Object);
-    //}
-
-
     static ConstructorHelpers::FObjectFinder<UAnimMontage> ATMontage(TEXT("/Script/Engine.AnimMontage'/Game/Rewind/Character/Main_Character/Animation/MC_Attack'"));
     if (ATMontage.Succeeded())
     {
@@ -88,9 +77,9 @@ AP_Character::AP_Character()
     CDamage = 10.f;
     CPotion = 0;
 
+    isAttacking = false;
 
     //cooldown
-
     RecallUse = 1.f;
     ControlUse = 1.f;
     tp1, tp2, tp3, tp4 = 0.f;
@@ -102,6 +91,11 @@ AP_Character::AP_Character()
 }
 
 
+void AP_Character::ResetIsAttacking()
+{
+    isAttacking = false;
+}
+
 // 플레이어 상태 변환 함수
 void AP_Character::ChangeState(EPLAYER_STATE _eNextState, bool _bForce)
 {
@@ -110,9 +104,13 @@ void AP_Character::ChangeState(EPLAYER_STATE _eNextState, bool _bForce)
         return;
     }
 
-    if (false == _bForce && EPLAYER_STATE::ATTACK == m_eState) {
+    if (isAttacking) {
         return;
     }
+
+ /*   if (false == _bForce && EPLAYER_STATE::ATTACK == m_eState) {
+        return;
+    }*/
 
     m_eState = _eNextState;
 
@@ -203,24 +201,17 @@ void AP_Character::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 
 void AP_Character::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 otherBodyIndex, bool bRfromSweep, const FHitResult& Sweep)
 {
-    //if (OtherActor && (OtherActor != this) && OtherComp) {
-    //    CHP -= 1;
-    //    if (GEngine) {
-    //        //  GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Overlap End"));
-    //    }
-    //}
+
 }
 
 void AP_Character::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
     if (GEngine) {
-        // GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Overlap End"));
     }
 }
 
 void AP_Character::EnableInteraction(AInteractableItem* Item)
 {
-    //UE_LOG(LogTemp, Warning, TEXT("EnableInteraction() called"));
     CurrentInteractableItem = Item;
 }
 
@@ -231,8 +222,6 @@ void AP_Character::DisableInteraction()
 
 void AP_Character::Interact()
 {
-    //UE_LOG(LogTemp, Warning, TEXT("Interact() called"));
-
     if (CurrentInteractableItem != nullptr)
     {
         AHealingPotion* HealingPotion = Cast<AHealingPotion>(CurrentInteractableItem);
@@ -242,15 +231,13 @@ void AP_Character::Interact()
             CurrentInteractableItem->Destroy();
         }
         else {
-            // Check if the item is already attached to the character.
+            // 이미 물건 들고 있는지 체크
             if (CurrentInteractableItem->ItemMesh->GetAttachParent() != GetMesh())
             {
-                // Attach the item to the character's hand or another desired socket
                 CurrentInteractableItem->OnInteract(GetRootComponent());
             }
             else
             {
-                // The item is already attached, so handle it accordingly (e.g., use the item, drop the item, etc.).
             }
 
         }
@@ -287,62 +274,52 @@ void AP_Character::RecallCountNsave()
     case 0:
         RecallLocation[0] = GetActorLocation();
         SCHP[0] = CHP;
-        //UE_LOG(LogTemp, Log, TEXT("0"));
         CCC = 1;
         break;
     case 1:
         RecallLocation[1] = GetActorLocation();
         SCHP[1] = CHP;
         CCC = 2;
-        //UE_LOG(LogTemp, Log, TEXT("1"));
         break;
     case 2:
         RecallLocation[2] = GetActorLocation();
         SCHP[2] = CHP;
         CCC = 3;
-        // UE_LOG(LogTemp, Log, TEXT("2"));
         break;
     case 3:
         RecallLocation[3] = GetActorLocation();
         SCHP[3] = CHP;
         CCC = 4;
-        // UE_LOG(LogTemp, Log, TEXT("3"));
         break;
     case 4:
         RecallLocation[4] = GetActorLocation();
         SCHP[4] = CHP;
         CCC = 5;
-        //  UE_LOG(LogTemp, Log, TEXT("4"));
         break;
     case 5:
         RecallLocation[5] = GetActorLocation();
         SCHP[5] = CHP;
         CCC = 6;
-        // UE_LOG(LogTemp, Log, TEXT("5"));
         break;
     case 6:
         RecallLocation[6] = GetActorLocation();
         SCHP[6] = CHP;
         CCC = 7;
-        //UE_LOG(LogTemp, Log, TEXT("6"));
         break;
     case 7:
         RecallLocation[7] = GetActorLocation();
         SCHP[7] = CHP;
         CCC = 8;
-        //UE_LOG(LogTemp, Log, TEXT("7"));
         break;
     case 8:
         RecallLocation[8] = GetActorLocation();
         SCHP[8] = CHP;
         CCC = 9;
-        // UE_LOG(LogTemp, Log, TEXT("8"));
         break;
     case 9:
         RecallLocation[9] = GetActorLocation();
         SCHP[9] = CHP;
         CCC = 1;
-        // UE_LOG(LogTemp, Log, TEXT("9"));
         break;
     default:
         break;
@@ -364,11 +341,7 @@ void AP_Character::RecallCountNsave()
         }
     }
 
-
-
 }
-
-
 
 
 float AP_Character::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
@@ -482,20 +455,23 @@ void AP_Character::CharacterAttack()
 {
 
 
-    UE_LOG(LogTemp, Log, TEXT("TempAttack"));
+   /* UE_LOG(LogTemp, Log, TEXT("TempAttack"));*/
 
 
     //
-    //ChangeState(EPLAYER_STATE::ATTACK);
+    ChangeState(EPLAYER_STATE::ATTACK);
+    isAttacking = true;
+    GetWorldTimerManager().SetTimer(TimerHandle_ResetIsAttacking, this, &AP_Character::ResetIsAttacking, 2.2f, false);
 
-    if (AttackMontage)
-    {
-        UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
-        if (AnimInstance && !AnimInstance->Montage_IsPlaying(AttackMontage))
-        {
-            AnimInstance->Montage_Play(AttackMontage);
-        }
-    }
+    //if (AttackMontage)
+    //{
+    //    UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+    //    if (AnimInstance && !AnimInstance->Montage_IsPlaying(AttackMontage))
+    //    {
+    //        AnimInstance->Montage_Play(AttackMontage);
+    //    }
+    //}
+    //PlayAnimMontage(AttackMontage, 2.0f);
 
 
 }
@@ -520,24 +496,10 @@ void AP_Character::CharacterTimeControlB()
 
 }
 
-
-
 void AP_Character::CharacterTimeRecall()
 {
     UE_LOG(LogTemp, Log, TEXT("TimeRecall"));
     if (canRecall) {
-
-        //FActorSpawnParameters param = {};
-        //param.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-        //param.OverrideLevel = GetLevel();
-        //param.bDeferConstruction = false;
-
-        //AAfterIMG_R* PoseCopyInst = GetWorld()->SpawnActor<AAfterIMG_R>(AAfterIMG_R::StaticClass()
-        //    , GetMesh()->GetComponentLocation()
-        //    , GetMesh()->GetComponentRotation()
-        //    , param);
-        //PoseCopyInst->SetSkeletalMeshComponent(GetMesh());
-        //PoseCopyInst->SetLifeTime(3.f);
 
         CHP = SCHP[CCC];
         SetActorLocation(RecallLocation[CCC]);
@@ -545,16 +507,8 @@ void AP_Character::CharacterTimeRecall()
 
         canRecall = false;
         RecallUse = 0.f;
-
     }
-
 }
-
-
-
-
-
-
 
 void AP_Character::CharacterTPL1()
 {
@@ -563,7 +517,6 @@ void AP_Character::CharacterTPL1()
         S_Location1.Reset();
         tp1 = 0.f;
     }
-    //CharacterTPLocation(1);
 }
 
 void AP_Character::CharacterTPL2()
@@ -573,7 +526,6 @@ void AP_Character::CharacterTPL2()
         S_Location2.Reset();
         tp2 = 0.f;
     }
-    // CharacterTPLocation(2);
 }
 
 void AP_Character::CharacterTPL3()
@@ -583,7 +535,6 @@ void AP_Character::CharacterTPL3()
         S_Location3.Reset();
         tp3 = 0.f;
     }
-    // CharacterTPLocation(3);
 }
 
 void AP_Character::CharacterTPL4()
@@ -593,7 +544,6 @@ void AP_Character::CharacterTPL4()
         S_Location4.Reset();
         tp4 = 0.f;
     }
-    //  CharacterTPLocation(4);
 }
 
 void AP_Character::CharacterSaveLocation()
@@ -601,8 +551,6 @@ void AP_Character::CharacterSaveLocation()
     UE_LOG(LogTemp, Log, TEXT("SaveLocation"));
 
     SaveCurLocation();
-
-    //AAfterimage::CreateAImg;
 
 }
 
@@ -634,7 +582,9 @@ void AP_Character::CharacterJump()
 {
     UE_LOG(LogTemp, Log, TEXT("Jump called"));
 
+    ChangeState(EPLAYER_STATE::JUMP);
     Jump();
+
 }
 
 void AP_Character::SaveCurPose() // AfterIMG
@@ -644,20 +594,12 @@ void AP_Character::SaveCurPose() // AfterIMG
     param.OverrideLevel = GetLevel();
     param.bDeferConstruction = false;
 
-    //AAfterIMG* PoseCopyInst = GetWorld()->SpawnActor<AAfterIMG>(AAfterIMG::StaticClass()
-    //    , GetMesh()->GetComponentLocation()
-    //    , GetMesh()->GetComponentRotation()
-    //    , param);
-/*    PoseCopyInst->SetSkeletalMeshComponent(GetMesh());
-    PoseCopyInst->SetLifeTime(100.f);*/ // 
-
     if (tp1 < 0.5f) {
         tp1AIMG = GetWorld()->SpawnActor<AAfterIMG>(AAfterIMG::StaticClass()
             , GetMesh()->GetComponentLocation()
             , GetMesh()->GetComponentRotation()
             , param);
         tp1AIMG->SetSkeletalMeshComponent(GetMesh());
-        //tp1AIMG->SetLifeTime(50.f);
     }
     else if (tp2 < 0.5f) {
         tp2AIMG = GetWorld()->SpawnActor<AAfterIMG>(AAfterIMG::StaticClass()
@@ -665,7 +607,6 @@ void AP_Character::SaveCurPose() // AfterIMG
             , GetMesh()->GetComponentRotation()
             , param);
         tp2AIMG->SetSkeletalMeshComponent(GetMesh());
-        //tp2AIMG->SetLifeTime(100.f);
     }
     else if (tp3 < 0.5f) {
         tp3AIMG = GetWorld()->SpawnActor<AAfterIMG>(AAfterIMG::StaticClass()
@@ -673,7 +614,6 @@ void AP_Character::SaveCurPose() // AfterIMG
             , GetMesh()->GetComponentRotation()
             , param);
         tp3AIMG->SetSkeletalMeshComponent(GetMesh());
-       // tp3AIMG->SetLifeTime(100.f);
     }
     else if (tp4 < 0.5f) {
         tp4AIMG = GetWorld()->SpawnActor<AAfterIMG>(AAfterIMG::StaticClass()
@@ -681,7 +621,6 @@ void AP_Character::SaveCurPose() // AfterIMG
             , GetMesh()->GetComponentRotation()
             , param);
         tp4AIMG->SetSkeletalMeshComponent(GetMesh());
-       // tp4AIMG->SetLifeTime(100.f);
     }
   
 }
