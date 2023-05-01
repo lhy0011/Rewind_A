@@ -5,6 +5,10 @@
 			"guid": "00000000000000000000000000000000",
 			"description": "Default Uncontrolled Changelist",
 			"files": [
+				"C:/Users/mjnov/Desktop/Rewind_A/Rewind_A/Content/Rewind/Maps/Glacier/Glacier_out.umap",
+				"C:/Users/mjnov/Desktop/Rewind_A/Rewind_A/Content/Rewind/Maps/Glacier/Material/Ice003.uasset",
+				"C:/Users/mjnov/Desktop/Rewind_A/Rewind_A/Content/Megascans/3D_Assets/Large_Ice_Cliff_vdsrdd0fa/S_Large_Ice_Cliff_vdsrdd0fa_lod3_Var1.uasset",
+				"C:/Users/mjnov/Desktop/Rewind_A/Rewind_A/Content/Megascans/3D_Assets/Ice_Cliff_veipbcmcb/S_Ice_Cliff_veipbcmcb_lod3_Var1.uasset",
 				"I:/Rewind_A/Rewind_A/Content/StarterContent/Architecture/Floor_400x400.uasset",
 				"I:/Rewind_A/Rewind_A/Content/Rewind/Character/Main_Character/Animation/MC_Move.uasset",
 				"I:/Rewind_A/Rewind_A/Content/Rewind/Character/Main_Character/Animation/ABP_MainC.uasset",
