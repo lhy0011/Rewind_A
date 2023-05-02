@@ -5,6 +5,17 @@
 			"guid": "00000000000000000000000000000000",
 			"description": "Default Uncontrolled Changelist",
 			"files": [
+				"C:/Users/mjnov/Desktop/Rewind_A/Rewind_A/Content/Rewind/Maps/Glacier/Glacier_out.umap",
+				"C:/Users/mjnov/Desktop/Rewind_A/Rewind_A/Content/Rewind/Maps/Glacier/Material/Ice003.uasset",
+				"C:/Users/mjnov/Desktop/Rewind_A/Rewind_A/Content/Megascans/3D_Assets/Large_Ice_Cliff_vdsrdd0fa/S_Large_Ice_Cliff_vdsrdd0fa_lod3_Var1.uasset",
+				"C:/Users/mjnov/Desktop/Rewind_A/Rewind_A/Content/Megascans/3D_Assets/Ice_Cliff_veipbcmcb/S_Ice_Cliff_veipbcmcb_lod3_Var1.uasset",
+				"C:/Users/mjnov/Desktop/Rewind_A/Rewind_A/Content/Rewind/Maps/Fire_out.umap",
+				"C:/Users/mjnov/Desktop/Rewind_A/Rewind_A/Content/Rewind/Character/Main_Character/Materials/Sword.uasset",
+				"C:/Users/mjnov/Desktop/Rewind_A/Rewind_A/Content/Rewind/Character/Main_Character/FBX/Sword.uasset",
+				"C:/Users/mjnov/Desktop/Rewind_A/Rewind_A/Content/Rewind/Character/Main_Character/Animation/Main_Character_One_Hand_Sword_Combo.uasset",
+				"C:/Users/mjnov/Desktop/Rewind_A/Rewind_A/Content/Rewind/Character/Main_Character/Materials/Sword_BaseColor.uasset",
+				"C:/Users/mjnov/Desktop/Rewind_A/Rewind_A/Content/Rewind/Character/Main_Character/Materials/Sword_Normal.uasset",
+				"C:/Users/mjnov/Desktop/Rewind_A/Rewind_A/Content/Rewind/Character/Main_Character/Materials/Sword_OcclusionRoughnessMetallic.uasset",
 				"I:/Rewind_A/Rewind_A/Content/StarterContent/Architecture/Floor_400x400.uasset",
 				"I:/Rewind_A/Rewind_A/Content/Rewind/Character/Main_Character/Animation/MC_Move.uasset",
 				"I:/Rewind_A/Rewind_A/Content/Rewind/Character/Main_Character/Animation/ABP_MainC.uasset",
@@ -17,12 +28,7 @@
 				"I:/Rewind_A/Rewind_A/Content/Rewind/Character/Main_Character/FBX/01_-_Default.uasset",
 				"I:/Rewind_A/Rewind_A/Content/Rewind/Character/Main_Character/FBX/Sword3.uasset",
 				"I:/Rewind_A/Rewind_A/Content/Rewind/Character/Main_Character/FBX/Fbx_Default_Material.uasset",
-				"I:/Rewind_A/Rewind_A/Content/Rewind/Character/Main_Character/FBX/Sword2.uasset",
-				"C:/Users/mjnov/Desktop/Rewind_A/Rewind_A/Content/Rewind/Maps/Glacier/Glacier_out.umap",
-				"C:/Users/mjnov/Desktop/Rewind_A/Rewind_A/Content/Rewind/Maps/Glacier/Material/Ice003.uasset",
-				"C:/Users/mjnov/Desktop/Rewind_A/Rewind_A/Content/Megascans/3D_Assets/Large_Ice_Cliff_vdsrdd0fa/S_Large_Ice_Cliff_vdsrdd0fa_lod3_Var1.uasset",
-				"C:/Users/mjnov/Desktop/Rewind_A/Rewind_A/Content/Megascans/3D_Assets/Ice_Cliff_veipbcmcb/S_Ice_Cliff_veipbcmcb_lod3_Var1.uasset",
-				"C:/Users/mjnov/Desktop/Rewind_A/Rewind_A/Content/Rewind/Maps/Fire_out.umap"
+				"I:/Rewind_A/Rewind_A/Content/Rewind/Character/Main_Character/FBX/Sword2.uasset"
 			]
 		}
 	]
