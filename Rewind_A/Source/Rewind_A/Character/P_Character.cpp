@@ -2,7 +2,6 @@
 
 
 #include "P_Character.h"
-//#include "../Afterimage.h"
 
 #include "P_AnimInst.h"
 #include "AfterIMG.h"
@@ -43,9 +42,9 @@ AP_Character::AP_Character()
     m_pCamera->SetupAttachment(m_pSpringArm);
 
     // 스프링암 위치, 회전, 거리값 설정
-    m_pSpringArm->SetRelativeLocation(FVector(0.f, 0.f, 155.f));
+    m_pSpringArm->SetRelativeLocation(FVector(0.f, 0.f, 900.f));
     m_pSpringArm->SetRelativeRotation(FRotator(-15.f, 90.f, 0.f));
-    m_pSpringArm->TargetArmLength = 200.f;
+    m_pSpringArm->TargetArmLength = 270.f;
 
 
 
@@ -141,9 +140,9 @@ void AP_Character::BeginPlay()
         sword->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, SocketName);
 
         FVector RelativeLocation = FVector(0.0f, 0.0f, 0.0f);
-        FRotator RelativeRotation = FRotator(0.0f, 0.0f, -90.0f);
-        FVector RelativeScale = FVector(0.0025f, 0.0025f, 0.0025f); 
-        // 세부 조정 필요
+        FRotator RelativeRotation = FRotator(0.0f, 0.0f, 0.0f);
+        FVector RelativeScale = FVector(1.0f, 1.0f, 1.0f); 
+        //// 세부 조정
 
 
         FTransform RelativeTransform = FTransform(RelativeRotation, RelativeLocation, RelativeScale);
@@ -461,7 +460,7 @@ void AP_Character::CharacterAttack()
     //
     ChangeState(EPLAYER_STATE::ATTACK);
     isAttacking = true;
-    GetWorldTimerManager().SetTimer(TimerHandle_ResetIsAttacking, this, &AP_Character::ResetIsAttacking, 2.2f, false);
+    GetWorldTimerManager().SetTimer(TimerHandle_ResetIsAttacking, this, &AP_Character::ResetIsAttacking, 2.0f, false);
 
     //if (AttackMontage)
     //{

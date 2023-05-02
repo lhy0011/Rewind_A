@@ -19,7 +19,7 @@ AWeapon::AWeapon()
 	WeaponMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("WeaponMesh"));
 	RootComponent = WeaponMesh;
 
-	static ConstructorHelpers::FObjectFinder<UStaticMesh> mesh(TEXT("/Script/Engine.StaticMesh'/Game/Rewind/Character/Main_Character/FBX/Sword.Sword'"));
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> mesh(TEXT("/Script/Engine.StaticMesh'/Game/Rewind/Character/Main_Character/FBX/Sword'"));
 
 	if (mesh.Succeeded())
 	{
