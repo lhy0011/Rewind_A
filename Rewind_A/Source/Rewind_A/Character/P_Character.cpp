@@ -99,13 +99,10 @@ AP_Character::AP_Character()
     isComboAttackNext = false;
     ComboAttackCount = 0;
 
+    isJumping = false;
+
 }
 
-
-//void AP_Character::ResetIsAttacking()
-//{
-//    isAttacking = false;
-//}
 
 
 // 플레이어 상태 변환 함수
@@ -116,13 +113,6 @@ void AP_Character::ChangeState(EPLAYER_STATE _eNextState, bool _bForce)
         return;
     }
 
-    //if (isAttacking) {
-    //    return;
-    //}
-
- /*   if (false == _bForce && EPLAYER_STATE::ATTACK == m_eState) {
-        return;
-    }*/
 
     m_eState = _eNextState;
 
@@ -181,6 +171,13 @@ void AP_Character::Tick(float DeltaTime)
     if (0.f == GetCharacterMovement()->Velocity.Size()) // 이동중이 아닌지 판단
     {
         ChangeState(EPLAYER_STATE::IDLE); // idle 상태로 전환
+    }
+
+    if (GetCharacterMovement()->IsFalling()) {
+        isJumping = true;
+    }
+    else {
+        isJumping = false;
     }
 
 }
@@ -371,10 +368,12 @@ float AP_Character::TakeDamage(float DamageAmount, FDamageEvent const& DamageEve
 void AP_Character::CharacterMoveFront(float _fScale)
 {
     // 기본 이동 속도 50
-    AddMovementInput(GetActorForwardVector(),
-        50.f * GetWorld()->GetDeltaSeconds() * _fScale);
+    if (!isComboAttacking) {
+        AddMovementInput(GetActorForwardVector(),
+            50.f * GetWorld()->GetDeltaSeconds() * _fScale);
+    }
 
-    if (1.f == _fScale && !isComboAttacking)
+    if (1.f == _fScale)
     {
         if (90.f == m_AnimInst->GetDirection())
         {
@@ -389,7 +388,7 @@ void AP_Character::CharacterMoveFront(float _fScale)
             m_AnimInst->SetDirection(0.f);
         }
     }
-    else if (-1.f == _fScale && !isComboAttacking)
+    else if (-1.f == _fScale)
     {
         if (90.f == m_AnimInst->GetDirection())
         {
@@ -404,35 +403,43 @@ void AP_Character::CharacterMoveFront(float _fScale)
             m_AnimInst->SetDirection(180.f);
         }
     }
-
-    if (0.f != _fScale && !isComboAttacking) // W/D 가 눌렸다면 ( 이동키가 눌렸다면) 
+    
+    if (0.f != _fScale) // W/D 가 눌렸다면 ( 이동키가 눌렸다면) 
     {
-        ChangeState(EPLAYER_STATE::MOVE);
+        if (!isJumping) {
+            ChangeState(EPLAYER_STATE::MOVE);
+        }
     }
+
 
 }
 
 void AP_Character::CharacterMoveRight(float _fScale)
 {
-    AddMovementInput(GetActorRightVector(),
-        50.f * GetWorld()->GetDeltaSeconds() * _fScale);
+    if (!isComboAttacking) {
+        AddMovementInput(GetActorRightVector(),
+            50.f * GetWorld()->GetDeltaSeconds() * _fScale);
+    }
+    
 
-    if (0.f == _fScale && !isComboAttacking)
+    if (0.f == _fScale)
     {
         m_AnimInst->SetDirection(0.f);
     }
-    else if (1.f == _fScale && !isComboAttacking)
+    else if (1.f == _fScale)
     {
         m_AnimInst->SetDirection(90.f);
     }
-    else if (-1.f == _fScale && !isComboAttacking)
+    else if (-1.f == _fScale)
     {
         m_AnimInst->SetDirection(-90.f);
     }
 
-    if (0.f != _fScale && !isComboAttacking) // W/D 가 눌렸다면 ( 이동키가 눌렸다면) 
+    if (0.f != _fScale) // W/D 가 눌렸다면 ( 이동키가 눌렸다면) 
     {
-        ChangeState(EPLAYER_STATE::MOVE);
+        if (!isJumping) {
+            ChangeState(EPLAYER_STATE::MOVE);
+        }
     }
 }
 
@@ -464,30 +471,6 @@ void AP_Character::CharacterRotationY(float _fScale)
 }
 
 
-void AP_Character::CharacterAttack()
-{
-
-
-   /* UE_LOG(LogTemp, Log, TEXT("TempAttack"));*/
-
-
-    //
-    //ChangeState(EPLAYER_STATE::ATTACK);
-    //isAttacking = true;
-    //GetWorldTimerManager().SetTimer(TimerHandle_ResetIsAttacking, this, &AP_Character::ResetIsAttacking, 2.0f, false);
-
-    //if (AttackMontage)
-    //{
-    //    UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
-    //    if (AnimInstance && !AnimInstance->Montage_IsPlaying(AttackMontage))
-    //    {
-    //        AnimInstance->Montage_Play(AttackMontage);
-    //    }
-    //}
-    //PlayAnimMontage(AttackMontage, 2.0f);
-
-
-}
 
 void AP_Character::CharacterTimeControl()
 {
@@ -593,9 +576,9 @@ void AP_Character::CharacterTPLocation(int SN)
 
 void AP_Character::CharacterJump()
 {
-    UE_LOG(LogTemp, Log, TEXT("Jump called"));
+//    UE_LOG(LogTemp, Log, TEXT("Jump called"));
 
-    ChangeState(EPLAYER_STATE::JUMP);
+    //ChangeState(EPLAYER_STATE::JUMP);
     Jump();
 
 }
@@ -675,7 +658,7 @@ void AP_Character::ComboAttack()
     }
     UE_LOG(LogTemp, Warning, TEXT("ComboAttack%d"), ComboAttackCount);
 
-    AnimInstance->Montage_Play(AttackMontage, 1.0f);
+    AnimInstance->Montage_Play(AttackMontage, 1.3f);
     AnimInstance->Montage_JumpToSection(FName(ComboList[ComboAttackCount]), AttackMontage);
 }
 

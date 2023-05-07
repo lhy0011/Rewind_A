@@ -85,11 +85,6 @@ private:
 	UFUNCTION(BlueprintCallable)
 		int getCPotion() const { return CPotion; }
 
-	//FTimerHandle TimerHandle_ResetIsAttacking;
-	//bool  isAttacking;
-
-	//UFUNCTION()
-	//void ResetIsAttacking();
 
 
 public:
@@ -167,7 +162,6 @@ public:
 	void CharacterRotationZ(float _fScale);
 	void CharacterRotationY(float _fScale);
 
-	void CharacterAttack();
 	void CharacterTimeControl();
 	void CharacterTimeControlB(); // 키를 뗐을 때 되돌리는거
 	void CharacterTimeRecall();
@@ -261,7 +255,8 @@ private:
 
 
 
-
+	// 점프중
+	bool isJumping;
 
 
 	// UI
