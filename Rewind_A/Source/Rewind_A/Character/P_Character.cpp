@@ -30,7 +30,7 @@ AP_Character::AP_Character()
     if (mesh.Succeeded())
     {
         GetMesh()->SetSkeletalMesh(mesh.Object);
-        GetMesh()->SetRelativeLocation(FVector(0.f, 0.f, -85.f));
+        GetMesh()->SetRelativeLocation(FVector(0.f, 0.f, -89.f));
         GetMesh()->SetRelativeRotation(FRotator(0.f, -90.f, 0.f));
         GetMesh()->SetWorldScale3D(FVector(0.1f, 0.1f, 0.1f));
     }
@@ -47,6 +47,16 @@ AP_Character::AP_Character()
     m_pSpringArm->SetRelativeLocation(FVector(0.f, 0.f, 900.f));
     m_pSpringArm->SetRelativeRotation(FRotator(-15.f, 90.f, 0.f));
     m_pSpringArm->TargetArmLength = 270.f;
+
+    // 카메라 따로 회전 설정
+    m_pSpringArm->bUsePawnControlRotation = true;
+    m_pSpringArm->bInheritPitch = false;
+    m_pSpringArm->bInheritRoll = true;
+    m_pSpringArm->bInheritYaw = true;
+    m_pSpringArm->bDoCollisionTest = true;
+    bUseControllerRotationYaw = false;
+    GetCharacterMovement()->bOrientRotationToMovement = true;
+    GetCharacterMovement()->RotationRate = FRotator(0.0f, 720.0f, 0.0f);
 
 
 
@@ -367,47 +377,48 @@ float AP_Character::TakeDamage(float DamageAmount, FDamageEvent const& DamageEve
 // 캐릭터 기본 이동
 void AP_Character::CharacterMoveFront(float _fScale)
 {
-    // 기본 이동 속도 50
-    if (!isComboAttacking) {
-        AddMovementInput(GetActorForwardVector(),
-            50.f * GetWorld()->GetDeltaSeconds() * _fScale);
-    }
+    //// 기본 이동 속도 50
+    //if (!isComboAttacking) {
+    //    AddMovementInput(GetActorForwardVector(),
+    //        50.f * GetWorld()->GetDeltaSeconds() * _fScale);
+    //}
 
-    if (1.f == _fScale)
-    {
-        if (90.f == m_AnimInst->GetDirection())
-        {
-            m_AnimInst->SetDirection(45.f);
-        }
-        else if (-90.f == m_AnimInst->GetDirection())
-        {
-            m_AnimInst->SetDirection(-45.f);
-        }
-        else
-        {
-            m_AnimInst->SetDirection(0.f);
-        }
-    }
-    else if (-1.f == _fScale)
-    {
-        if (90.f == m_AnimInst->GetDirection())
-        {
-            m_AnimInst->SetDirection(135.f);
-        }
-        else if (-90.f == m_AnimInst->GetDirection())
-        {
-            m_AnimInst->SetDirection(-135.f);
-        }
-        else
-        {
-            m_AnimInst->SetDirection(180.f);
-        }
-    }
+    //if (1.f == _fScale)
+    //{
+    //    if (90.f == m_AnimInst->GetDirection())
+    //    {
+    //        m_AnimInst->SetDirection(45.f);
+    //    }
+    //    else if (-90.f == m_AnimInst->GetDirection())
+    //    {
+    //        m_AnimInst->SetDirection(-45.f);
+    //    }
+    //    else
+    //    {
+    //        m_AnimInst->SetDirection(0.f);
+    //    }
+    //}
+    //else if (-1.f == _fScale)
+    //{
+    //    if (90.f == m_AnimInst->GetDirection())
+    //    {
+    //        m_AnimInst->SetDirection(135.f);
+    //    }
+    //    else if (-90.f == m_AnimInst->GetDirection())
+    //    {
+    //        m_AnimInst->SetDirection(-135.f);
+    //    }
+    //    else
+    //    {
+    //        m_AnimInst->SetDirection(180.f);
+    //    }
+    //}
     
     if (0.f != _fScale) // W/D 가 눌렸다면 ( 이동키가 눌렸다면) 
     {
-        if (!isJumping) {
+        if (!isJumping && !isComboAttacking) {
             ChangeState(EPLAYER_STATE::MOVE);
+            AddMovementInput(FRotationMatrix(GetControlRotation()).GetUnitAxis(EAxis::X), _fScale);
         }
     }
 
@@ -416,7 +427,7 @@ void AP_Character::CharacterMoveFront(float _fScale)
 
 void AP_Character::CharacterMoveRight(float _fScale)
 {
-    if (!isComboAttacking) {
+   /* if (!isComboAttacking) {
         AddMovementInput(GetActorRightVector(),
             50.f * GetWorld()->GetDeltaSeconds() * _fScale);
     }
@@ -433,12 +444,13 @@ void AP_Character::CharacterMoveRight(float _fScale)
     else if (-1.f == _fScale)
     {
         m_AnimInst->SetDirection(-90.f);
-    }
+    }*/
 
     if (0.f != _fScale) // W/D 가 눌렸다면 ( 이동키가 눌렸다면) 
     {
-        if (!isJumping) {
+        if (!isJumping && !isComboAttacking) {
             ChangeState(EPLAYER_STATE::MOVE);
+            AddMovementInput(FRotationMatrix(GetControlRotation()).GetUnitAxis(EAxis::Y), _fScale);
         }
     }
 }
