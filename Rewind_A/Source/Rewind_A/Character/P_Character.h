@@ -9,6 +9,8 @@
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 
+#include "Async/Async.h"
+
 #include "GameFramework/Character.h"
 #include "P_Character.generated.h"
 
@@ -83,11 +85,11 @@ private:
 	UFUNCTION(BlueprintCallable)
 		int getCPotion() const { return CPotion; }
 
-	FTimerHandle TimerHandle_ResetIsAttacking;
-	bool  isAttacking;
+	//FTimerHandle TimerHandle_ResetIsAttacking;
+	//bool  isAttacking;
 
-	UFUNCTION()
-	void ResetIsAttacking();
+	//UFUNCTION()
+	//void ResetIsAttacking();
 
 
 public:
@@ -180,11 +182,40 @@ public:
 	void SaveCurPose();
 
 
+
+	// ÄÞº¸ °ø°Ý
+	public:
+		UPROPERTY(EditAnywhere, Category = "Animation")
+			class UAnimMontage* AttackMontage;
+
+		bool isComboAttacking;
+		bool isComboAttackDown;
+		bool isComboAttackNext;
+		int ComboAttackCount;
+
+		UFUNCTION(BlueprintCallable)
+			void ComboAttackDown();
+
+		UFUNCTION(BlueprintCallable)
+			void ComboAttackUp();
+
+		UFUNCTION(BlueprintCallable)
+			void ComboAttack();
+
+		UFUNCTION(BlueprintCallable)
+			void ComboAttackEnd();
+
+		UFUNCTION(BlueprintCallable)
+			void ComboAttackCheck();
+
+
+
+
 private:
 	void SaveCurLocation();
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Animation", meta = (AllowPrivateAccess = "true"))
-		UAnimMontage* AttackMontage;
+	//UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Animation", meta = (AllowPrivateAccess = "true"))
+	//	UAnimMontage* AttackMontage;
 
 
 	//cooldown

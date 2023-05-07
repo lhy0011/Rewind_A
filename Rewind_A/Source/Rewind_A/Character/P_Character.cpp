@@ -12,6 +12,8 @@
 
 #include "Components/CapsuleComponent.h"
 #include "Components/StaticMeshComponent.h"
+#include "Animation/AnimInstance.h"
+#include "Kismet/GameplayStatics.h"
 
 int CCC = 0;
 
@@ -66,9 +68,10 @@ AP_Character::AP_Character()
         GetMesh()->SetAnimInstanceClass(ABP.Class);
     }
 
-    static ConstructorHelpers::FObjectFinder<UAnimMontage> ATMontage(TEXT("/Script/Engine.AnimMontage'/Game/Rewind/Character/Main_Character/Animation/MC_Attack'"));
+    static ConstructorHelpers::FObjectFinder<UAnimMontage> ATMontage(TEXT("AnimMontage'/Game/Rewind/Character/Main_Character/Animation/ComboAttack'"));
     if (ATMontage.Succeeded())
     {
+        UE_LOG(LogTemp, Warning, TEXT("ATSucceed"));
         AttackMontage = ATMontage.Object;
     }
 
@@ -76,7 +79,7 @@ AP_Character::AP_Character()
     CDamage = 10.f;
     CPotion = 0;
 
-    isAttacking = false;
+    //isAttacking = false;
 
     //cooldown
     RecallUse = 1.f;
@@ -87,13 +90,23 @@ AP_Character::AP_Character()
     // 상호작용 변수
     InteractionDistance = 200.f;
     CurrentInteractableItem = nullptr;
+
+
+
+    // 콤보 변수
+    isComboAttacking = false;
+    isComboAttackDown = false;
+    isComboAttackNext = false;
+    ComboAttackCount = 0;
+
 }
 
 
-void AP_Character::ResetIsAttacking()
-{
-    isAttacking = false;
-}
+//void AP_Character::ResetIsAttacking()
+//{
+//    isAttacking = false;
+//}
+
 
 // 플레이어 상태 변환 함수
 void AP_Character::ChangeState(EPLAYER_STATE _eNextState, bool _bForce)
@@ -103,9 +116,9 @@ void AP_Character::ChangeState(EPLAYER_STATE _eNextState, bool _bForce)
         return;
     }
 
-    if (isAttacking) {
-        return;
-    }
+    //if (isAttacking) {
+    //    return;
+    //}
 
  /*   if (false == _bForce && EPLAYER_STATE::ATTACK == m_eState) {
         return;
@@ -183,7 +196,8 @@ void AP_Character::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
     PlayerInputComponent->BindAxis(TEXT("RotationZ"), this, &AP_Character::CharacterRotationZ);
     PlayerInputComponent->BindAxis(TEXT("RotationY"), this, &AP_Character::CharacterRotationY);
 
-    PlayerInputComponent->BindAction(TEXT("PAttack"), EInputEvent::IE_Pressed, this, &AP_Character::CharacterAttack);
+    PlayerInputComponent->BindAction(TEXT("PAttack"), EInputEvent::IE_Pressed, this, &AP_Character::ComboAttackDown);
+    PlayerInputComponent->BindAction(TEXT("PAttack"), EInputEvent::IE_Released, this, &AP_Character::ComboAttackUp);
     PlayerInputComponent->BindAction(TEXT("Jump"), EInputEvent::IE_Pressed, this, &AP_Character::CharacterJump);
     PlayerInputComponent->BindAction(TEXT("SaveLocation"), EInputEvent::IE_Pressed, this, &AP_Character::CharacterSaveLocation);
     PlayerInputComponent->BindAction(TEXT("TPLocation1"), EInputEvent::IE_Pressed, this, &AP_Character::CharacterTPL1);
@@ -360,7 +374,7 @@ void AP_Character::CharacterMoveFront(float _fScale)
     AddMovementInput(GetActorForwardVector(),
         50.f * GetWorld()->GetDeltaSeconds() * _fScale);
 
-    if (1.f == _fScale)
+    if (1.f == _fScale && !isComboAttacking)
     {
         if (90.f == m_AnimInst->GetDirection())
         {
@@ -375,7 +389,7 @@ void AP_Character::CharacterMoveFront(float _fScale)
             m_AnimInst->SetDirection(0.f);
         }
     }
-    else if (-1.f == _fScale)
+    else if (-1.f == _fScale && !isComboAttacking)
     {
         if (90.f == m_AnimInst->GetDirection())
         {
@@ -391,7 +405,7 @@ void AP_Character::CharacterMoveFront(float _fScale)
         }
     }
 
-    if (0.f != _fScale) // W/D 가 눌렸다면 ( 이동키가 눌렸다면) 
+    if (0.f != _fScale && !isComboAttacking) // W/D 가 눌렸다면 ( 이동키가 눌렸다면) 
     {
         ChangeState(EPLAYER_STATE::MOVE);
     }
@@ -403,20 +417,20 @@ void AP_Character::CharacterMoveRight(float _fScale)
     AddMovementInput(GetActorRightVector(),
         50.f * GetWorld()->GetDeltaSeconds() * _fScale);
 
-    if (0.f == _fScale)
+    if (0.f == _fScale && !isComboAttacking)
     {
         m_AnimInst->SetDirection(0.f);
     }
-    else if (1.f == _fScale)
+    else if (1.f == _fScale && !isComboAttacking)
     {
         m_AnimInst->SetDirection(90.f);
     }
-    else if (-1.f == _fScale)
+    else if (-1.f == _fScale && !isComboAttacking)
     {
         m_AnimInst->SetDirection(-90.f);
     }
 
-    if (0.f != _fScale) // W/D 가 눌렸다면 ( 이동키가 눌렸다면) 
+    if (0.f != _fScale && !isComboAttacking) // W/D 가 눌렸다면 ( 이동키가 눌렸다면) 
     {
         ChangeState(EPLAYER_STATE::MOVE);
     }
@@ -458,9 +472,9 @@ void AP_Character::CharacterAttack()
 
 
     //
-    ChangeState(EPLAYER_STATE::ATTACK);
-    isAttacking = true;
-    GetWorldTimerManager().SetTimer(TimerHandle_ResetIsAttacking, this, &AP_Character::ResetIsAttacking, 2.0f, false);
+    //ChangeState(EPLAYER_STATE::ATTACK);
+    //isAttacking = true;
+    //GetWorldTimerManager().SetTimer(TimerHandle_ResetIsAttacking, this, &AP_Character::ResetIsAttacking, 2.0f, false);
 
     //if (AttackMontage)
     //{
@@ -622,6 +636,65 @@ void AP_Character::SaveCurPose() // AfterIMG
         tp4AIMG->SetSkeletalMeshComponent(GetMesh());
     }
   
+}
+
+void AP_Character::ComboAttackDown()
+{
+    UE_LOG(LogTemp, Warning, TEXT("ComboAttackDown"));
+    isComboAttackDown = true;
+
+    if (isComboAttacking == false) {
+        ComboAttack();
+    }
+    else if (isComboAttacking == true) {
+        isComboAttackNext = true;
+    }
+}
+
+void AP_Character::ComboAttackUp()
+{
+    isComboAttackDown = false;
+}
+
+void AP_Character::ComboAttack()
+{
+    UE_LOG(LogTemp, Warning, TEXT("ComboAttack"));
+    isComboAttackDown = true;
+
+    UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+    if (!AnimInstance || !AttackMontage) {
+        UE_LOG(LogTemp, Warning, TEXT("WWComboAttack"));
+        return;
+    }
+
+    isComboAttacking = true;
+    const char* ComboList[] = { "Attack1","Attack2", "Attack3" };
+
+    if (ComboAttackCount >= 3) {
+        ComboAttackCount = 0;
+    }
+    UE_LOG(LogTemp, Warning, TEXT("ComboAttack%d"), ComboAttackCount);
+
+    AnimInstance->Montage_Play(AttackMontage, 1.0f);
+    AnimInstance->Montage_JumpToSection(FName(ComboList[ComboAttackCount]), AttackMontage);
+}
+
+void AP_Character::ComboAttackEnd()
+{
+    UE_LOG(LogTemp, Warning, TEXT("ComboAttackEnd"));
+    isComboAttacking = false;
+    ComboAttackCount = 0;
+}
+
+void AP_Character::ComboAttackCheck()
+{
+    UE_LOG(LogTemp, Warning, TEXT("ComboAttackCheck"));
+
+    if (isComboAttackNext == true) {
+        ComboAttackCount += 1;
+        isComboAttackNext = false;
+        ComboAttack();
+    }
 }
 
 
