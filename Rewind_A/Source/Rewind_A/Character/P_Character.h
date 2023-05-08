@@ -172,6 +172,7 @@ public:
 	void CharacterSaveLocation();
 	void CharacterTPLocation(int SN);
 	void CharacterJump();
+	void MoveMain();
 
 	void SaveCurPose();
 

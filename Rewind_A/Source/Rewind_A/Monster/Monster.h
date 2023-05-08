@@ -9,6 +9,7 @@
 #include "Animation/AnimMontage.h"
 #include "Engine/World.h"
 #include "Kismet/GameplayStatics.h"
+#include "Components/CapsuleComponent.h"
 
 #include "GameFramework/Character.h"
 #include "Monster.generated.h"
@@ -20,6 +21,8 @@ enum class EMonsterAIState : uint8
     Roaming,
     Attacking
 };
+
+class UM_AnimInst;
 
 UCLASS()
 class REWIND_A_API AMonster : public ACharacter
@@ -54,6 +57,9 @@ public:
 
     bool IsDead() const;
 
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Info, meta = (AllowPrivateAccess = "true"))
+        class UCapsuleComponent* CollisionComponent;
+
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Animation")
         UAnimMontage* AttackMontage;
 
@@ -87,9 +93,14 @@ protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Monster")
         bool bIsDead;
 
+public:
+    void OnMoveCompleted();
+
 
 private:
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Info, meta = (AllowPrivateAccess = "true"))
         EMonsterAIState m_eMState;
+
+    UM_AnimInst* m_AnimInst;
 
 };

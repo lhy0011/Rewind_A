@@ -4,6 +4,7 @@
 #include "BTTask_Patrol.h"
 #include "AIController.h"
 #include "NavigationSystem.h"
+#include "Monster.h"
 
 UBTTask_Patrol::UBTTask_Patrol()
 {
@@ -32,6 +33,13 @@ EBTNodeResult::Type UBTTask_Patrol::ExecuteTask(UBehaviorTreeComponent& OwnerCom
     if (!NavSystem || !NavSystem->GetRandomReachablePointInRadius(Origin, 1000.0f, RandomLocation))
     {
         return EBTNodeResult::Failed;
+    }
+
+
+    AMonster* Monster = Cast<AMonster>(AIController->GetPawn());
+    if (Monster)
+    {
+        Monster->ChangeState(EMonsterAIState::Roaming);
     }
 
     AIController->MoveToLocation(RandomLocation.Location, -1.0f);

@@ -5,6 +5,7 @@
 #include "Components/SkeletalMeshComponent.h"
 #include "Animation/AnimInstance.h"
 
+
 AFGolem::AFGolem()
 {
     static ConstructorHelpers::FObjectFinder<USkeletalMesh> SkeletalMesh(TEXT("SkeletalMesh'/Game/Rewind/Character/FireGolem/FBX/FireGolem'"));
@@ -16,7 +17,7 @@ AFGolem::AFGolem()
         GetMesh()->SetWorldScale3D(FVector(0.3f, 0.3f, 0.3f));
     }
 
-    static ConstructorHelpers::FClassFinder<UAnimInstance> AnimBP(TEXT("AnimBlueprint'/Game/Rewind/Character/FireGolem/aim/FGolemBP'"));
+    static ConstructorHelpers::FClassFinder<UAnimInstance> AnimBP(TEXT("AnimBlueprint'/Game/Rewind/Character/FireGolem/aim/FGolemBP_C'"));
     if (AnimBP.Succeeded())
     {
         GetMesh()->SetAnimInstanceClass(AnimBP.Class);
@@ -33,6 +34,13 @@ AFGolem::AFGolem()
     {
         DeathMontage = ATMontage.Object;
     }
+
+    CollisionComponent = CreateDefaultSubobject<UCapsuleComponent>(TEXT("CapsuleComponent"));
+    CollisionComponent->InitCapsuleSize(42.0f, 96.0f);
+    CollisionComponent->SetCollisionProfileName("Pawn");
+    CollisionComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+    RootComponent = CollisionComponent;
+
 
     MaxHealth = 100.0f;
     AttackDamage = 2;

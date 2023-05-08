@@ -2,11 +2,12 @@
 
 
 #include "Monster.h"
-
+#include "M_AnimInst.h"
 #include "Kismet/KismetSystemLibrary.h"
 
 // Sets default values
 AMonster::AMonster()
+	:m_eMState(EMonsterAIState::Idle)
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -41,6 +42,11 @@ void AMonster::ChangeState(EMonsterAIState _eNextState, bool _bForce)
 void AMonster::BeginPlay()
 {
 	Super::BeginPlay();
+
+	m_AnimInst = Cast<UM_AnimInst>(GetMesh()->GetAnimInstance());
+	if (m_AnimInst) {
+
+	}
 
 }
 
@@ -98,4 +104,9 @@ void AMonster::SpawnGem()
 
 		GetWorld()->SpawnActor<AActor>(GemActor, SpawnLocation, SpawnRotation, SpawnParams);
 	}
+}
+
+void AMonster::OnMoveCompleted()
+{
+	ChangeState(EMonsterAIState::Idle);
 }

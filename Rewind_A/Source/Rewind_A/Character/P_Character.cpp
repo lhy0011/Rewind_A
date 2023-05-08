@@ -215,6 +215,7 @@ void AP_Character::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
     PlayerInputComponent->BindAction(TEXT("TimeRecall"), EInputEvent::IE_Pressed, this, &AP_Character::CharacterTimeRecall);
     PlayerInputComponent->BindAction(TEXT("PickUp"), EInputEvent::IE_Pressed, this, &AP_Character::Interact);
     PlayerInputComponent->BindAction(TEXT("UsePotion"), EInputEvent::IE_Pressed, this, &AP_Character::UseHealP);
+    PlayerInputComponent->BindAction(TEXT("MoveToMainLand"), EInputEvent::IE_Pressed, this, &AP_Character::MoveMain);
 }
 
 
@@ -592,6 +593,11 @@ void AP_Character::CharacterJump()
     //ChangeState(EPLAYER_STATE::JUMP);
     Jump();
 
+}
+
+void AP_Character::MoveMain()
+{
+    UGameplayStatics::OpenLevel(GetWorld(), FName(TEXT("MainLand")));
 }
 
 void AP_Character::SaveCurPose() // AfterIMG

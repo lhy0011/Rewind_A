@@ -8,6 +8,8 @@
 #include "Runtime/CoreUObject/Public/UObject/ConstructorHelpers.h"
 #include "Perception/AIPerceptionComponent.h"
 #include "Perception/AISenseConfig_Sight.h"
+#include "Kismet/GameplayStatics.h"
+#include "Monster.h"
 
 AMonsterAIController::AMonsterAIController()
 {
@@ -57,15 +59,50 @@ void AMonsterAIController::Tick(float DeltaTime)
     Super::Tick(DeltaTime);
 }
 
+void AMonsterAIController::OnPerceptionUpdated(TArray<AActor*> UpdatedActors)
+{
+    //bool bPlayerDetected = false;
+
+    //for (AActor* Actor : UpdatedActors)
+    //{
+    //    ACharacter* PlayerPawn = Cast<ACharacter>(Actor);
+    //    if (PlayerPawn && PlayerPawn->IsPlayerControlled())
+    //    {
+    //        bPlayerDetected = true;
+    //        OnPlayerDetected(PlayerPawn);
+    //        break;
+    //    }
+    //}
+
+    //if (!bPlayerDetected)
+    //{
+    //    OnPlayerLost();
+    //}
+}
+
 void AMonsterAIController::OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus)
 {
-    if (Actor && Stimulus.IsValid() && Stimulus.WasSuccessfullySensed())
+    //if (Actor && Stimulus.IsValid() && Stimulus.WasSuccessfullySensed())
+    //{
+    //    GetBlackboardComponent()->SetValueAsObject("TargetPlayer", Actor);
+    //}
+    //else
+    //{
+    //    GetBlackboardComponent()->ClearValue("TargetPlayer");
+    //}
+
+    ACharacter* PlayerCharacter = Cast<ACharacter>(Actor);
+
+    if (PlayerCharacter)
     {
-        GetBlackboardComponent()->SetValueAsObject("TargetPlayer", Actor);
-    }
-    else
-    {
-        GetBlackboardComponent()->ClearValue("TargetPlayer");
+        if (Stimulus.WasSuccessfullySensed()) // 플레이어를 발견했을 때
+        {
+            OnPlayerDetected(PlayerCharacter);
+        }
+        else // 플레이어를 잃었을 때
+        {
+            OnPlayerLost();
+        }
     }
 }
 

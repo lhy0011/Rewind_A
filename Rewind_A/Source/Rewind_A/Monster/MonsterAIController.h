@@ -30,6 +30,9 @@ public:
         class UAIPerceptionComponent* AIPerceptionComponent;
 
     UFUNCTION()
+        void OnPerceptionUpdated(TArray<AActor*> UpdatedActors);
+
+    UFUNCTION()
         void OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus);
 
     UFUNCTION(BlueprintCallable)
@@ -37,5 +40,6 @@ public:
 
     UFUNCTION(BlueprintCallable)
         void OnPlayerLost();
+
 
 };
