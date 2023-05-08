@@ -81,7 +81,6 @@ AP_Character::AP_Character()
     static ConstructorHelpers::FObjectFinder<UAnimMontage> ATMontage(TEXT("AnimMontage'/Game/Rewind/Character/Main_Character/Animation/ComboAttack'"));
     if (ATMontage.Succeeded())
     {
-        UE_LOG(LogTemp, Warning, TEXT("ATSucceed"));
         AttackMontage = ATMontage.Object;
     }
 
