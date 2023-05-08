@@ -697,6 +697,22 @@ void AP_Character::ComboAttackCheck()
     }
 }
 
+void AP_Character::EnableWeaponCollision()
+{
+    if (Weapon)
+    {
+        Weapon->CollisionBox->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+    }
+}
+
+void AP_Character::DisableWeaponCollision()
+{
+    if (Weapon)
+    {
+        Weapon->CollisionBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+    }
+}
+
 
 void AP_Character::SaveCurLocation()
 {

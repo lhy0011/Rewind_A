@@ -11,6 +11,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Components/CapsuleComponent.h"
 
+#include "../Character/Weapon.h"
 #include "GameFramework/Character.h"
 #include "Monster.generated.h"
 
@@ -32,6 +33,14 @@ class REWIND_A_API AMonster : public ACharacter
 public:
 	// Sets default values for this character's properties
 	AMonster();
+
+private:
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Info, meta = (AllowPrivateAccess = "true"))
+        EMonsterAIState m_eMState;
+
+    UM_AnimInst* m_AnimInst;
+
+public:
 
     EMonsterAIState GetState() { return m_eMState; }
     void ChangeState(EMonsterAIState _eNextState, bool _bForce = false);
@@ -96,11 +105,11 @@ protected:
 public:
     void OnMoveCompleted();
 
+    UFUNCTION()
+        void OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+    
 
-private:
-    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Info, meta = (AllowPrivateAccess = "true"))
-        EMonsterAIState m_eMState;
 
-    UM_AnimInst* m_AnimInst;
+
 
 };

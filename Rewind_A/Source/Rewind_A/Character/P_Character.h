@@ -10,6 +10,7 @@
 #include "GameFramework/SpringArmComponent.h"
 
 #include "Async/Async.h"
+#include "Weapon.h"
 
 #include "GameFramework/Character.h"
 #include "P_Character.generated.h"
@@ -203,6 +204,16 @@ public:
 		UFUNCTION(BlueprintCallable)
 			void ComboAttackCheck();
 
+
+
+		UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon")
+			AWeapon* Weapon;
+
+		UFUNCTION(BlueprintCallable, Category = "Animation")
+			void EnableWeaponCollision();
+
+		UFUNCTION(BlueprintCallable, Category = "Animation")
+			void DisableWeaponCollision();
 
 
 

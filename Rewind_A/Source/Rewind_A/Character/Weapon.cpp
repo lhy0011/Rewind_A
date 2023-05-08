@@ -38,6 +38,8 @@ AWeapon::AWeapon()
 
 	PrimaryActorTick.bCanEverTick = true;
 
+	AttackDamage = 20.0f;
+
 }
 
 // Called when the game starts or when spawned

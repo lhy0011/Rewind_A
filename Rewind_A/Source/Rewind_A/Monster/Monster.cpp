@@ -61,17 +61,30 @@ inline void AMonster::OnAttack()
 
 void AMonster::TakeMonsterDamage(float Damage)
 {
-	if (bIsDead) return;
+	//if (bIsDead) return;
 
-	CurrentHealth = FMath::Clamp(CurrentHealth - Damage, 0.0f, MaxHealth);
+	//CurrentHealth = FMath::Clamp(CurrentHealth - Damage, 0.0f, MaxHealth);
+	//if (CurrentHealth <= 0.0f)
+	//{
+	//	bIsDead = true;
+
+	//	if (DeathMontage)
+	//	{
+	//		PlayAnimMontage(DeathMontage);
+	//	}
+	//}
+
+	if (bIsDead)
+	{
+		return;
+	}
+
+	CurrentHealth -= Damage;
+
 	if (CurrentHealth <= 0.0f)
 	{
 		bIsDead = true;
-
-		if (DeathMontage)
-		{
-			PlayAnimMontage(DeathMontage);
-		}
+		PlayAnimMontage(DeathMontage);
 	}
 }
 
@@ -109,4 +122,13 @@ void AMonster::SpawnGem()
 void AMonster::OnMoveCompleted()
 {
 	ChangeState(EMonsterAIState::Idle);
+}
+
+void AMonster::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (OtherActor && OtherActor->IsA(AWeapon::StaticClass()))
+	{
+		AWeapon* Weapon = Cast<AWeapon>(OtherActor);
+		TakeMonsterDamage(Weapon->AttackDamage);
+	}
 }
