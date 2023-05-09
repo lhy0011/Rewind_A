@@ -71,7 +71,7 @@ AP_Character::AP_Character()
 
 
     // 사용할 AnimInstance 설정
-    ConstructorHelpers::FClassFinder<UAnimInstance> ABP(TEXT("AnimBlueprint'/Game/Rewind/Character/Main_Character/Animation/MC_AnimBP'"));
+    ConstructorHelpers::FClassFinder<UAnimInstance> ABP(TEXT("AnimBlueprint'/Game/Rewind/Character/Main_Character/Animation/MC_AnimBP_C'"));
 
     if (ABP.Succeeded())
     {

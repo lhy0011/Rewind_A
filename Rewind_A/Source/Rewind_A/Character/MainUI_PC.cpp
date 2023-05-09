@@ -6,7 +6,7 @@
 
 AMainUI_PC::AMainUI_PC()
 {
-	static ConstructorHelpers::FClassFinder<UUserWidget> MAINUI(TEXT("WidgetBlueprint'/Game/Rewind/UI/HP.HP_C'"));
+	static ConstructorHelpers::FClassFinder<UUserWidget> MAINUI(TEXT("WidgetBlueprint'/Game/Rewind/UI/HP_C'"));
 	if (MAINUI.Succeeded()) {
 		PUIClass = MAINUI.Class;
 	}
