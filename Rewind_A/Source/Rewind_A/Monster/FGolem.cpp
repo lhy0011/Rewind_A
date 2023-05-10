@@ -17,7 +17,7 @@ AFGolem::AFGolem()
         GetMesh()->SetWorldScale3D(FVector(0.3f, 0.3f, 0.3f));
     }
 
-    static ConstructorHelpers::FClassFinder<UAnimInstance> AnimBP(TEXT("AnimBlueprint'/Game/Rewind/Character/FireGolem/aim/FGolemBP_C'"));
+    static ConstructorHelpers::FClassFinder<UAnimInstance> AnimBP(TEXT("AnimBlueprint'/Game/Rewind/Character/FireGolem/aim/FGolemBP.FGolemBP_C'"));
     if (AnimBP.Succeeded())
     {
         GetMesh()->SetAnimInstanceClass(AnimBP.Class);

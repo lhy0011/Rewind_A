@@ -142,6 +142,11 @@ public:
 
 
 
+private:
+	void SetCamera();
+	void SetCollision();
+	void SetAsset();
+
 	// √÷¡æµ©
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
 

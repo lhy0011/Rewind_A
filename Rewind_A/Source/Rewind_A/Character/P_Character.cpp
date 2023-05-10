@@ -25,64 +25,9 @@ AP_Character::AP_Character()
     // Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
     PrimaryActorTick.bCanEverTick = true;
 
-    ConstructorHelpers::FObjectFinder<USkeletalMesh> mesh(TEXT("SkeletalMesh'/Game/Rewind/Character/Main_Character/FBX/Main_Character.Main_Character'"));
-
-    if (mesh.Succeeded())
-    {
-        GetMesh()->SetSkeletalMesh(mesh.Object);
-        GetMesh()->SetRelativeLocation(FVector(0.f, 0.f, -89.f));
-        GetMesh()->SetRelativeRotation(FRotator(0.f, -90.f, 0.f));
-        GetMesh()->SetWorldScale3D(FVector(0.1f, 0.1f, 0.1f));
-    }
-
-    // 카메라, 스프링암 추가
-    m_pCamera = CreateDefaultSubobject<UCameraComponent>(L"Camera");
-    m_pSpringArm = CreateDefaultSubobject<USpringArmComponent>(L"SpringArm");
-
-    // 계층 구조 설정
-    m_pSpringArm->SetupAttachment(GetMesh());
-    m_pCamera->SetupAttachment(m_pSpringArm);
-
-    // 스프링암 위치, 회전, 거리값 설정
-    m_pSpringArm->SetRelativeLocation(FVector(0.f, 0.f, 900.f));
-    m_pSpringArm->SetRelativeRotation(FRotator(-15.f, 90.f, 0.f));
-    m_pSpringArm->TargetArmLength = 270.f;
-
-    // 카메라 따로 회전 설정
-    m_pSpringArm->bUsePawnControlRotation = true;
-    m_pSpringArm->bInheritPitch = false;
-    m_pSpringArm->bInheritRoll = true;
-    m_pSpringArm->bInheritYaw = true;
-    m_pSpringArm->bDoCollisionTest = true;
-    bUseControllerRotationYaw = false;
-    GetCharacterMovement()->bOrientRotationToMovement = true;
-    GetCharacterMovement()->RotationRate = FRotator(0.0f, 720.0f, 0.0f);
-
-
-
-    // 콜리전
-    CollisionCapsule = CreateDefaultSubobject<UCapsuleComponent>(TEXT("CollisionCapsule"));
-    CollisionCapsule->InitCapsuleSize(50.f, 65.f); // 반지름, 높이
-    CollisionCapsule->SetupAttachment(RootComponent);
-
-    CollisionCapsule->OnComponentBeginOverlap.AddDynamic(this, &AP_Character::OnOverlapBegin);
-    CollisionCapsule->OnComponentEndOverlap.AddDynamic(this, &AP_Character::OnOverlapEnd);
-
-
-
-    // 사용할 AnimInstance 설정
-    ConstructorHelpers::FClassFinder<UAnimInstance> ABP(TEXT("AnimBlueprint'/Game/Rewind/Character/Main_Character/Animation/MC_AnimBP_C'"));
-
-    if (ABP.Succeeded())
-    {
-        GetMesh()->SetAnimInstanceClass(ABP.Class);
-    }
-
-    static ConstructorHelpers::FObjectFinder<UAnimMontage> ATMontage(TEXT("AnimMontage'/Game/Rewind/Character/Main_Character/Animation/ComboAttack'"));
-    if (ATMontage.Succeeded())
-    {
-        AttackMontage = ATMontage.Object;
-    }
+    SetAsset();
+    SetCamera();
+    SetCollision();
 
     CHP = 10;
     CDamage = 10.f;
@@ -374,6 +319,78 @@ float AP_Character::TakeDamage(float DamageAmount, FDamageEvent const& DamageEve
 }
 
 
+
+// 생성자 설정 빼옴
+void AP_Character::SetCollision()
+{
+
+    // 콜리전
+    CollisionCapsule = CreateDefaultSubobject<UCapsuleComponent>(TEXT("CollisionCapsule"));
+    CollisionCapsule->InitCapsuleSize(50.f, 65.f); // 반지름, 높이
+    CollisionCapsule->SetupAttachment(RootComponent);
+
+    CollisionCapsule->OnComponentBeginOverlap.AddDynamic(this, &AP_Character::OnOverlapBegin);
+    CollisionCapsule->OnComponentEndOverlap.AddDynamic(this, &AP_Character::OnOverlapEnd);
+}
+
+void AP_Character::SetCamera()
+{
+
+    // 카메라, 스프링암 추가
+    m_pCamera = CreateDefaultSubobject<UCameraComponent>(L"Camera");
+    m_pSpringArm = CreateDefaultSubobject<USpringArmComponent>(L"SpringArm");
+
+    // 계층 구조 설정
+    m_pSpringArm->SetupAttachment(GetMesh());
+    m_pCamera->SetupAttachment(m_pSpringArm);
+
+    // 스프링암 위치, 회전, 거리값 설정
+    m_pSpringArm->SetRelativeLocation(FVector(0.f, 0.f, 900.f));
+    m_pSpringArm->SetRelativeRotation(FRotator(-15.f, 90.f, 0.f));
+    m_pSpringArm->TargetArmLength = 270.f;
+
+    // 카메라 따로 회전 설정
+    m_pSpringArm->bUsePawnControlRotation = true;
+    m_pSpringArm->bInheritPitch = false;
+    m_pSpringArm->bInheritRoll = true;
+    m_pSpringArm->bInheritYaw = true;
+    m_pSpringArm->bDoCollisionTest = true;
+    bUseControllerRotationYaw = false;
+    GetCharacterMovement()->bOrientRotationToMovement = true;
+    GetCharacterMovement()->RotationRate = FRotator(0.0f, 720.0f, 0.0f);
+}
+
+void AP_Character::SetAsset()
+{
+    ConstructorHelpers::FObjectFinder<USkeletalMesh> mesh(TEXT("SkeletalMesh'/Game/Rewind/Character/Main_Character/FBX/Main_Character.Main_Character'"));
+
+    if (mesh.Succeeded())
+    {
+        GetMesh()->SetSkeletalMesh(mesh.Object);
+        GetMesh()->SetRelativeLocation(FVector(0.f, 0.f, -89.f));
+        GetMesh()->SetRelativeRotation(FRotator(0.f, -90.f, 0.f));
+        GetMesh()->SetWorldScale3D(FVector(0.1f, 0.1f, 0.1f));
+    }
+
+    // 사용할 AnimInstance 설정
+    ConstructorHelpers::FClassFinder<UAnimInstance> ABP(TEXT("AnimBlueprint'/Game/Characters/ABP_Character.ABP_Character_C'"));
+
+    if (ABP.Succeeded())
+    {
+        GetMesh()->SetAnimInstanceClass(ABP.Class);
+    }
+
+    static ConstructorHelpers::FObjectFinder<UAnimMontage> ATMontage(TEXT("AnimMontage'/Game/Rewind/Character/Main_Character/Animation/ComboAttack'"));
+    if (ATMontage.Succeeded())
+    {
+        AttackMontage = ATMontage.Object;
+    }
+}
+
+
+
+
+
 // 캐릭터 기본 이동
 void AP_Character::CharacterMoveFront(float _fScale)
 {
@@ -382,7 +399,6 @@ void AP_Character::CharacterMoveFront(float _fScale)
     //    AddMovementInput(GetActorForwardVector(),
     //        50.f * GetWorld()->GetDeltaSeconds() * _fScale);
     //}
-
     //if (1.f == _fScale)
     //{
     //    if (90.f == m_AnimInst->GetDirection())
@@ -413,7 +429,7 @@ void AP_Character::CharacterMoveFront(float _fScale)
     //        m_AnimInst->SetDirection(180.f);
     //    }
     //}
-    
+
     if (0.f != _fScale) // W/D 가 눌렸다면 ( 이동키가 눌렸다면) 
     {
         if (!isJumping && !isComboAttacking) {
@@ -421,8 +437,6 @@ void AP_Character::CharacterMoveFront(float _fScale)
             AddMovementInput(FRotationMatrix(GetControlRotation()).GetUnitAxis(EAxis::X), _fScale);
         }
     }
-
-
 }
 
 void AP_Character::CharacterMoveRight(float _fScale)
