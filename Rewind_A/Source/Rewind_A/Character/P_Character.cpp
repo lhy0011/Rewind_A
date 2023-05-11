@@ -9,6 +9,7 @@
 #include "Weapon.h"
 #include "../Item/InteractableItem.h"
 #include "../Item/HealingPotion.h"
+#include "ReGameInstance.h"
 
 #include "Components/CapsuleComponent.h"
 #include "Components/StaticMeshComponent.h"
@@ -27,8 +28,15 @@ AP_Character::AP_Character()
 
     SetAsset();
     SetCamera();
-    SetCollision();
+   // SetCollision();
 
+        // 콜리전
+    CollisionCapsule = CreateDefaultSubobject<UCapsuleComponent>(TEXT("CollisionCapsule"));
+    CollisionCapsule->InitCapsuleSize(50.f, 65.f); // 반지름, 높이
+    CollisionCapsule->SetupAttachment(RootComponent);
+
+    CollisionCapsule->OnComponentBeginOverlap.AddDynamic(this, &AP_Character::OnOverlapBegin);
+    CollisionCapsule->OnComponentEndOverlap.AddDynamic(this, &AP_Character::OnOverlapEnd);
     CHP = 10;
     CDamage = 10.f;
     CPotion = 0;
@@ -107,6 +115,23 @@ void AP_Character::BeginPlay()
 
     }
 
+
+    UReGameInstance* GameInstance = Cast<UReGameInstance>(GetGameInstance());
+    if (GameInstance)
+    {
+        if (!GameInstance->isFirstLoad)
+        {
+            setCharacterState(
+                GameInstance->PotionCount,
+                GameInstance->CHP,
+                GameInstance->RecallUse,
+                GameInstance->ControlUse);
+        }
+        else
+        {
+            GameInstance->isFirstLoad = false;
+        }
+    }
 
 
     GetWorld()->GetTimerManager().SetTimer(MyTimerHandle, this, &AP_Character::RecallCountNsave, 1.f, true, 1.f);
@@ -331,6 +356,7 @@ void AP_Character::SetCollision()
 
     CollisionCapsule->OnComponentBeginOverlap.AddDynamic(this, &AP_Character::OnOverlapBegin);
     CollisionCapsule->OnComponentEndOverlap.AddDynamic(this, &AP_Character::OnOverlapEnd);
+
 }
 
 void AP_Character::SetCamera()
@@ -378,6 +404,7 @@ void AP_Character::SetAsset()
     if (ABP.Succeeded())
     {
         GetMesh()->SetAnimInstanceClass(ABP.Class);
+        UE_LOG(LogTemp, Warning, TEXT("Load Anim"));
     }
 
     static ConstructorHelpers::FObjectFinder<UAnimMontage> ATMontage(TEXT("AnimMontage'/Game/Rewind/Character/Main_Character/Animation/ComboAttack'"));
@@ -751,5 +778,13 @@ void AP_Character::SaveCurLocation()
         SaveCurPose();
         tp4 = 1.f;
     }
+}
+
+void AP_Character::setCharacterState(int32 NewPotionCount, int32 NewCHP, float NewRecallUse, float NewControlUse)
+{
+    CPotion = NewPotionCount;
+    CHP = NewCHP;
+    RecallUse = NewRecallUse;
+    ControlUse = NewControlUse;
 }
 

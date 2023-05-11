@@ -74,21 +74,29 @@ private:
 	void RecallCountNsave();
 
 
+public:
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Info", meta = (AllowPrivateAccess = "true"))
-		int CHP;
+		int32 CHP;
 
 	UFUNCTION(BlueprintCallable)
-		int getCHP() const { return CHP; }
+		int32 getCHP() const { return CHP; }
+
+	UFUNCTION(BlueprintCallable, Category = "Character Data")
+		void setCHP(int32 NewCHP) { CHP = NewCHP; }
+
 
 	// 포션
-	int CPotion;
+	int32 CPotion;
 
 	UFUNCTION(BlueprintCallable)
-		int getCPotion() const { return CPotion; }
+		int32 getCPotion() const { return CPotion; }
+
+	UFUNCTION(BlueprintCallable, Category = "Character Data")
+		void SetPotionCount(int32 NewPotionCount) { CPotion = NewPotionCount; }
 
 
 
-public:
 	EPLAYER_STATE GetState() { return m_eState; }
 	void ChangeState(EPLAYER_STATE _eNextState, bool _bForce = false);
 
@@ -251,12 +259,18 @@ private:
 	// 타이머 변수
 	FTimerHandle TimerHandle;
 
-
+	public:
 	UFUNCTION(BlueprintCallable)
 		float getRecallUse() const { return RecallUse; }
 
 	UFUNCTION(BlueprintCallable)
 		float getControlUse() const { return ControlUse; }
+
+	UFUNCTION(BlueprintCallable, Category = "Character Data")
+		void setRecallUse(float NewRecallUse) { RecallUse = NewRecallUse; }
+
+	UFUNCTION(BlueprintCallable, Category = "Character Data")
+		void seControlUse(float NewControlUse) { RecallUse = NewControlUse; }
 
 	UFUNCTION(BlueprintCallable)
 		float getTP1() const { return tp1; }
@@ -269,6 +283,10 @@ private:
 
 	UFUNCTION(BlueprintCallable)
 		float getTP4() const { return tp4; }
+
+
+	UFUNCTION(BlueprintCallable, Category = "Character Data")
+		void setCharacterState(int32 NewPotionCount, int32 NewCHP, float NewRecallUse, float NewControlUse);
 
 
 
