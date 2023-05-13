@@ -28,18 +28,7 @@ AP_Character::AP_Character()
 
     SetAsset();
     SetCamera();
-   // SetCollision();
-
-        // 콜리전
-    CollisionCapsule = CreateDefaultSubobject<UCapsuleComponent>(TEXT("CollisionCapsule"));
-    CollisionCapsule->InitCapsuleSize(50.f, 65.f); // 반지름, 높이
-    CollisionCapsule->SetupAttachment(RootComponent);
-
-    CollisionCapsule->OnComponentBeginOverlap.AddDynamic(this, &AP_Character::OnOverlapBegin);
-    CollisionCapsule->OnComponentEndOverlap.AddDynamic(this, &AP_Character::OnOverlapEnd);
-    CHP = 10;
-    CDamage = 10.f;
-    CPotion = 0;
+    SetCollision();
 
     //isAttacking = false;
 
@@ -229,10 +218,8 @@ void AP_Character::Interact()
             else
             {
             }
-
         }
     }
-
 }
 
 
@@ -330,7 +317,6 @@ void AP_Character::RecallCountNsave()
             CanControl = true;
         }
     }
-
 }
 
 
@@ -338,7 +324,6 @@ float AP_Character::TakeDamage(float DamageAmount, FDamageEvent const& DamageEve
 {
 
     float FinalDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
-
 
     return FinalDamage;
 }
@@ -399,7 +384,7 @@ void AP_Character::SetAsset()
     }
 
     // 사용할 AnimInstance 설정
-    ConstructorHelpers::FClassFinder<UAnimInstance> ABP(TEXT("AnimBlueprint'/Game/Characters/ABP_Character.ABP_Character_C'"));
+    ConstructorHelpers::FClassFinder<UAnimInstance> ABP(TEXT("AnimBlueprint'/Game/Rewind/Character/Main_Character/Animation/MC_AnimBP.MC_AnimBP_C'"));
 
     if (ABP.Succeeded())
     {
@@ -413,9 +398,6 @@ void AP_Character::SetAsset()
         AttackMontage = ATMontage.Object;
     }
 }
-
-
-
 
 
 // 캐릭터 기본 이동

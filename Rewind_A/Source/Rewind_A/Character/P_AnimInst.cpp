@@ -35,6 +35,33 @@ void UP_AnimInst::NativeUpdateAnimation(float _fDT)
 
 }
 
+void UP_AnimInst::CallCheckNotify()
+{
+	AP_Character* Character = Cast<AP_Character>(TryGetPawnOwner());
+	if (Character) {
+		Character->ComboAttackCheck();
+	}
+
+}
+
+void UP_AnimInst::CallEndNotify()
+{
+	AP_Character* Character = Cast<AP_Character>(TryGetPawnOwner());
+	if (Character) {
+		Character->ComboAttackEnd();
+	}
+
+}
+
+bool UP_AnimInst::CallIsJumping()
+{
+	AP_Character* Character = Cast<AP_Character>(TryGetPawnOwner());
+	if (Character) {
+		isJ=Character->getIsJumping();
+	}
+	return isJ;
+}
+
 void UP_AnimInst::AnimNotify_AttackEnd()
 {
 	UE_LOG(LogTemp, Log, TEXT("Attackend"));

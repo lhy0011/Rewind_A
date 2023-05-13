@@ -26,12 +26,22 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Info", meta = (AllowPrivateAccess = "true"))
 		float						m_Dir;
 
-
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Info", meta = (AllowPrivateAccess = "true"))
+		bool isJ;
 
 public:
 	virtual void NativeInitializeAnimation() override; // 积己磊 开且 (按眉 积己 矫)
 	virtual void NativeBeginPlay() override;
 	virtual void NativeUpdateAnimation(float _fDT) override;
+
+	UFUNCTION(BlueprintCallable, Category = "My Category")
+		void CallCheckNotify();
+
+	UFUNCTION(BlueprintCallable, Category = "My Category")
+		void CallEndNotify();
+
+	UFUNCTION(BlueprintCallable, Category = "My Category")
+		bool CallIsJumping();
 
 
 public:

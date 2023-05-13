@@ -291,7 +291,11 @@ private:
 
 
 	// ¡°«¡¡ﬂ
-	bool isJumping;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Info", meta = (AllowPrivateAccess = "true"))
+		bool isJumping;
+
+	UFUNCTION(BlueprintCallable)
+		bool getIsJumping() { return isJumping; }
 
 
 	// UI
