@@ -217,6 +217,8 @@ public:
 		UFUNCTION(BlueprintCallable)
 			void ComboAttackCheck();
 
+		bool getisComboAttacking() { return isComboAttacking; }
+
 
 
 		UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon")
@@ -305,10 +307,6 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = UI)
 		TSubclassOf<UUserWidget> WidgetClass;
-
-
-
-
 
 
 };

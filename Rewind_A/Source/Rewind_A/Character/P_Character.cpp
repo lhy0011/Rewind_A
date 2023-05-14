@@ -30,8 +30,6 @@ AP_Character::AP_Character()
     SetCamera();
     SetCollision();
 
-    //isAttacking = false;
-
     //cooldown
     RecallUse = 1.f;
     ControlUse = 1.f;
@@ -87,11 +85,11 @@ void AP_Character::BeginPlay()
     m_AnimInst = Cast<UP_AnimInst>(GetMesh()->GetAnimInstance());
 
     // ¹«±â ÀåÂø
-    AWeapon* sword = GetWorld()->SpawnActor<AWeapon>(AWeapon::StaticClass());
+    Weapon = GetWorld()->SpawnActor<AWeapon>(AWeapon::StaticClass());
 
-    if (sword) {
+    if (Weapon) {
         FName SocketName = TEXT("Sword");
-        sword->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, SocketName);
+        Weapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, SocketName);
 
         FVector RelativeLocation = FVector(0.0f, 0.0f, 0.0f);
         FRotator RelativeRotation = FRotator(0.0f, 0.0f, 0.0f);
@@ -100,7 +98,7 @@ void AP_Character::BeginPlay()
 
 
         FTransform RelativeTransform = FTransform(RelativeRotation, RelativeLocation, RelativeScale);
-        sword->WeaponMesh->SetRelativeTransform(RelativeTransform);
+        Weapon->WeaponMesh->SetRelativeTransform(RelativeTransform);
 
     }
 
@@ -724,6 +722,7 @@ void AP_Character::EnableWeaponCollision()
 {
     if (Weapon)
     {
+        UE_LOG(LogTemp,Warning, TEXT("EnableWeaponCollision"))
         Weapon->EnableCollision();
     }
 }
@@ -732,6 +731,7 @@ void AP_Character::DisableWeaponCollision()
 {
     if (Weapon)
     {
+        UE_LOG(LogTemp, Warning, TEXT("DisableWeaponCollision"))
         Weapon->DisableCollision();
     }
 }

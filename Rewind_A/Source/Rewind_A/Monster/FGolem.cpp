@@ -36,13 +36,17 @@ AFGolem::AFGolem()
     }
 
     CollisionComponent = CreateDefaultSubobject<UCapsuleComponent>(TEXT("CapsuleComponent"));
-    CollisionComponent->InitCapsuleSize(42.0f, 96.0f);
-    CollisionComponent->SetCollisionProfileName("Pawn");
-    CollisionComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-    RootComponent = CollisionComponent;
+    CollisionComponent->InitCapsuleSize(150.0f, 80.0f);
+    //CollisionComponent->SetCollisionProfileName("Pawn");
+    //CollisionComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+    CollisionComponent->SetCollisionProfileName(TEXT("OverlapAll"));
+    CollisionComponent->SetupAttachment(RootComponent);
+   // RootComponent = CollisionComponent;
 
 
     MaxHealth = 100.0f;
+    CurrentHealth = 100.0f;
+
     AttackDamage = 2;
 }
 
@@ -51,5 +55,4 @@ void AFGolem::BeginPlay()
     Super::BeginPlay();
 
     CurrentHealth = MaxHealth;
-
 }

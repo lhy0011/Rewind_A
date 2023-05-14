@@ -4,6 +4,8 @@
 #include "Weapon.h"
 
 #include "P_Character.h"
+#include "../Monster/FGolem.h"
+#include "../Monster/Monster.h"
 
 #include "Components/StaticMeshComponent.h"
 #include "Components/BoxComponent.h"
@@ -32,8 +34,8 @@ AWeapon::AWeapon()
 	//CollisionBox->SetBoxExtent(FVector(0.025f, 0.09f, 0.012f));
 	//CollisionBox->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
 
-	WeaponMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision); 
-	//WeaponMesh->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
+	WeaponMesh->SetCollisionProfileName(TEXT("OverlapAll"));
+	//WeaponMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision); 
 	WeaponMesh->OnComponentBeginOverlap.AddDynamic(this, &AWeapon::OnOverlapBegin);
 
 	PrimaryActorTick.bCanEverTick = true;
@@ -58,10 +60,20 @@ void AWeapon::Tick(float DeltaTime)
 
 void AWeapon::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (OtherActor != nullptr && OtherActor != this && OtherComp != nullptr && OtherActor->IsA(AP_Character::StaticClass())) {
-		AP_Character* APC = Cast<AP_Character>(GetOwner());
-		if (APC) {
-			// 데미지 구현
+	if (OtherActor != nullptr && OtherActor != this && OtherComp != nullptr)
+	{
+		//AFGolem* Golem = Cast<AFGolem>(OtherActor);
+		//if (Golem)
+		//{
+		//	Golem->TakeDamage(AttackDamage, FDamageEvent(), nullptr, this);
+		//}
+
+		AMonster* Mst = Cast<AMonster>(OtherActor);
+		if (Mst)
+		{
+			Mst->TakeMonsterDamage(AttackDamage);
+			UE_LOG(LogTemp, Warning, TEXT("attackMonster"));
 		}
 	}
+
 }

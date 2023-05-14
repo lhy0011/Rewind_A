@@ -13,8 +13,8 @@ UCLASS()
 class REWIND_A_API AWeapon : public AActor
 {
 	GENERATED_BODY()
-	
-public:	
+
+public:
 	// Sets default values for this actor's properties
 	AWeapon();
 
@@ -22,7 +22,7 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:	
+public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
@@ -40,4 +40,5 @@ public:
 
 	void EnableCollision() { WeaponMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics); }
 	void DisableCollision() { WeaponMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision); }
+
 };

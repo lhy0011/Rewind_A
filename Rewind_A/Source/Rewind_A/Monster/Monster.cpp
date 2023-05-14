@@ -22,7 +22,7 @@ AMonster::AMonster()
 	AIControllerClass = AMonsterAIController::StaticClass(); // 컨트롤러 설정
 
 	MaxHealth = 100.0f;
-	CurrentHealth = MaxHealth;
+	CurrentHealth = 100.0f;
 	bIsDead = false;
 }
 
@@ -32,7 +32,6 @@ void AMonster::ChangeState(EMonsterAIState _eNextState, bool _bForce)
 	if (m_eMState == _eNextState) {
 		return;
 	}
-
 
 	m_eMState = _eNextState;
 
@@ -47,7 +46,6 @@ void AMonster::BeginPlay()
 	if (m_AnimInst) {
 
 	}
-
 }
 
 inline void AMonster::OnAttack()
@@ -73,6 +71,7 @@ void AMonster::TakeMonsterDamage(float Damage)
 	//		PlayAnimMontage(DeathMontage);
 	//	}
 	//}
+	UE_LOG(LogTemp, Warning, TEXT("CurrentHealth: %f"), CurrentHealth);
 
 	if (bIsDead)
 	{
@@ -81,10 +80,12 @@ void AMonster::TakeMonsterDamage(float Damage)
 
 	CurrentHealth -= Damage;
 
+
 	if (CurrentHealth <= 0.0f)
 	{
 		bIsDead = true;
 		PlayAnimMontage(DeathMontage);
+		Destroy();
 	}
 }
 
