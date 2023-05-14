@@ -37,4 +37,7 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Attack")
 		float AttackDamage;
+
+	void EnableCollision() { WeaponMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics); }
+	void DisableCollision() { WeaponMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision); }
 };

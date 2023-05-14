@@ -43,6 +43,11 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "My Category")
 		bool CallIsJumping();
 
+	UFUNCTION(BlueprintCallable, Category = "My Category")
+		void EnableCol();
+
+	UFUNCTION(BlueprintCallable, Category = "My Category")
+		void DisableCol();
 
 public:
 	void SetDirection(float _fDir) { m_Dir = _fDir; }

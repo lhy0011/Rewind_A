@@ -27,14 +27,14 @@ AWeapon::AWeapon()
 	}
 
 	// ÄÝ¸®Àü
-	CollisionBox = CreateDefaultSubobject<UBoxComponent>(TEXT("CollisionBox"));
-	CollisionBox->SetupAttachment(WeaponMesh);
-	CollisionBox->SetBoxExtent(FVector(25.0f, 90.0f, 12.0f));
-	CollisionBox->SetRelativeLocation(FVector(0.0f, 280.0f, 0.0f));
+	//CollisionBox = CreateDefaultSubobject<UBoxComponent>(TEXT("CollisionBox"));
+	//CollisionBox->SetupAttachment(WeaponMesh);
+	//CollisionBox->SetBoxExtent(FVector(0.025f, 0.09f, 0.012f));
+	//CollisionBox->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
 
-	WeaponMesh->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
-
-	CollisionBox->OnComponentBeginOverlap.AddDynamic(this, &AWeapon::OnOverlapBegin);
+	WeaponMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision); 
+	//WeaponMesh->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
+	WeaponMesh->OnComponentBeginOverlap.AddDynamic(this, &AWeapon::OnOverlapBegin);
 
 	PrimaryActorTick.bCanEverTick = true;
 

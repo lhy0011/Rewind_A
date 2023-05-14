@@ -62,6 +62,22 @@ bool UP_AnimInst::CallIsJumping()
 	return isJ;
 }
 
+void UP_AnimInst::EnableCol()
+{
+	AP_Character* Character = Cast<AP_Character>(TryGetPawnOwner());
+	if (Character) {
+		Character->EnableWeaponCollision();
+	}
+}
+
+void UP_AnimInst::DisableCol()
+{
+	AP_Character* Character = Cast<AP_Character>(TryGetPawnOwner());
+	if (Character) {
+		Character->DisableWeaponCollision();
+	}
+}
+
 void UP_AnimInst::AnimNotify_AttackEnd()
 {
 	UE_LOG(LogTemp, Log, TEXT("Attackend"));

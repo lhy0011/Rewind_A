@@ -724,7 +724,7 @@ void AP_Character::EnableWeaponCollision()
 {
     if (Weapon)
     {
-        Weapon->CollisionBox->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+        Weapon->EnableCollision();
     }
 }
 
@@ -732,7 +732,7 @@ void AP_Character::DisableWeaponCollision()
 {
     if (Weapon)
     {
-        Weapon->CollisionBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+        Weapon->DisableCollision();
     }
 }
 
