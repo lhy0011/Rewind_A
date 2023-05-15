@@ -12,6 +12,7 @@
 #include "Components/CapsuleComponent.h"
 
 #include "../Character/Weapon.h"
+#include "../Item/FGem.h"
 #include "GameFramework/Character.h"
 #include "Monster.generated.h"
 
@@ -62,7 +63,7 @@ public:
         inline void OnAttack();
 
     UFUNCTION()
-        void TakeMonsterDamage(float Damage);
+        void TakeMonsterDamage(float Damage, AActor* DamageCauser);
 
     bool IsDead() const;
 
@@ -82,12 +83,15 @@ public:
     UFUNCTION(BlueprintCallable, Category = "Animation")
         void OnDeathAnimationEnded();
 
-    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Loot")
-        TSubclassOf<AActor> GemActor;
+    //UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Loot")
+    //    TSubclassOf<AActor> GemActor;
 
     // Add this function
     UFUNCTION(BlueprintCallable, Category = "Loot")
         void SpawnGem();
+
+    UPROPERTY(EditAnywhere, Category = "Spawning")
+        TSubclassOf<class AFGem> GemActor;
 
 protected:
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Monster")

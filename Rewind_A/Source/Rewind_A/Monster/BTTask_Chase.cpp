@@ -6,6 +6,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/Character.h"
 #include "Monster.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 UBTTask_Chase::UBTTask_Chase()
 {
@@ -19,6 +20,16 @@ EBTNodeResult::Type UBTTask_Chase::ExecuteTask(UBehaviorTreeComponent& OwnerComp
 
     ACharacter* PlayerCharacter = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
     if (!PlayerCharacter) return EBTNodeResult::Failed;
+
+    AMonster* Monster = Cast<AMonster>(AIController->GetPawn());
+    if (Monster) {
+        // 이동속도
+        UCharacterMovementComponent* CharacterMovement = Cast<UCharacterMovementComponent>(Monster->GetMovementComponent());
+        if (CharacterMovement)
+        {
+            CharacterMovement->MaxWalkSpeed = 300.0f;
+        }
+    }
 
     AIController->MoveToActor(PlayerCharacter);
     return EBTNodeResult::Succeeded;

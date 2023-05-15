@@ -77,7 +77,7 @@ void AWeapon::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherA
 			AMonster* Mst = Cast<AMonster>(OtherActor);
 			if (Mst)
 			{
-				Mst->TakeMonsterDamage(AttackDamage);
+				Mst->TakeMonsterDamage(AttackDamage, OwningCharacter);
 				UE_LOG(LogTemp, Warning, TEXT("attackMonster"));
 			}
 		}

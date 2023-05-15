@@ -5,6 +5,7 @@
 #include "AIController.h"
 #include "NavigationSystem.h"
 #include "Monster.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 UBTTask_Patrol::UBTTask_Patrol()
 {
@@ -39,6 +40,13 @@ EBTNodeResult::Type UBTTask_Patrol::ExecuteTask(UBehaviorTreeComponent& OwnerCom
     AMonster* Monster = Cast<AMonster>(AIController->GetPawn());
     if (Monster)
     {
+        // 이동속도
+        UCharacterMovementComponent* CharacterMovement = Cast<UCharacterMovementComponent>(Monster->GetMovementComponent());
+        if (CharacterMovement)
+        {
+            CharacterMovement->MaxWalkSpeed = 150.0f;
+        }
+
         UE_LOG(LogTemp, Warning, TEXT("Roaming"));;
         Monster->ChangeState(EMonsterAIState::Roaming);
     }

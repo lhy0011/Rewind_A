@@ -24,6 +24,9 @@ AMonster::AMonster()
 	MaxHealth = 100.0f;
 	CurrentHealth = 100.0f;
 	bIsDead = false;
+
+
+	GemActor = AFGem::StaticClass();
 }
 
 
@@ -57,7 +60,7 @@ inline void AMonster::OnAttack()
 	// 각 클래스에 어택 몽타주 설정, 사망 몽타주도
 }
 
-void AMonster::TakeMonsterDamage(float Damage)
+void AMonster::TakeMonsterDamage(float Damage, AActor* DamageCauser)
 {
 	//if (bIsDead) return;
 
@@ -80,11 +83,23 @@ void AMonster::TakeMonsterDamage(float Damage)
 
 	CurrentHealth -= Damage;
 
+	if (Damage > 0.f && DamageCauser) {
+		ACharacter* PlayerCharacter = Cast<ACharacter>(DamageCauser);
+		if (PlayerCharacter) {
+			AMonsterAIController* MonsterAIController = Cast<AMonsterAIController>(GetController());
+			if (MonsterAIController) {
+				MonsterAIController->OnPlayerDetected(PlayerCharacter);
+			}
+		}
+
+	}
+
 
 	if (CurrentHealth <= 0.0f)
 	{
 		bIsDead = true;
 		PlayAnimMontage(DeathMontage);
+		SpawnGem();
 		Destroy();
 	}
 }
@@ -108,7 +123,7 @@ void AMonster::OnDeathAnimationEnded()
 void AMonster::SpawnGem()
 {
 	float SpawnChance = FMath::FRandRange(0.0f, 1.0f);
-	if (SpawnChance <= 0.5f && GemActor) // 50% 확률로 보석 스폰
+	if (SpawnChance <= 0.99f && GemActor) // 50% 확률로 보석 스폰
 	{
 		FVector SpawnLocation = GetActorLocation();
 		FRotator SpawnRotation = FRotator::ZeroRotator;
@@ -127,9 +142,9 @@ void AMonster::OnMoveCompleted()
 
 void AMonster::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (OtherActor && OtherActor->IsA(AWeapon::StaticClass()))
-	{
-		AWeapon* Weapon = Cast<AWeapon>(OtherActor);
-		TakeMonsterDamage(Weapon->AttackDamage);
-	}
+	//if (OtherActor && OtherActor->IsA(AWeapon::StaticClass()))
+	//{
+	//	AWeapon* Weapon = Cast<AWeapon>(OtherActor);
+	//	TakeMonsterDamage(Weapon->AttackDamage,Weapon->OwningCharacter);
+	//}
 }
