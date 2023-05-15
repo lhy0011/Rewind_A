@@ -100,6 +100,8 @@ void AP_Character::BeginPlay()
         FTransform RelativeTransform = FTransform(RelativeRotation, RelativeLocation, RelativeScale);
         Weapon->WeaponMesh->SetRelativeTransform(RelativeTransform);
 
+        Weapon->OwningCharacter = this;
+
     }
 
 
@@ -146,6 +148,18 @@ void AP_Character::Tick(float DeltaTime)
         isJumping = false;
     }
 
+
+    // 충돌 감지시 카메라 뒤로 빼기
+    if (m_pSpringArm->IsCollisionFixApplied())
+    {
+        // 가까울때
+        m_pSpringArm->TargetArmLength = FMath::FInterpTo(m_pSpringArm->TargetArmLength, 200.f, DeltaTime, 5.f);
+    }
+    else
+    {
+        // 원위치
+        m_pSpringArm->TargetArmLength = FMath::FInterpTo(m_pSpringArm->TargetArmLength, 270.f, DeltaTime, 5.f);
+    }
 }
 
 

@@ -8,6 +8,7 @@
 
 class UStaticMeshComponent;
 class UBoxComponent;
+class AP_Character;
 
 UCLASS()
 class REWIND_A_API AWeapon : public AActor
@@ -17,6 +18,9 @@ class REWIND_A_API AWeapon : public AActor
 public:
 	// Sets default values for this actor's properties
 	AWeapon();
+
+	UPROPERTY()
+		AP_Character* OwningCharacter;
 
 protected:
 	// Called when the game starts or when spawned

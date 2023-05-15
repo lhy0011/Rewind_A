@@ -39,6 +39,7 @@ EBTNodeResult::Type UBTTask_Patrol::ExecuteTask(UBehaviorTreeComponent& OwnerCom
     AMonster* Monster = Cast<AMonster>(AIController->GetPawn());
     if (Monster)
     {
+        UE_LOG(LogTemp, Warning, TEXT("Roaming"));;
         Monster->ChangeState(EMonsterAIState::Roaming);
     }
 

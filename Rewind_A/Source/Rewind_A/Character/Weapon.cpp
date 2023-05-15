@@ -40,7 +40,7 @@ AWeapon::AWeapon()
 
 	PrimaryActorTick.bCanEverTick = true;
 
-	AttackDamage = 20.0f;
+	AttackDamage = 15.0f;
 
 }
 
@@ -56,6 +56,7 @@ void AWeapon::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+
 }
 
 void AWeapon::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
@@ -68,11 +69,17 @@ void AWeapon::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherA
 		//	Golem->TakeDamage(AttackDamage, FDamageEvent(), nullptr, this);
 		//}
 
-		AMonster* Mst = Cast<AMonster>(OtherActor);
-		if (Mst)
-		{
-			Mst->TakeMonsterDamage(AttackDamage);
-			UE_LOG(LogTemp, Warning, TEXT("attackMonster"));
+		if (OwningCharacter && OwningCharacter->isComboAttacking) {
+
+			UE_LOG(LogTemp, Warning, TEXT("Player Cast"));
+			
+			
+			AMonster* Mst = Cast<AMonster>(OtherActor);
+			if (Mst)
+			{
+				Mst->TakeMonsterDamage(AttackDamage);
+				UE_LOG(LogTemp, Warning, TEXT("attackMonster"));
+			}
 		}
 	}
 

@@ -37,11 +37,10 @@ AFGolem::AFGolem()
 
     CollisionComponent = CreateDefaultSubobject<UCapsuleComponent>(TEXT("CapsuleComponent"));
     CollisionComponent->InitCapsuleSize(150.0f, 80.0f);
-    //CollisionComponent->SetCollisionProfileName("Pawn");
-    //CollisionComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+
     CollisionComponent->SetCollisionProfileName(TEXT("OverlapAll"));
     CollisionComponent->SetupAttachment(RootComponent);
-   // RootComponent = CollisionComponent;
+
 
 
     MaxHealth = 100.0f;
