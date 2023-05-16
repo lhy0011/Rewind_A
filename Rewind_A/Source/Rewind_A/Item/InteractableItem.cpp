@@ -19,6 +19,7 @@ AInteractableItem::AInteractableItem()
     ItemMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ItemMesh"));
     RootComponent = ItemMesh;
 
+    ItemMesh->SetSimulatePhysics(true); // 중력적용
 
     ConstructorHelpers::FObjectFinder<UStaticMesh> MeshAsset(TEXT("/Script/Engine.StaticMesh'/Game/Rewind/Item/SM_Chest_01a.SM_Chest_01a'"));
     if (MeshAsset.Succeeded())

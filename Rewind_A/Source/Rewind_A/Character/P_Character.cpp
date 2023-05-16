@@ -10,6 +10,7 @@
 #include "../Item/InteractableItem.h"
 #include "../Item/HealingPotion.h"
 #include "ReGameInstance.h"
+#include "../Monster/Monster.h"
 
 #include "Components/CapsuleComponent.h"
 #include "Components/StaticMeshComponent.h"
@@ -40,7 +41,7 @@ AP_Character::AP_Character()
     InteractionDistance = 200.f;
     CurrentInteractableItem = nullptr;
 
-
+    CHP = 10;
 
     // 콤보 변수
     isComboAttacking = false;
@@ -50,6 +51,7 @@ AP_Character::AP_Character()
 
     isJumping = false;
 
+    fGemisGotten = false;
 }
 
 
@@ -93,7 +95,7 @@ void AP_Character::BeginPlay()
 
         FVector RelativeLocation = FVector(0.0f, 0.0f, 0.0f);
         FRotator RelativeRotation = FRotator(0.0f, 0.0f, 0.0f);
-        FVector RelativeScale = FVector(1.0f, 1.0f, 1.0f); 
+        FVector RelativeScale = FVector(1.0f, 1.0f, 1.0f);
         //// 세부 조정
 
 
@@ -114,7 +116,8 @@ void AP_Character::BeginPlay()
                 GameInstance->PotionCount,
                 GameInstance->CHP,
                 GameInstance->RecallUse,
-                GameInstance->ControlUse);
+                GameInstance->ControlUse,
+                GameInstance->fGemisGotten);
         }
         else
         {
@@ -149,10 +152,28 @@ void AP_Character::Tick(float DeltaTime)
     }
 
 
-    // 충돌 감지시 카메라 뒤로 빼기
-    if (m_pSpringArm->IsCollisionFixApplied())
+    TArray<AActor*> FoundMonsters;
+    UGameplayStatics::GetAllActorsOfClass(GetWorld(), AMonster::StaticClass(), FoundMonsters);
+
+    float ClosestMonsterDistance = FLT_MAX;
+    for (AActor* Monster : FoundMonsters)
     {
-        // 가까울때
+        float Distance = (Monster->GetActorLocation() - GetActorLocation()).Size();
+        if (Distance < ClosestMonsterDistance)
+        {
+            ClosestMonsterDistance = Distance;
+        }
+    }
+
+    // 충돌 감지시 카메라 뒤로 빼기
+    if (ClosestMonsterDistance < DistMonster)
+    {
+        // 몬스터가 가까이 있을 때
+        m_pSpringArm->TargetArmLength = FMath::FInterpTo(m_pSpringArm->TargetArmLength, 330.f, DeltaTime, 5.f);
+    }
+    else if (m_pSpringArm->IsCollisionFixApplied())
+    {
+        // 일반적으로 가까울 때
         m_pSpringArm->TargetArmLength = FMath::FInterpTo(m_pSpringArm->TargetArmLength, 200.f, DeltaTime, 5.f);
     }
     else
@@ -216,9 +237,14 @@ void AP_Character::Interact()
     if (CurrentInteractableItem != nullptr)
     {
         AHealingPotion* HealingPotion = Cast<AHealingPotion>(CurrentInteractableItem);
+        AFGem* FireGem = Cast<AFGem>(CurrentInteractableItem);
         if (HealingPotion)
         {
             CPotion++;
+            CurrentInteractableItem->Destroy();
+        }
+        else if (FireGem) {
+            fGemisGotten = true;
             CurrentInteractableItem->Destroy();
         }
         else {
@@ -233,6 +259,7 @@ void AP_Character::Interact()
         }
     }
 }
+
 
 
 void AP_Character::UseHealP()
@@ -462,24 +489,24 @@ void AP_Character::CharacterMoveFront(float _fScale)
 
 void AP_Character::CharacterMoveRight(float _fScale)
 {
-   /* if (!isComboAttacking) {
-        AddMovementInput(GetActorRightVector(),
-            50.f * GetWorld()->GetDeltaSeconds() * _fScale);
-    }
-    
+    /* if (!isComboAttacking) {
+         AddMovementInput(GetActorRightVector(),
+             50.f * GetWorld()->GetDeltaSeconds() * _fScale);
+     }
 
-    if (0.f == _fScale)
-    {
-        m_AnimInst->SetDirection(0.f);
-    }
-    else if (1.f == _fScale)
-    {
-        m_AnimInst->SetDirection(90.f);
-    }
-    else if (-1.f == _fScale)
-    {
-        m_AnimInst->SetDirection(-90.f);
-    }*/
+
+     if (0.f == _fScale)
+     {
+         m_AnimInst->SetDirection(0.f);
+     }
+     else if (1.f == _fScale)
+     {
+         m_AnimInst->SetDirection(90.f);
+     }
+     else if (-1.f == _fScale)
+     {
+         m_AnimInst->SetDirection(-90.f);
+     }*/
 
     if (0.f != _fScale) // W/D 가 눌렸다면 ( 이동키가 눌렸다면) 
     {
@@ -623,9 +650,9 @@ void AP_Character::CharacterTPLocation(int SN)
 
 void AP_Character::CharacterJump()
 {
-//    UE_LOG(LogTemp, Log, TEXT("Jump called"));
+    //    UE_LOG(LogTemp, Log, TEXT("Jump called"));
 
-    //ChangeState(EPLAYER_STATE::JUMP);
+        //ChangeState(EPLAYER_STATE::JUMP);
     Jump();
 
 }
@@ -670,7 +697,7 @@ void AP_Character::SaveCurPose() // AfterIMG
             , param);
         tp4AIMG->SetSkeletalMeshComponent(GetMesh());
     }
-  
+
 }
 
 void AP_Character::ComboAttackDown()
@@ -736,8 +763,8 @@ void AP_Character::EnableWeaponCollision()
 {
     if (Weapon)
     {
-        UE_LOG(LogTemp,Warning, TEXT("EnableWeaponCollision"))
-        Weapon->EnableCollision();
+        UE_LOG(LogTemp, Warning, TEXT("EnableWeaponCollision"))
+            Weapon->EnableCollision();
     }
 }
 
@@ -746,7 +773,7 @@ void AP_Character::DisableWeaponCollision()
     if (Weapon)
     {
         UE_LOG(LogTemp, Warning, TEXT("DisableWeaponCollision"))
-        Weapon->DisableCollision();
+            Weapon->DisableCollision();
     }
 }
 
@@ -757,7 +784,7 @@ void AP_Character::SaveCurLocation()
         S_Location1.Add(GetActorLocation());
         SaveCurPose();
         tp1 = 1.f;
-       
+
     }
     else if (S_Location2.IsEmpty()) {
         S_Location2.Add(GetActorLocation());
@@ -776,11 +803,13 @@ void AP_Character::SaveCurLocation()
     }
 }
 
-void AP_Character::setCharacterState(int32 NewPotionCount, int32 NewCHP, float NewRecallUse, float NewControlUse)
+void AP_Character::setCharacterState(int32 NewPotionCount, int32 NewCHP, float NewRecallUse, float NewControlUse, bool NewFGEMGet)
 {
     CPotion = NewPotionCount;
     CHP = NewCHP;
     RecallUse = NewRecallUse;
     ControlUse = NewControlUse;
+    fGemisGotten = NewFGEMGet;
+
 }
 

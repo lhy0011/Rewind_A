@@ -11,6 +11,7 @@
 
 #include "Async/Async.h"
 #include "Weapon.h"
+#include "../Item/FGem.h"
 
 #include "GameFramework/Character.h"
 #include "P_Character.generated.h"
@@ -193,42 +194,42 @@ public:
 
 
 	// 콤보 공격
-	public:
-		UPROPERTY(EditAnywhere, Category = "Animation")
-			class UAnimMontage* AttackMontage;
+public:
+	UPROPERTY(EditAnywhere, Category = "Animation")
+		class UAnimMontage* AttackMontage;
 
-		bool isComboAttacking;
-		bool isComboAttackDown;
-		bool isComboAttackNext;
-		int ComboAttackCount;
+	bool isComboAttacking;
+	bool isComboAttackDown;
+	bool isComboAttackNext;
+	int ComboAttackCount;
 
-		UFUNCTION(BlueprintCallable)
-			void ComboAttackDown();
+	UFUNCTION(BlueprintCallable)
+		void ComboAttackDown();
 
-		UFUNCTION(BlueprintCallable)
-			void ComboAttackUp();
+	UFUNCTION(BlueprintCallable)
+		void ComboAttackUp();
 
-		UFUNCTION(BlueprintCallable)
-			void ComboAttack();
+	UFUNCTION(BlueprintCallable)
+		void ComboAttack();
 
-		UFUNCTION(BlueprintCallable)
-			void ComboAttackEnd();
+	UFUNCTION(BlueprintCallable)
+		void ComboAttackEnd();
 
-		UFUNCTION(BlueprintCallable)
-			void ComboAttackCheck();
+	UFUNCTION(BlueprintCallable)
+		void ComboAttackCheck();
 
-		bool getisComboAttacking() { return isComboAttacking; }
+	bool getisComboAttacking() { return isComboAttacking; }
 
 
 
-		UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon")
-			AWeapon* Weapon;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon")
+		AWeapon* Weapon;
 
-		UFUNCTION(BlueprintCallable, Category = "Animation")
-			void EnableWeaponCollision();
+	UFUNCTION(BlueprintCallable, Category = "Animation")
+		void EnableWeaponCollision();
 
-		UFUNCTION(BlueprintCallable, Category = "Animation")
-			void DisableWeaponCollision();
+	UFUNCTION(BlueprintCallable, Category = "Animation")
+		void DisableWeaponCollision();
 
 
 
@@ -261,12 +262,13 @@ private:
 	// 타이머 변수
 	FTimerHandle TimerHandle;
 
-	public:
+public:
 	UFUNCTION(BlueprintCallable)
 		float getRecallUse() const { return RecallUse; }
 
 	UFUNCTION(BlueprintCallable)
 		float getControlUse() const { return ControlUse; }
+
 
 	UFUNCTION(BlueprintCallable, Category = "Character Data")
 		void setRecallUse(float NewRecallUse) { RecallUse = NewRecallUse; }
@@ -288,7 +290,7 @@ private:
 
 
 	UFUNCTION(BlueprintCallable, Category = "Character Data")
-		void setCharacterState(int32 NewPotionCount, int32 NewCHP, float NewRecallUse, float NewControlUse);
+		void setCharacterState(int32 NewPotionCount, int32 NewCHP, float NewRecallUse, float NewControlUse, bool NewFGEMGet);
 
 
 
@@ -308,5 +310,17 @@ private:
 	UPROPERTY(EditAnywhere, Category = UI)
 		TSubclassOf<UUserWidget> WidgetClass;
 
+
+	// 젬 소유
+public:
+	bool fGemisGotten;
+
+	UFUNCTION(BlueprintCallable)
+		bool getfGemisGotten() const { return fGemisGotten; }
+
+	UFUNCTION(BlueprintCallable)
+		bool getIsGotFG() const { return fGemisGotten; }
+
+	float DistMonster = 300.0f;
 
 };
