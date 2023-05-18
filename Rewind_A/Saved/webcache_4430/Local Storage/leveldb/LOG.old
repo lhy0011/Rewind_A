@@ -1,2 +1,3 @@
-2023/05/17-03:19:45.727 38e0 Creating DB D:/Rewind_A/Rewind_A/Saved/webcache_4430\Local Storage\leveldb since it was missing.
-2023/05/17-03:19:45.760 38e0 Reusing MANIFEST D:/Rewind_A/Rewind_A/Saved/webcache_4430\Local Storage\leveldb/MANIFEST-000001
+2023/05/18-01:26:22.986 1e3c Reusing MANIFEST D:/Rewind_A/Rewind_A/Saved/webcache_4430\Local Storage\leveldb/MANIFEST-000001
+2023/05/18-01:26:23.006 1e3c Recovering log #3
+2023/05/18-01:26:23.007 1e3c Reusing old log D:/Rewind_A/Rewind_A/Saved/webcache_4430\Local Storage\leveldb/000003.log 
