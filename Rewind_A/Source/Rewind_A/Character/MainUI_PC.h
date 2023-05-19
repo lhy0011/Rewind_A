@@ -25,4 +25,25 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = UI)
 		class UUserWidget* PUIObject;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = UI)
+		class UUserWidget* OriginalPUIObject;
+
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = UI)
+		TSubclassOf<class UUserWidget> TimeClass;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = UI)
+		class UUserWidget* TimeObject;
+
+
+
+	UFUNCTION()
+		void ToggleUI(UUserWidget* NewUI);
+
+	UFUNCTION()
+		void OnToggleUIPressed();
+
+	UFUNCTION()
+		void OnToggleUIReleased();
+
 };

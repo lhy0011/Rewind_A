@@ -43,7 +43,7 @@ AFGolem::AFGolem()
 
 
 
-    MaxHealth = 100.0f;
+    MaxHealth = 200.0f;
     CurrentHealth = 100.0f;
 
     AttackDamage = 2;

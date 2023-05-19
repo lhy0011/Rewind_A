@@ -12,6 +12,8 @@
 #include "Async/Async.h"
 #include "Weapon.h"
 #include "../Item/FGem.h"
+#include "../Monster/Monster.h"
+#include "MainUI_PC.h"
 
 #include "GameFramework/Character.h"
 #include "P_Character.generated.h"
@@ -322,5 +324,31 @@ public:
 		bool getIsGotFG() const { return fGemisGotten; }
 
 	float DistMonster = 300.0f;
+
+
+
+	// 타임컨트롤
+	public:
+		void OnMouseWheelScroll(float Value);
+
+		bool isTimeControlling;
+
+		AMonster* NearestMonster;
+
+		void UpdateNearestMonster();
+
+		void AgeMonster(float Value);
+
+
+		// 구르기
+		FTimerHandle RollTimerHandle;
+
+		UPROPERTY(EditAnywhere, Category = "Animation")
+			class UAnimMontage* RollMontage;
+
+		UFUNCTION(BlueprintCallable)
+			void RollCharacter();
+
+		void RollMove();
 
 };

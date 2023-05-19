@@ -51,6 +51,11 @@ void AMonster::BeginPlay()
 	}
 }
 
+void AMonster::Tick(float DeltaTime)
+{
+	UE_LOG(LogTemp, Warning, TEXT("%f"), CurrentHealth);
+}
+
 inline void AMonster::OnAttack()
 {
 	if (AttackMontage)
@@ -147,4 +152,19 @@ void AMonster::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* Other
 	//	AWeapon* Weapon = Cast<AWeapon>(OtherActor);
 	//	TakeMonsterDamage(Weapon->AttackDamage,Weapon->OwningCharacter);
 	//}
+}
+
+
+void AMonster::ChangeAge(float Value)
+{
+	Age += Value;
+	//UE_LOG(LogTemp, Warning, TEXT("Monster age: %f"), Age);
+
+	UpdateStats();
+}
+
+void AMonster::UpdateStats()
+{
+	CurrentHealth = FMath::Clamp(100.0f - Age * 2.0f, 20.0f, 300.0f);
+	AttackDamage = FMath::Clamp(10.0f + Age * 0.5f, 1.0f, 30.0f);
 }

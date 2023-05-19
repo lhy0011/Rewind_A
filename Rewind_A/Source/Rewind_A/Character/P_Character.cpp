@@ -10,8 +10,9 @@
 #include "../Item/InteractableItem.h"
 #include "../Item/HealingPotion.h"
 #include "ReGameInstance.h"
-#include "../Monster/Monster.h"
 
+#include "Engine/World.h"
+#include "Engine/Level.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Animation/AnimInstance.h"
@@ -52,6 +53,8 @@ AP_Character::AP_Character()
     isJumping = false;
 
     fGemisGotten = false;
+
+    isTimeControlling = false;
 }
 
 
@@ -181,6 +184,13 @@ void AP_Character::Tick(float DeltaTime)
         // 원위치
         m_pSpringArm->TargetArmLength = FMath::FInterpTo(m_pSpringArm->TargetArmLength, 270.f, DeltaTime, 5.f);
     }
+
+
+    //주변 몬스터 탐색
+    if (isTimeControlling)
+    {
+        UpdateNearestMonster();
+    }
 }
 
 
@@ -193,6 +203,7 @@ void AP_Character::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
     PlayerInputComponent->BindAxis(TEXT("MoveFront"), this, &AP_Character::CharacterMoveFront);
     PlayerInputComponent->BindAxis(TEXT("RotationZ"), this, &AP_Character::CharacterRotationZ);
     PlayerInputComponent->BindAxis(TEXT("RotationY"), this, &AP_Character::CharacterRotationY);
+    PlayerInputComponent->BindAxis(TEXT("TimeControlWheel"), this, &AP_Character::OnMouseWheelScroll);
 
     PlayerInputComponent->BindAction(TEXT("PAttack"), EInputEvent::IE_Pressed, this, &AP_Character::ComboAttackDown);
     PlayerInputComponent->BindAction(TEXT("PAttack"), EInputEvent::IE_Released, this, &AP_Character::ComboAttackUp);
@@ -208,6 +219,7 @@ void AP_Character::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
     PlayerInputComponent->BindAction(TEXT("PickUp"), EInputEvent::IE_Pressed, this, &AP_Character::Interact);
     PlayerInputComponent->BindAction(TEXT("UsePotion"), EInputEvent::IE_Pressed, this, &AP_Character::UseHealP);
     PlayerInputComponent->BindAction(TEXT("MoveToMainLand"), EInputEvent::IE_Pressed, this, &AP_Character::MoveMain);
+    PlayerInputComponent->BindAction(TEXT("Roll"), EInputEvent::IE_Pressed, this, &AP_Character::RollCharacter);
 }
 
 
@@ -436,6 +448,12 @@ void AP_Character::SetAsset()
     {
         AttackMontage = ATMontage.Object;
     }
+
+    static ConstructorHelpers::FObjectFinder<UAnimMontage> RMontage(TEXT("AnimMontage'/Game/Rewind/Character/Main_Character/Animation/RollMontage'"));
+    if (RMontage.Succeeded())
+    {
+        RollMontage = RMontage.Object;
+    }
 }
 
 
@@ -549,10 +567,18 @@ void AP_Character::CharacterRotationY(float _fScale)
 void AP_Character::CharacterTimeControl()
 {
     UE_LOG(LogTemp, Log, TEXT("TimeControl"));
-    if (CanControl) {
-        GetWorldSettings()->SetTimeDilation(0.3);
-    }
 
+    isTimeControlling = true;
+
+    if (CanControl) {
+        GetWorldSettings()->SetTimeDilation(0.2);
+
+        AMainUI_PC* PC = Cast<AMainUI_PC>(GetController());
+        if (PC != nullptr)
+        {
+            PC->OnToggleUIPressed();
+        }
+    }
 }
 
 void AP_Character::CharacterTimeControlB()
@@ -568,15 +594,19 @@ void AP_Character::CharacterTimeControlB()
 
 void AP_Character::CharacterTimeRecall()
 {
-    UE_LOG(LogTemp, Log, TEXT("TimeRecall"));
-    if (canRecall) {
+    isTimeControlling = false;
 
-        CHP = SCHP[CCC];
-        SetActorLocation(RecallLocation[CCC]);
-        countRtime = 0;
+    GetWorldSettings()->SetTimeDilation(1.0);
 
-        canRecall = false;
-        RecallUse = 0.f;
+    if (CanControl) {
+        CanControl = false;
+        ControlUse = 0.f;
+
+        AMainUI_PC* PC = Cast<AMainUI_PC>(GetController());
+        if (PC != nullptr)
+        {
+            PC->OnToggleUIReleased();
+        }
     }
 }
 
@@ -811,5 +841,71 @@ void AP_Character::setCharacterState(int32 NewPotionCount, int32 NewCHP, float N
     ControlUse = NewControlUse;
     fGemisGotten = NewFGEMGet;
 
+}
+
+void AP_Character::OnMouseWheelScroll(float Value)
+{
+    //UE_LOG(LogTemp, Warning, TEXT("Mouse wheel scroll value: %f"), Value);
+    if (isTimeControlling && NearestMonster)
+    {
+        //UE_LOG(LogTemp, Warning, TEXT("exist"));
+        AgeMonster(Value);
+    }
+}
+
+void AP_Character::UpdateNearestMonster()
+{
+    TArray<AActor*> FoundMonsters;
+    UGameplayStatics::GetAllActorsOfClass(GetWorld(), AMonster::StaticClass(), FoundMonsters);
+
+    float NearestDistance = FLT_MAX;
+    AMonster* Nearest = nullptr;
+
+    for (AActor* Actor : FoundMonsters)
+    {
+        AMonster* Monster = Cast<AMonster>(Actor);
+        if (Monster)
+        {
+            float Distance = FVector::Dist(this->GetActorLocation(), Monster->GetActorLocation());
+            if (Distance < NearestDistance)
+            {
+                NearestDistance = Distance;
+                Nearest = Monster;
+            }
+        }
+    }
+
+    NearestMonster = Nearest;
+}
+
+void AP_Character::AgeMonster(float Value)
+{
+    if (NearestMonster)
+    {
+        NearestMonster->ChangeAge(Value);
+    }
+}
+
+void AP_Character::RollCharacter()
+{
+    UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+
+    AnimInstance->Montage_Play(RollMontage, 0.9f);
+
+    if (AnimInstance && AnimInstance->Montage_Play(RollMontage, 1.5f))
+    {
+        GetWorld()->GetTimerManager().SetTimer(RollTimerHandle, this, &AP_Character::RollMove, 0.01f, true);
+    }
+}
+
+void AP_Character::RollMove()
+{
+    const FVector RollDirection = GetActorForwardVector();
+    AddMovementInput(RollDirection, 1.0f);
+
+    if (!GetMesh()->GetAnimInstance()->Montage_IsPlaying(RollMontage))
+    {
+        GetWorld()->GetTimerManager().ClearTimer(RollTimerHandle);
+    }
 }
 
