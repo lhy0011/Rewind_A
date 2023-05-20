@@ -329,7 +329,12 @@ public:
 
 	// 타임컨트롤
 	public:
-		void OnMouseWheelScroll(float Value);
+		void OnMouseWheelScroll();
+
+		void OnMouseWheelScrollDown();
+
+		float AgeValue;
+
 
 		bool isTimeControlling;
 

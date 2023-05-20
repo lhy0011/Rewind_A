@@ -55,6 +55,7 @@ AP_Character::AP_Character()
     fGemisGotten = false;
 
     isTimeControlling = false;
+    AgeValue = 0.f;
 }
 
 
@@ -203,7 +204,8 @@ void AP_Character::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
     PlayerInputComponent->BindAxis(TEXT("MoveFront"), this, &AP_Character::CharacterMoveFront);
     PlayerInputComponent->BindAxis(TEXT("RotationZ"), this, &AP_Character::CharacterRotationZ);
     PlayerInputComponent->BindAxis(TEXT("RotationY"), this, &AP_Character::CharacterRotationY);
-    PlayerInputComponent->BindAxis(TEXT("TimeControlWheel"), this, &AP_Character::OnMouseWheelScroll);
+    //PlayerInputComponent->BindAxis(TEXT("TimeControlWheelUp"), this, &AP_Character::OnMouseWheelScroll);
+    //PlayerInputComponent->BindAxis(TEXT("TimeControlWheelDown"), this, &AP_Character::OnMouseWheelScrollDown);
 
     PlayerInputComponent->BindAction(TEXT("PAttack"), EInputEvent::IE_Pressed, this, &AP_Character::ComboAttackDown);
     PlayerInputComponent->BindAction(TEXT("PAttack"), EInputEvent::IE_Released, this, &AP_Character::ComboAttackUp);
@@ -220,6 +222,10 @@ void AP_Character::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
     PlayerInputComponent->BindAction(TEXT("UsePotion"), EInputEvent::IE_Pressed, this, &AP_Character::UseHealP);
     PlayerInputComponent->BindAction(TEXT("MoveToMainLand"), EInputEvent::IE_Pressed, this, &AP_Character::MoveMain);
     PlayerInputComponent->BindAction(TEXT("Roll"), EInputEvent::IE_Pressed, this, &AP_Character::RollCharacter);
+
+    PlayerInputComponent->BindAction(TEXT("TimeControlWheelUp"), EInputEvent::IE_Pressed, this, &AP_Character::OnMouseWheelScroll);
+    PlayerInputComponent->BindAction(TEXT("TimeControlWheelDown"), EInputEvent::IE_Pressed, this, &AP_Character::OnMouseWheelScrollDown);
+
 }
 
 
@@ -583,11 +589,19 @@ void AP_Character::CharacterTimeControl()
 
 void AP_Character::CharacterTimeControlB()
 {
+    isTimeControlling = false;
+
     GetWorldSettings()->SetTimeDilation(1.0);
 
     if (CanControl) {
         CanControl = false;
         ControlUse = 0.f;
+
+        AMainUI_PC* PC = Cast<AMainUI_PC>(GetController());
+        if (PC != nullptr)
+        {
+            PC->OnToggleUIReleased();
+        }
     }
 
 }
@@ -843,13 +857,28 @@ void AP_Character::setCharacterState(int32 NewPotionCount, int32 NewCHP, float N
 
 }
 
-void AP_Character::OnMouseWheelScroll(float Value)
+void AP_Character::OnMouseWheelScroll()
+{
+
+    //UE_LOG(LogTemp, Warning, TEXT("Mouse wheel scroll value: %f"), Value);
+    if (isTimeControlling && NearestMonster)
+    {
+        AgeValue += 1.f;
+        //UE_LOG(LogTemp, Warning, TEXT("exist"));
+        UE_LOG(LogTemp, Warning, TEXT("Scroll Value: %f"), AgeValue);
+        AgeMonster(AgeValue);
+    }
+}
+
+void AP_Character::OnMouseWheelScrollDown()
 {
     //UE_LOG(LogTemp, Warning, TEXT("Mouse wheel scroll value: %f"), Value);
     if (isTimeControlling && NearestMonster)
     {
+        AgeValue -= 1.f;
         //UE_LOG(LogTemp, Warning, TEXT("exist"));
-        AgeMonster(Value);
+        //UE_LOG(LogTemp, Warning, TEXT("Scroll Value: %f"), AgeValue);
+        AgeMonster(AgeValue);
     }
 }
 

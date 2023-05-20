@@ -53,7 +53,7 @@ void AMonster::BeginPlay()
 
 void AMonster::Tick(float DeltaTime)
 {
-	UE_LOG(LogTemp, Warning, TEXT("%f"), CurrentHealth);
+	//UE_LOG(LogTemp, Warning, TEXT("%f"), CurrentHealth);
 }
 
 inline void AMonster::OnAttack()
@@ -157,14 +157,17 @@ void AMonster::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* Other
 
 void AMonster::ChangeAge(float Value)
 {
-	Age += Value;
-	//UE_LOG(LogTemp, Warning, TEXT("Monster age: %f"), Age);
+	Age = Value;
+	UE_LOG(LogTemp, Warning, TEXT("Monster age: %f"), Age);
 
 	UpdateStats();
 }
 
 void AMonster::UpdateStats()
 {
-	CurrentHealth = FMath::Clamp(100.0f - Age * 2.0f, 20.0f, 300.0f);
-	AttackDamage = FMath::Clamp(10.0f + Age * 0.5f, 1.0f, 30.0f);
+	CurrentHealth = FMath::Clamp(CurrentHealth - Age * 2.0f, 20.0f, 300.0f);
+	//AttackDamage = FMath::Clamp(CurrentHealth + Age * 0.5f, 1.0f, 30.0f);
+
+	float newScale = 0.3f + Age * 0.005f;
+	GetMesh()->SetWorldScale3D(FVector(newScale));
 }

@@ -121,6 +121,5 @@ public:
     void ChangeAge(float Value);
 
     void UpdateStats();
-   
 
 };

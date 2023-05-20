@@ -28,14 +28,8 @@ AWeapon::AWeapon()
 		WeaponMesh->SetStaticMesh(mesh.Object);
 	}
 
-	// ÄÝ¸®Àü
-	//CollisionBox = CreateDefaultSubobject<UBoxComponent>(TEXT("CollisionBox"));
-	//CollisionBox->SetupAttachment(WeaponMesh);
-	//CollisionBox->SetBoxExtent(FVector(0.025f, 0.09f, 0.012f));
-	//CollisionBox->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
 
 	WeaponMesh->SetCollisionProfileName(TEXT("OverlapAll"));
-	//WeaponMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision); 
 	WeaponMesh->OnComponentBeginOverlap.AddDynamic(this, &AWeapon::OnOverlapBegin);
 
 	PrimaryActorTick.bCanEverTick = true;
@@ -63,11 +57,6 @@ void AWeapon::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherA
 {
 	if (OtherActor != nullptr && OtherActor != this && OtherComp != nullptr)
 	{
-		//AFGolem* Golem = Cast<AFGolem>(OtherActor);
-		//if (Golem)
-		//{
-		//	Golem->TakeDamage(AttackDamage, FDamageEvent(), nullptr, this);
-		//}
 
 		if (OwningCharacter && OwningCharacter->isComboAttacking) {
 
