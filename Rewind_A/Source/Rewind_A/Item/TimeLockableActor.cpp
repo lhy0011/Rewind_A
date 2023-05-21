@@ -37,6 +37,16 @@ ATimeLockableActor::ATimeLockableActor()
 
 	PhysicsHandle = CreateDefaultSubobject<UPhysicsHandleComponent>(TEXT("PhysicsHandle"));
 
+
+
+	// 기존 머테리얼 저장하기
+	m_OriginalMtrl = StaticMesh->GetMaterial(0);
+
+	ConstructorHelpers::FObjectFinder<UMaterial> mtrl(TEXT("Material'/Game/StarterContent/Materials/M_Metal_Copper'"));
+	if (mtrl.Succeeded())
+	{
+		m_TimeLockMtrl = mtrl.Object;
+	}
 }
 
 // Called when the game starts or when spawned
@@ -74,6 +84,7 @@ void ATimeLockableActor::ApplyAccumulatedDamage()
 	if (StaticMesh)
 	{
 		StaticMesh->SetSimulatePhysics(true);
+		StaticMesh->SetMaterial(0, m_OriginalMtrl); // 기존걸로 교체
 		StaticMesh->AddForce(Force);
 	}
 
@@ -84,6 +95,9 @@ void ATimeLockableActor::ApplyAccumulatedDamage()
 
 void ATimeLockableActor::StartTimeLock()
 {
+	// 머테리얼 변화
+	StaticMesh->SetMaterial(0, m_TimeLockMtrl);
+
 	bOriginalSimulatePhysics = StaticMesh->GetBodyInstance()->bSimulatePhysics;
 
 	StaticMesh->SetSimulatePhysics(false);

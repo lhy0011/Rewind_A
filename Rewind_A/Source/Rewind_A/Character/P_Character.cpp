@@ -610,19 +610,15 @@ void AP_Character::CharacterTimeControlB()
 
 void AP_Character::CharacterTimeRecall()
 {
-    isTimeControlling = false;
+    UE_LOG(LogTemp, Log, TEXT("TimeRecall"));
+    if (canRecall) {
 
-    GetWorldSettings()->SetTimeDilation(1.0);
+        CHP = SCHP[CCC];
+        SetActorLocation(RecallLocation[CCC]);
+        countRtime = 0;
 
-    if (CanControl) {
-        CanControl = false;
-        ControlUse = 0.f;
-
-        AMainUI_PC* PC = Cast<AMainUI_PC>(GetController());
-        if (PC != nullptr)
-        {
-            PC->OnToggleUIReleased();
-        }
+        canRecall = false;
+        RecallUse = 0.f;
     }
 }
 

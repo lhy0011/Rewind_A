@@ -118,7 +118,7 @@ public:
     
     void ChangeAge(float Value);
 
-    void UpdateStats();
+    virtual void UpdateStats();
 
 
     // 상태 변경 추가

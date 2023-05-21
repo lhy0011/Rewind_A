@@ -17,6 +17,8 @@ class REWIND_A_API AFGolem : public AMonster
 public:
 	AFGolem();
 
+	virtual void UpdateStats() override;
+
 protected:
 	virtual void BeginPlay() override;
 

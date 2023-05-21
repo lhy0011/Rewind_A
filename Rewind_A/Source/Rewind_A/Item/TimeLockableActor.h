@@ -65,4 +65,9 @@ public:
 	UPROPERTY()
 		float StartTimeLockTime;
 
+
+
+	UMaterialInterface* m_OriginalMtrl; // 원래거
+
+	UMaterialInterface* m_TimeLockMtrl; // 타임록 적용
 };
