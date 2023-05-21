@@ -6,6 +6,7 @@
 #include "P_Character.h"
 #include "../Monster/FGolem.h"
 #include "../Monster/Monster.h"
+#include "../Item/TimeLockableActor.h"
 
 #include "Components/StaticMeshComponent.h"
 #include "Components/BoxComponent.h"
@@ -68,6 +69,17 @@ void AWeapon::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherA
 			{
 				Mst->TakeMonsterDamage(AttackDamage, OwningCharacter);
 				UE_LOG(LogTemp, Warning, TEXT("attackMonster"));
+			}
+		}
+
+		// 타임록 물체
+		if (OwningCharacter && OwningCharacter->isComboAttacking && OwningCharacter->isTimeLocking)
+		{
+			ATimeLockableActor* TLac = Cast<ATimeLockableActor>(OtherActor);
+			if (TLac)
+			{
+				TLac->StoreDamage(AttackDamage);
+				TLac->LastHitDirection = OwningCharacter->GetActorForwardVector();
 			}
 		}
 	}

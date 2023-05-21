@@ -55,6 +55,7 @@ AP_Character::AP_Character()
     fGemisGotten = false;
 
     isTimeControlling = false;
+    isTimeLocking = false;
     AgeValue = 0.f;
 }
 
@@ -222,6 +223,7 @@ void AP_Character::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
     PlayerInputComponent->BindAction(TEXT("UsePotion"), EInputEvent::IE_Pressed, this, &AP_Character::UseHealP);
     PlayerInputComponent->BindAction(TEXT("MoveToMainLand"), EInputEvent::IE_Pressed, this, &AP_Character::MoveMain);
     PlayerInputComponent->BindAction(TEXT("Roll"), EInputEvent::IE_Pressed, this, &AP_Character::RollCharacter);
+    PlayerInputComponent->BindAction(TEXT("TimeLock"), EInputEvent::IE_Pressed, this, &AP_Character::OnTimeLock);
 
     PlayerInputComponent->BindAction(TEXT("TimeControlWheelUp"), EInputEvent::IE_Pressed, this, &AP_Character::OnMouseWheelScroll);
     PlayerInputComponent->BindAction(TEXT("TimeControlWheelDown"), EInputEvent::IE_Pressed, this, &AP_Character::OnMouseWheelScrollDown);
@@ -936,5 +938,59 @@ void AP_Character::RollMove()
     {
         GetWorld()->GetTimerManager().ClearTimer(RollTimerHandle);
     }
+}
+
+
+//가장 가까운 타임록액터 서치
+void AP_Character::UpdateNearestTLActor()
+{
+    TArray<AActor*> FoundActors;
+    UGameplayStatics::GetAllActorsOfClass(GetWorld(), ATimeLockableActor::StaticClass(), FoundActors);
+
+    float NearestDistance = FLT_MAX;
+    ATimeLockableActor* Nearest = nullptr;
+
+    for (AActor* Actor : FoundActors)
+    {
+        ATimeLockableActor* TLA = Cast<ATimeLockableActor>(Actor);
+        if (TLA)
+        {
+            //UE_LOG(LogTemp, Warning, TEXT("Find Actor"));
+            float Distance = FVector::Dist(this->GetActorLocation(), TLA->GetActorLocation());
+            if (Distance < NearestDistance)
+            {
+                NearestDistance = Distance;
+                Nearest = TLA;
+            }
+        }
+    }
+
+    NearestActor1 = Nearest;
+}
+
+void AP_Character::OnTimeLock()
+{
+    isTimeLocking = true;
+
+    UpdateNearestTLActor();
+
+    if (NearestActor1 && isTimeLocking)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("Find Actor"));
+        NearestActor1->bIsTimeLocked = true; // 이거 필요한가?
+        NearestActor1->StartTimeLock();
+
+        GetWorld()->GetTimerManager().SetTimer(TimeLockHandle, [this]()
+            {
+                this->NearestActor1->bIsTimeLocked = false;
+                this->NearestActor1->ApplyAccumulatedDamage();
+                OnTimeLockEnd();
+            }, 5.0f, false);
+    }
+}
+
+void AP_Character::OnTimeLockEnd()
+{
+    isTimeLocking = false;
 }
 

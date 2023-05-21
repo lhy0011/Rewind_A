@@ -12,6 +12,7 @@
 #include "Async/Async.h"
 #include "Weapon.h"
 #include "../Item/FGem.h"
+#include "../Item/TimeLockableActor.h"
 #include "../Monster/Monster.h"
 #include "MainUI_PC.h"
 
@@ -356,4 +357,17 @@ public:
 
 		void RollMove();
 
+
+		// ≈∏¿”∑œ
+		void UpdateNearestTLActor();
+
+		void OnTimeLock();
+
+		void OnTimeLockEnd();
+
+		ATimeLockableActor* NearestActor1;
+
+		bool isTimeLocking;
+
+		FTimerHandle TimeLockHandle;
 };
