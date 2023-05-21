@@ -388,4 +388,11 @@ public:
 
 		void AATimeLock();
 		void MMTimeLock();
+
+
+		// ġƮŰ
+		void DashCheat();
+		void DashCheatEnd();
+		void exitGame();
+		void ResetSkill();
 };

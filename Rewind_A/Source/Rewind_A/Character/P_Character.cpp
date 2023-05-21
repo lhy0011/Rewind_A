@@ -237,6 +237,12 @@ void AP_Character::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
     PlayerInputComponent->BindAction(TEXT("TimeControlWheelUp"), EInputEvent::IE_Pressed, this, &AP_Character::OnMouseWheelScroll);
     PlayerInputComponent->BindAction(TEXT("TimeControlWheelDown"), EInputEvent::IE_Pressed, this, &AP_Character::OnMouseWheelScrollDown);
 
+
+    // ġƮŰ
+    PlayerInputComponent->BindAction(TEXT("Dash"), EInputEvent::IE_Pressed, this, &AP_Character::DashCheat);
+    PlayerInputComponent->BindAction(TEXT("Dash"), EInputEvent::IE_Released, this, &AP_Character::DashCheatEnd);
+    PlayerInputComponent->BindAction(TEXT("Exit"), EInputEvent::IE_Pressed, this, &AP_Character::exitGame);
+    PlayerInputComponent->BindAction(TEXT("ResetSkill"), EInputEvent::IE_Pressed, this, &AP_Character::ResetSkill);
 }
 
 
@@ -1065,5 +1071,28 @@ void AP_Character::MMTimeLock()
                 OnTimeLockEnd();
             }, 5.0f, false);
     }
+}
+
+void AP_Character::DashCheat()
+{
+    GetCharacterMovement()->MaxWalkSpeed = 1000.0f;
+}
+
+
+void AP_Character::DashCheatEnd()
+{
+    GetCharacterMovement()->MaxWalkSpeed = 500.0f;
+}
+
+void AP_Character::exitGame()
+{
+    GetWorld()->GetFirstPlayerController()->ConsoleCommand("quit");
+}
+
+
+void AP_Character::ResetSkill()
+{
+    RecallUse = 1.f;
+    ControlUse = 1.f;
 }
 
