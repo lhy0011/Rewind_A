@@ -26,7 +26,24 @@ AMonster::AMonster()
 	bIsDead = false;
 
 
-	GemActor = AFGem::StaticClass();
+	// 타임록
+	AccumulatedDamage = 0.0f;
+	bIsTimeLocked = false;
+
+	bOriginalSimulatePhysics = true;
+	StartTimeLockTime = 0.0f;
+
+	PhysicsHandle = CreateDefaultSubobject<UPhysicsHandleComponent>(TEXT("PhysicsHandle"));
+
+
+	//// 머테리얼
+	//m_OriginalMtrl = StaticMesh->GetMaterial(0);
+
+	//ConstructorHelpers::FObjectFinder<UMaterial> mtrl(TEXT("Material'/Game/StarterContent/Materials/M_Metal_Copper'"));
+	//if (mtrl.Succeeded())
+	//{
+	//	m_TimeLockMtrl = mtrl.Object;
+	//}
 }
 
 
@@ -165,6 +182,44 @@ void AMonster::ChangeRoaming()
 	ChangeState(EMonsterAIState::Roaming);
 }
 
-void AMonster::ChangeIdle()
+void AMonster::StoreDamage(float Damage)
 {
+	AccumulatedDamage += Damage;
 }
+
+void AMonster::ApplyAccumulatedDamage()
+{
+
+	CurrentHealth -= AccumulatedDamage;
+	GetMesh()->GlobalAnimRateScale = 1.0f;
+
+	//StaticMesh->SetMaterial(0, m_OriginalMtrl);
+
+	AMonsterAIController* AIController = Cast<AMonsterAIController>(GetController());
+	if (AIController)
+	{
+		ACharacter* PlayerPawn = Cast<ACharacter>(UGameplayStatics::GetPlayerPawn(this, 0));
+		if (PlayerPawn)
+		{
+			AIController->OnPlayerDetected(PlayerPawn);
+		}
+	}
+
+	// 데미지 리셋
+	AccumulatedDamage = 0.0f;
+}
+
+void AMonster::StartTimeLock()
+{
+	// 머테리얼 변화
+	//StaticMesh->SetMaterial(0, m_TimeLockMtrl);
+
+	AMonsterAIController* AIController = Cast<AMonsterAIController>(GetController());
+
+	if (AIController)
+	{
+		GetMesh()->GlobalAnimRateScale = 0.0f;
+		AIController->StopMovement();
+	}
+}
+

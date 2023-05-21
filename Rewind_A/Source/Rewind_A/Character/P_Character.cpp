@@ -126,7 +126,12 @@ void AP_Character::BeginPlay()
                 GameInstance->CHP,
                 GameInstance->RecallUse,
                 GameInstance->ControlUse,
-                GameInstance->fGemisGotten);
+
+                GameInstance->fGemisGotten,
+                GameInstance->dGemisGotten,
+                GameInstance->iGemisGotten,
+                GameInstance->mGemisGotten
+            );
         }
         else
         {
@@ -788,7 +793,7 @@ void AP_Character::ComboAttack()
     }
     UE_LOG(LogTemp, Warning, TEXT("ComboAttack%d"), ComboAttackCount);
 
-    AnimInstance->Montage_Play(AttackMontage, 1.3f);
+    AnimInstance->Montage_Play(AttackMontage, 1.5f);
     AnimInstance->Montage_JumpToSection(FName(ComboList[ComboAttackCount]), AttackMontage);
 }
 
@@ -854,13 +859,17 @@ void AP_Character::SaveCurLocation()
     }
 }
 
-void AP_Character::setCharacterState(int32 NewPotionCount, int32 NewCHP, float NewRecallUse, float NewControlUse, bool NewFGEMGet)
+void AP_Character::setCharacterState(int32 NewPotionCount, int32 NewCHP, float NewRecallUse, float NewControlUse, bool NewFGEMGet, bool NewDGEMGet, bool NewIGEMGet, bool NewMGEMGet)
 {
     CPotion = NewPotionCount;
     CHP = NewCHP;
     RecallUse = NewRecallUse;
     ControlUse = NewControlUse;
+
     fGemisGotten = NewFGEMGet;
+    dGemisGotten = NewDGEMGet;
+    iGemisGotten = NewIGEMGet;
+    mGemisGotten = NewMGEMGet;
 
 }
 
@@ -978,6 +987,53 @@ void AP_Character::OnTimeLock()
     isTimeLocking = true;
 
     UpdateNearestTLActor();
+    UpdateNearestMonster();
+
+
+    AActor* NearestActor = nullptr;
+
+    if (NearestMonster && NearestActor1) {
+        float DistanceToMonster = FVector::Dist(this->GetActorLocation(), NearestMonster->GetActorLocation());
+        float DistanceToActor = FVector::Dist(this->GetActorLocation(), NearestActor1->GetActorLocation());
+        if (DistanceToMonster < DistanceToActor)
+        {
+            MMTimeLock();
+        }
+        else
+        {
+            AATimeLock();
+        }
+    }
+    else if (NearestMonster)
+    {
+        MMTimeLock();
+    }
+    else if (NearestActor1)
+    {
+        AATimeLock();
+    }
+
+    //if (NearestActor1 && isTimeLocking)
+    //{
+    //    UE_LOG(LogTemp, Warning, TEXT("Find Actor"));
+    //    NearestActor1->bIsTimeLocked = true; // 이거 필요한가?
+    //    NearestActor1->StartTimeLock();
+    //    GetWorld()->GetTimerManager().SetTimer(TimeLockHandle, [this]()
+    //        {
+    //            this->NearestActor1->bIsTimeLocked = false;
+    //            this->NearestActor1->ApplyAccumulatedDamage();
+    //            OnTimeLockEnd();
+    //        }, 5.0f, false);
+    //}
+}
+
+void AP_Character::OnTimeLockEnd()
+{
+    isTimeLocking = false;
+}
+
+void AP_Character::AATimeLock()
+{
 
     if (NearestActor1 && isTimeLocking)
     {
@@ -994,8 +1050,20 @@ void AP_Character::OnTimeLock()
     }
 }
 
-void AP_Character::OnTimeLockEnd()
+void AP_Character::MMTimeLock()
 {
-    isTimeLocking = false;
+    if (NearestMonster && isTimeLocking)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("Find Actor"));
+        NearestMonster->bIsTimeLocked = true; // 이거 필요한가?
+        NearestMonster->StartTimeLock();
+
+        GetWorld()->GetTimerManager().SetTimer(TimeLockHandle, [this]()
+            {
+                this->NearestMonster->bIsTimeLocked = false;
+                this->NearestMonster->ApplyAccumulatedDamage();
+                OnTimeLockEnd();
+            }, 5.0f, false);
+    }
 }
 

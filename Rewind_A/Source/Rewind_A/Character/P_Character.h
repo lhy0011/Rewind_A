@@ -294,7 +294,7 @@ public:
 
 
 	UFUNCTION(BlueprintCallable, Category = "Character Data")
-		void setCharacterState(int32 NewPotionCount, int32 NewCHP, float NewRecallUse, float NewControlUse, bool NewFGEMGet);
+		void setCharacterState(int32 NewPotionCount, int32 NewCHP, float NewRecallUse, float NewControlUse, bool NewFGEMGet, bool NewDGEMGet, bool NewIGEMGet, bool NewMGEMGet);
 
 
 
@@ -384,4 +384,8 @@ public:
 		bool isTimeLocking;
 
 		FTimerHandle TimeLockHandle;
+
+
+		void AATimeLock();
+		void MMTimeLock();
 };

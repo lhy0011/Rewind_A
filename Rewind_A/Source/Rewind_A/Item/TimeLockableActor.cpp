@@ -19,7 +19,7 @@ ATimeLockableActor::ATimeLockableActor()
 
 	StaticMesh->SetSimulatePhysics(true); // 중력적용
 
-	ConstructorHelpers::FObjectFinder<UStaticMesh> MeshAsset(TEXT("StaticMesh'/Game/StarterContent/Shapes/Shape_Cube.Shape_Cube'"));
+	ConstructorHelpers::FObjectFinder<UStaticMesh> MeshAsset(TEXT("StaticMesh'/Game/Rewind/Maps/Fire/FBX/OUT/Rock1'"));
 	if (MeshAsset.Succeeded())
 	{
 		StaticMesh->SetStaticMesh(MeshAsset.Object);

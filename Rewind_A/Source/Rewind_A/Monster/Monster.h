@@ -10,9 +10,11 @@
 #include "Engine/World.h"
 #include "Kismet/GameplayStatics.h"
 #include "Components/CapsuleComponent.h"
+#include "PhysicsEngine/PhysicsHandleComponent.h"
 
 #include "../Character/Weapon.h"
 #include "../Item/FGem.h"
+#include "../Item/DGem.h"
 #include "GameFramework/Character.h"
 #include "Monster.generated.h"
 
@@ -125,6 +127,39 @@ public:
 
     void ChangeRoaming();
     
-    void ChangeIdle();
+
+    // 타임록 적용
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Time Lock")
+        float AccumulatedDamage;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Time Lock")
+        bool bIsTimeLocked;
+
+    // 데미지 누적
+    void StoreDamage(float Damage);
+
+    void ApplyAccumulatedDamage();
+
+
+    // Physics 조정
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+        UPhysicsHandleComponent* PhysicsHandle;
+
+    void StartTimeLock();
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+        UStaticMeshComponent* StaticMesh;
+
+    UPROPERTY()
+        float StartTimeLockTime;
+
+    UPROPERTY()
+        bool bOriginalSimulatePhysics;
+
+
+    UMaterialInterface* m_OriginalMtrl; // 원래거
+
+    UMaterialInterface* m_TimeLockMtrl; // 타임록 적용
 
 };

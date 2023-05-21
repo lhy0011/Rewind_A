@@ -47,6 +47,8 @@ AFGolem::AFGolem()
     CurrentHealth = 100.0f;
 
     AttackDamage = 2;
+
+    GemActor = AFGem::StaticClass();
 }
 
 void AFGolem::UpdateStats()

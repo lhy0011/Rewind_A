@@ -62,26 +62,31 @@ void AWeapon::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherA
 		if (OwningCharacter && OwningCharacter->isComboAttacking) {
 
 			UE_LOG(LogTemp, Warning, TEXT("Player Cast"));
-			
-			
-			AMonster* Mst = Cast<AMonster>(OtherActor);
-			if (Mst)
-			{
-				Mst->TakeMonsterDamage(AttackDamage, OwningCharacter);
-				UE_LOG(LogTemp, Warning, TEXT("attackMonster"));
-			}
-		}
 
-		// 타임록 물체
-		if (OwningCharacter && OwningCharacter->isComboAttacking && OwningCharacter->isTimeLocking)
-		{
-			ATimeLockableActor* TLac = Cast<ATimeLockableActor>(OtherActor);
-			if (TLac)
+
+			AMonster* Mst = Cast<AMonster>(OtherActor);
+			if (Mst) {
+				if (Mst->bIsTimeLocked)
+				{
+					Mst->StoreDamage(AttackDamage);
+				}
+				else
+				{
+					Mst->TakeMonsterDamage(AttackDamage, OwningCharacter);
+					UE_LOG(LogTemp, Warning, TEXT("attackMonster"));
+				}
+			}
+
+			// 타임록 물체
+			if (OwningCharacter && OwningCharacter->isComboAttacking && OwningCharacter->isTimeLocking)
 			{
-				TLac->StoreDamage(AttackDamage);
-				TLac->LastHitDirection = OwningCharacter->GetActorForwardVector();
+				ATimeLockableActor* TLac = Cast<ATimeLockableActor>(OtherActor);
+				if (TLac)
+				{
+					TLac->StoreDamage(AttackDamage);
+					TLac->LastHitDirection = OwningCharacter->GetActorForwardVector();
+				}
 			}
 		}
 	}
-
 }
