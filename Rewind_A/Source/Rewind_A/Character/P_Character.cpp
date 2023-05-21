@@ -53,6 +53,10 @@ AP_Character::AP_Character()
     isJumping = false;
 
     fGemisGotten = false;
+    dGemisGotten = false;
+    iGemisGotten = false;
+    mGemisGotten = false;
+
 
     isTimeControlling = false;
     isTimeLocking = false;
@@ -258,6 +262,7 @@ void AP_Character::Interact()
     {
         AHealingPotion* HealingPotion = Cast<AHealingPotion>(CurrentInteractableItem);
         AFGem* FireGem = Cast<AFGem>(CurrentInteractableItem);
+        ADGem* DesertGem = Cast<ADGem>(CurrentInteractableItem);
         if (HealingPotion)
         {
             CPotion++;
@@ -265,6 +270,10 @@ void AP_Character::Interact()
         }
         else if (FireGem) {
             fGemisGotten = true;
+            CurrentInteractableItem->Destroy();
+        }
+        else if (DesertGem) {
+            dGemisGotten = true;
             CurrentInteractableItem->Destroy();
         }
         else {

@@ -12,6 +12,7 @@
 #include "Async/Async.h"
 #include "Weapon.h"
 #include "../Item/FGem.h"
+#include "../Item/DGem.h"
 #include "../Item/TimeLockableActor.h"
 #include "../Monster/Monster.h"
 #include "MainUI_PC.h"
@@ -317,12 +318,25 @@ public:
 	// Áª ¼ÒÀ¯
 public:
 	bool fGemisGotten;
+	bool dGemisGotten;
+	bool iGemisGotten;
+	bool mGemisGotten;
 
 	UFUNCTION(BlueprintCallable)
 		bool getfGemisGotten() const { return fGemisGotten; }
 
 	UFUNCTION(BlueprintCallable)
 		bool getIsGotFG() const { return fGemisGotten; }
+
+	UFUNCTION(BlueprintCallable)
+		bool getIsGotDG() const { return dGemisGotten; }
+
+	UFUNCTION(BlueprintCallable)
+		bool getIsGotIG() const { return iGemisGotten; }
+
+	UFUNCTION(BlueprintCallable)
+		bool getIsGotMG() const { return mGemisGotten; }
+
 
 	float DistMonster = 300.0f;
 
