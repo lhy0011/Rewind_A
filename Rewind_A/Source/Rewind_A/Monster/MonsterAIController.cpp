@@ -59,6 +59,21 @@ void AMonsterAIController::Tick(float DeltaTime)
     Super::Tick(DeltaTime);
 }
 
+void AMonsterAIController::OnMoveCompleted(FAIRequestID RequestID, const FPathFollowingResult& Result)
+{
+    Super::OnMoveCompleted(RequestID, Result);
+
+    // If the move was successful
+    if (Result.Code == EPathFollowingResult::Success)
+    {
+        AMonster* Monster = Cast<AMonster>(GetPawn());
+        if (Monster)
+        {
+            Monster->ChangeState(EMonsterAIState::Idle); // Assuming this method changes the monster's state to Idle
+        }
+    }
+}
+
 void AMonsterAIController::OnPerceptionUpdated(TArray<AActor*> UpdatedActors)
 {
     //bool bPlayerDetected = false;

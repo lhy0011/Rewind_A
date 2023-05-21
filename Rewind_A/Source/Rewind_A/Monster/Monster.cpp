@@ -46,9 +46,7 @@ void AMonster::BeginPlay()
 	Super::BeginPlay();
 
 	m_AnimInst = Cast<UM_AnimInst>(GetMesh()->GetAnimInstance());
-	if (m_AnimInst) {
 
-	}
 }
 
 void AMonster::Tick(float DeltaTime)
@@ -140,18 +138,9 @@ void AMonster::SpawnGem()
 	}
 }
 
-void AMonster::OnMoveCompleted()
-{
-	ChangeState(EMonsterAIState::Idle);
-}
-
 void AMonster::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	//if (OtherActor && OtherActor->IsA(AWeapon::StaticClass()))
-	//{
-	//	AWeapon* Weapon = Cast<AWeapon>(OtherActor);
-	//	TakeMonsterDamage(Weapon->AttackDamage,Weapon->OwningCharacter);
-	//}
+
 }
 
 
@@ -166,8 +155,16 @@ void AMonster::ChangeAge(float Value)
 void AMonster::UpdateStats()
 {
 	CurrentHealth = FMath::Clamp(CurrentHealth - Age * 2.0f, 20.0f, 300.0f);
-	//AttackDamage = FMath::Clamp(CurrentHealth + Age * 0.5f, 1.0f, 30.0f);
 
 	float newScale = 0.3f + Age * 0.005f;
 	GetMesh()->SetWorldScale3D(FVector(newScale));
+}
+
+void AMonster::ChangeRoaming()
+{
+	ChangeState(EMonsterAIState::Roaming);
+}
+
+void AMonster::ChangeIdle()
+{
 }

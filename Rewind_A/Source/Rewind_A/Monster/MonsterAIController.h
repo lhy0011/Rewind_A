@@ -23,6 +23,8 @@ public:
 
     virtual void Tick(float DeltaTime) override;
 
+    virtual void OnMoveCompleted(FAIRequestID RequestID, const FPathFollowingResult& Result) override;
+
     UPROPERTY()
         class UBehaviorTree* MonsterBehaviorTree;
 
@@ -40,6 +42,9 @@ public:
 
     UFUNCTION(BlueprintCallable)
         void OnPlayerLost();
+
+
+
 
 
 };

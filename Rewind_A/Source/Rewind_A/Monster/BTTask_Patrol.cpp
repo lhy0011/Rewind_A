@@ -47,8 +47,9 @@ EBTNodeResult::Type UBTTask_Patrol::ExecuteTask(UBehaviorTreeComponent& OwnerCom
             CharacterMovement->MaxWalkSpeed = 150.0f;
         }
 
-        UE_LOG(LogTemp, Warning, TEXT("Roaming"));;
-        Monster->ChangeState(EMonsterAIState::Roaming);
+        //UE_LOG(LogTemp, Warning, TEXT("Roaming"));;
+        Monster->ChangeRoaming();
+
     }
 
     AIController->MoveToLocation(RandomLocation.Location, -1.0f);
