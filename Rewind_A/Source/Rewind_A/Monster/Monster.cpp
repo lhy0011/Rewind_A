@@ -3,6 +3,7 @@
 
 #include "Monster.h"
 #include "M_AnimInst.h"
+#include "M_AnimInst.h"
 #include "Kismet/KismetSystemLibrary.h"
 
 // Sets default values
@@ -118,9 +119,19 @@ void AMonster::TakeMonsterDamage(float Damage, AActor* DamageCauser)
 	if (CurrentHealth <= 0.0f)
 	{
 		bIsDead = true;
-		PlayAnimMontage(DeathMontage);
+		//PlayAnimMontage(DeathMontage);
+
+		UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+		if (AnimInstance) {
+			UE_LOG(LogTemp, Warning, TEXT("DeathMontage"));
+			AnimInstance->Montage_Play(DeathMontage, 1.0f);
+		}
+		
+
 		SpawnGem();
-		Destroy();
+
+
+		//Destroy();
 	}
 }
 

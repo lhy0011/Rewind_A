@@ -340,7 +340,7 @@ public:
 
 	float DistMonster = 300.0f;
 
-
+	float NewJumpZVelocity;
 
 	// 타임컨트롤
 	public:

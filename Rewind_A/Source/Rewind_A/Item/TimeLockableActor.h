@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 
 #include "../Character/Weapon.h"
+#include "../Monster/Monster.h"
 #include "Components/BoxComponent.h"
 #include "PhysicsEngine/PhysicsHandleComponent.h"
 

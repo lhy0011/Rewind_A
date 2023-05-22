@@ -31,6 +31,7 @@ EBTNodeResult::Type UBTTask_Chase::ExecuteTask(UBehaviorTreeComponent& OwnerComp
         }
     }
 
-    AIController->MoveToActor(PlayerCharacter);
+    float AcceptableDistance = 100.0f;  // 1m 주변까지
+    AIController->MoveToActor(PlayerCharacter, AcceptableDistance);
     return EBTNodeResult::Succeeded;
 }

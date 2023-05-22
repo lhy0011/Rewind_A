@@ -53,38 +53,38 @@ ADSkeleton::ADSkeleton()
 
 void ADSkeleton::UpdateStats()
 {
-    if (Age > 30)
+    if (Age > -30)
     {
-        CurrentHealth = 250;
+        CurrentHealth = 160;
     }
-    else if (Age <= 30 && Age > 15)
+    else if (Age <= -30 && Age > -15)
     {
-        CurrentHealth = 200;
+        CurrentHealth = 140;
     }
-    else if (Age >= 15 && Age > 5)
+    else if (Age >= -15 && Age > -5)
     {
-        CurrentHealth = 150;
+        CurrentHealth = 120;
     }
     else if (Age == 0)
     {
         CurrentHealth = 100;
     }
-    else if (Age<0 && Age>-5)
+    else if (Age<0 && Age> 5)
     {
         CurrentHealth = 80;
     }
-    else if (Age <= -5 && Age > -20)
+    else if (Age <= 5 && Age > 20)
     {
         CurrentHealth = 60;
     }
-    else if (Age <= -20)
+    else if (Age <= 20)
     {
         CurrentHealth = 40;
     }
 
     //CurrentHealth = FMath::Clamp(CurrentHealth - Age * 2.0f, 20.0f, 300.0f);
 
-    float newScale = 1.0f + Age * 0.002f;
+    float newScale = 1.0f - Age * 0.002f;
     GetMesh()->SetWorldScale3D(FVector(newScale));
 }
 

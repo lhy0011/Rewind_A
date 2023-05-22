@@ -448,6 +448,10 @@ void AP_Character::SetCamera()
     bUseControllerRotationYaw = false;
     GetCharacterMovement()->bOrientRotationToMovement = true;
     GetCharacterMovement()->RotationRate = FRotator(0.0f, 720.0f, 0.0f);
+
+    // 점프 높이 조정
+    NewJumpZVelocity = 600.0f;
+    GetCharacterMovement()->JumpZVelocity = NewJumpZVelocity;
 }
 
 void AP_Character::SetAsset()

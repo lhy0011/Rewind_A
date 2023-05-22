@@ -65,6 +65,13 @@ void ATimeLockableActor::Tick(float DeltaTime)
 
 void ATimeLockableActor::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	AMonster* Monster = Cast<AMonster>(OtherActor);
+
+	if (Monster != nullptr && bIsTimeLocked)
+	{
+		const float DamageAmount = 200.0f; 
+		Monster->TakeMonsterDamage(DamageAmount, this); 
+	}
 }
 
 void ATimeLockableActor::StoreDamage(float Damage)

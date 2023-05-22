@@ -5,7 +5,7 @@
 
 ADGem::ADGem()
 {
-    ConstructorHelpers::FObjectFinder<UStaticMesh> MeshAsset(TEXT("StaticMesh'/Game/Rewind/Maps/Fire/FBX/item/FireGolem_eye'"));
+    ConstructorHelpers::FObjectFinder<UStaticMesh> MeshAsset(TEXT("StaticMesh'/Game/Rewind/Maps/Fire/FBX/item/DesertSkeleton_Gem'"));
     if (MeshAsset.Succeeded())
     {
         ItemMesh->SetStaticMesh(MeshAsset.Object);
