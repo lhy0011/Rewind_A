@@ -29,9 +29,9 @@ ADSkeleton::ADSkeleton()
     }
 
     static ConstructorHelpers::FObjectFinder<UAnimMontage> DMontage(TEXT("AnimMontage'/Game/Rewind/Character/DesertSkeleton/aim/DSkeletonDead'"));
-    if (ATMontage.Succeeded())
+    if (DMontage.Succeeded())
     {
-        DeathMontage = ATMontage.Object;
+        DeathMontage = DMontage.Object;
     }
 
     CollisionComponent = CreateDefaultSubobject<UCapsuleComponent>(TEXT("CapsuleComponent"));
@@ -53,15 +53,15 @@ ADSkeleton::ADSkeleton()
 
 void ADSkeleton::UpdateStats()
 {
-    if (Age > -30)
+    if (Age < -30)
     {
         CurrentHealth = 160;
     }
-    else if (Age <= -30 && Age > -15)
+    else if (Age >= -30 && Age < -15)
     {
         CurrentHealth = 140;
     }
-    else if (Age >= -15 && Age > -5)
+    else if (Age >= -15 && Age < -5)
     {
         CurrentHealth = 120;
     }
@@ -69,15 +69,15 @@ void ADSkeleton::UpdateStats()
     {
         CurrentHealth = 100;
     }
-    else if (Age<0 && Age> 5)
+    else if (Age > 0 && Age < 5)
     {
         CurrentHealth = 80;
     }
-    else if (Age <= 5 && Age > 20)
+    else if (Age >= 5 && Age < 20)
     {
         CurrentHealth = 60;
     }
-    else if (Age <= 20)
+    else if (Age >= 20)
     {
         CurrentHealth = 40;
     }

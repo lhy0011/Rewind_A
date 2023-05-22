@@ -33,3 +33,29 @@ void UM_AnimInst::NativeBeginPlay()
 {
 	Super::NativeBeginPlay();
 }
+
+void UM_AnimInst::CallDeadNotify()
+{
+	AMonster* Mst = Cast<AMonster>(TryGetPawnOwner());
+	if (Mst) {
+		Mst->SpawnGem();
+		Mst->Destroy();
+	}
+}
+
+void UM_AnimInst::CallAttackStartNotify()
+{
+	AMonster* Mst = Cast<AMonster>(TryGetPawnOwner());
+	if (Mst) {
+		Mst->ActivateAttackCollider();
+	}
+}
+
+void UM_AnimInst::CallAttackEndNotify()
+{
+	AMonster* Mst = Cast<AMonster>(TryGetPawnOwner());
+	if (Mst) {
+		Mst->DeactivateAttackCollider();
+	}
+}
+

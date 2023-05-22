@@ -107,7 +107,7 @@ public:
 
 	// 데미지 받음
 	UFUNCTION(BlueprintCallable, Category = "Health")
-		void TakeDamage(float DamageAmount);
+		void TakeDamage(int DamageAmount);
 
 	UFUNCTION(BlueprintCallable, Category = "Health")
 		void UseHealP();

@@ -78,7 +78,7 @@ void AP_Character::ChangeState(EPLAYER_STATE _eNextState, bool _bForce)
 
 }
 
-void AP_Character::TakeDamage(float DamageAmount)
+void AP_Character::TakeDamage(int DamageAmount)
 {
     CHP -= DamageAmount;
     if (CHP <= 0.0f)
@@ -725,6 +725,20 @@ void AP_Character::CharacterJump()
 
 void AP_Character::MoveMain()
 {
+    UReGameInstance* GameInstance = Cast<UReGameInstance>(GetWorld()->GetGameInstance());
+    if (GameInstance) {
+        UE_LOG(LogTemp, Warning, TEXT("Overlap event triggered2"));
+        GameInstance->setCharacterState(
+            getCPotion(),
+            getCHP(),
+            getRecallUse(),
+            getControlUse(),
+            getIsGotFG(),
+            getIsGotDG(),
+            getIsGotIG(),
+            getIsGotMG()
+        );
+    }
     UGameplayStatics::OpenLevel(GetWorld(), FName(TEXT("MainLand")));
 }
 

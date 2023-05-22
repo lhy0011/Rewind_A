@@ -17,8 +17,8 @@ EBTNodeResult::Type UBTTask_Attack::ExecuteTask(UBehaviorTreeComponent& OwnerCom
 
     AMonster* Monster = Cast<AMonster>(AIController->GetPawn());
     if (!Monster || Monster->IsDead()) return EBTNodeResult::Failed;
-
-   // Monster->OnAttack();
+    
+    Monster->OnAttack();
 
     return EBTNodeResult::Succeeded;
 }

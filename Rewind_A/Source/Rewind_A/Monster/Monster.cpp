@@ -65,6 +65,21 @@ void AMonster::BeginPlay()
 
 	m_AnimInst = Cast<UM_AnimInst>(GetMesh()->GetAnimInstance());
 
+
+	// 家南 厘馒
+	Weapon = GetWorld()->SpawnActor<AMonsterAttackCollider>(AMonsterAttackCollider::StaticClass());
+
+	if (Weapon) {
+		FName SocketName = TEXT("AttackSocket");
+		Weapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, SocketName);
+
+		FVector RelativeLocation = FVector(0.0f, 0.0f, 0.0f);
+		FRotator RelativeRotation = FRotator(0.0f, 0.0f, 0.0f);
+		FVector RelativeScale = FVector(1.0f, 1.0f, 1.0f);
+		//// 技何 炼沥
+
+		Weapon->OwningCharacter = this;
+	}
 }
 
 void AMonster::Tick(float DeltaTime)
@@ -128,7 +143,7 @@ void AMonster::TakeMonsterDamage(float Damage, AActor* DamageCauser)
 		}
 		
 
-		SpawnGem();
+		//SpawnGem();
 
 
 		//Destroy();
@@ -231,6 +246,20 @@ void AMonster::StartTimeLock()
 	{
 		GetMesh()->GlobalAnimRateScale = 0.0f;
 		AIController->StopMovement();
+	}
+}
+
+void AMonster::ActivateAttackCollider()
+{
+	if (Weapon) {
+		Weapon->EnableCollision();
+	}
+}
+
+void AMonster::DeactivateAttackCollider()
+{
+	if (Weapon) {
+		Weapon->DisableCollision();
 	}
 }
 

@@ -30,9 +30,9 @@ AFGolem::AFGolem()
     }
 
     static ConstructorHelpers::FObjectFinder<UAnimMontage> DMontage(TEXT("AnimMontage'/Game/Rewind/Character/FireGolem/aim/FGolemDead'"));
-    if (ATMontage.Succeeded())
+    if (DMontage.Succeeded())
     {
-        DeathMontage = ATMontage.Object;
+        DeathMontage = DMontage.Object;
     }
 
     CollisionComponent = CreateDefaultSubobject<UCapsuleComponent>(TEXT("CapsuleComponent"));
@@ -61,7 +61,7 @@ void AFGolem::UpdateStats()
     {
         CurrentHealth = 200;
     }
-    else if (Age >= 15 && Age > 5)
+    else if (Age <= 15 && Age > 5)
     {
         CurrentHealth = 150;
     }

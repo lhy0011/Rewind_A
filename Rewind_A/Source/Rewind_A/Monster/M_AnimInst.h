@@ -28,4 +28,14 @@ public:
 	virtual void NativeBeginPlay() override;
 
 
+
+	UFUNCTION(BlueprintCallable, Category = "My Category")
+		void CallDeadNotify();
+
+	UFUNCTION(BlueprintCallable, Category = "My Category")
+		void CallAttackStartNotify();
+
+	UFUNCTION(BlueprintCallable, Category = "My Category")
+		void CallAttackEndNotify();
+
 };

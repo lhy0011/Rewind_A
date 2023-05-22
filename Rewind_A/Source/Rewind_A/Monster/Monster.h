@@ -12,6 +12,7 @@
 #include "Components/CapsuleComponent.h"
 #include "PhysicsEngine/PhysicsHandleComponent.h"
 
+#include "MonsterAttackCollider.h"
 #include "../Character/Weapon.h"
 #include "../Item/FGem.h"
 #include "../Item/DGem.h"
@@ -96,7 +97,7 @@ public:
     UPROPERTY(EditAnywhere, Category = "Spawning")
         TSubclassOf<class AFGem> GemActor;
 
-protected:
+public:
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Monster")
         float MaxHealth;
@@ -161,5 +162,11 @@ public:
     UMaterialInterface* m_OriginalMtrl; // 원래거
 
     UMaterialInterface* m_TimeLockMtrl; // 타임록 적용
+
+    // 공격 콜리전
+    AMonsterAttackCollider* Weapon;
+
+    void ActivateAttackCollider();
+    void DeactivateAttackCollider();
 
 };
