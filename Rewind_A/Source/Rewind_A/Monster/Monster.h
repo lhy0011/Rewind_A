@@ -69,6 +69,10 @@ public:
     UFUNCTION()
         void TakeMonsterDamage(float Damage, AActor* DamageCauser);
 
+
+    UFUNCTION()
+        void MosterAttack();
+
     bool IsDead() const;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Info, meta = (AllowPrivateAccess = "true"))

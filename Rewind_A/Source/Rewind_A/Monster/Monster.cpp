@@ -150,6 +150,15 @@ void AMonster::TakeMonsterDamage(float Damage, AActor* DamageCauser)
 	}
 }
 
+void AMonster::MosterAttack()
+{
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	if (AnimInstance) {
+		UE_LOG(LogTemp, Warning, TEXT("AttackMontage"));
+		AnimInstance->Montage_Play(AttackMontage, 1.0f);
+	}
+}
+
 bool AMonster::IsDead() const
 {
 	return bIsDead;

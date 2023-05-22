@@ -46,7 +46,7 @@ AFGolem::AFGolem()
     MaxHealth = 200.0f;
     CurrentHealth = 100.0f;
 
-    AttackDamage = 2;
+    AttackDamage = 1;
 
     GemActor = AFGem::StaticClass();
 }
@@ -93,4 +93,5 @@ void AFGolem::BeginPlay()
     Super::BeginPlay();
 
     CurrentHealth = MaxHealth;
+    Weapon->CollisionComponent->InitSphereRadius(200.0f);
 }
