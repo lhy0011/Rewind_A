@@ -404,6 +404,5 @@ public:
 		//공격가능여부
 		bool canAttack;
 
-		UFUNCTION(BlueprintCallable)
-			void hitEndCall();
+
 };

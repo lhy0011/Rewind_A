@@ -1137,9 +1137,5 @@ void AP_Character::ResetSkill()
     ControlUse = 1.f;
 }
 
-void AP_Character::hitEndCall()
-{
-    canAttack = true;
-}
 
 

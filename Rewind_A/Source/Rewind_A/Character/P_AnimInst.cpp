@@ -78,6 +78,14 @@ void UP_AnimInst::DisableCol()
 	}
 }
 
+void UP_AnimInst::hitEndCall()
+{
+	AP_Character* Character = Cast<AP_Character>(TryGetPawnOwner());
+	if (Character) {
+		Character->canAttack = true;
+	}
+}
+
 void UP_AnimInst::AnimNotify_AttackEnd()
 {
 	UE_LOG(LogTemp, Log, TEXT("Attackend"));

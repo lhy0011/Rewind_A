@@ -49,6 +49,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "My Category")
 		void DisableCol();
 
+	UFUNCTION(BlueprintCallable)
+		void hitEndCall();
+
 public:
 	void SetDirection(float _fDir) { m_Dir = _fDir; }
 	float  GetDirection() { return m_Dir; }

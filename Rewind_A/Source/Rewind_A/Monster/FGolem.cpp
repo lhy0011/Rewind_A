@@ -46,13 +46,7 @@ AFGolem::AFGolem()
     CollisionComponent->InitCapsuleSize(150.0f, 100.0f);
 
     CollisionComponent->SetCollisionProfileName(TEXT("OverlapAll"));
-    CollisionComponent->SetCollisionObjectType(ECC_GameTraceChannel1);
-
-
-    //GetCapsuleComponent()->SetCollisionProfileName(TEXT("OverlapAll"));
-    //GetCapsuleComponent()->SetCollisionObjectType(ECC_GameTraceChannel1);
-    //GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_WorldStatic, ECR_Block);
-    //GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Pawn, ECR_Ignore);
+    //CollisionComponent->SetCollisionObjectType(ECC_GameTraceChannel1);
 
     //CollisionComponent->SetCollisionProfileName(TEXT("OverlapAll"));
     CollisionComponent->SetupAttachment(RootComponent);
