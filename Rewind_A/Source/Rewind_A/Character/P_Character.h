@@ -395,4 +395,15 @@ public:
 		void DashCheatEnd();
 		void exitGame();
 		void ResetSkill();
+
+		// 피격
+		UPROPERTY(EditAnywhere, Category = "Animation")
+			class UAnimMontage* HitMontage;
+		
+
+		//공격가능여부
+		bool canAttack;
+
+		UFUNCTION(BlueprintCallable)
+			void hitEndCall();
 };

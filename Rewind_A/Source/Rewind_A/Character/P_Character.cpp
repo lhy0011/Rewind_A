@@ -61,6 +61,8 @@ AP_Character::AP_Character()
     isTimeControlling = false;
     isTimeLocking = false;
     AgeValue = 0.f;
+
+    canAttack = true;
 }
 
 
@@ -84,6 +86,12 @@ void AP_Character::TakeDamage(int DamageAmount)
     if (CHP <= 0.0f)
     {
         // 캐릭터가 죽는 로직
+    }
+
+    if (HitMontage) {
+
+        canAttack = false;
+        PlayAnimMontage(HitMontage);
     }
 }
 
@@ -439,6 +447,10 @@ void AP_Character::SetCamera()
     m_pSpringArm->SetRelativeRotation(FRotator(-15.f, 90.f, 0.f));
     m_pSpringArm->TargetArmLength = 270.f;
 
+    m_pSpringArm->ProbeChannel = ECC_Camera;
+    //m_pSpringArm->ProbeChannel = ECC_GameTraceChannel1;
+
+
     // 카메라 따로 회전 설정
     m_pSpringArm->bUsePawnControlRotation = true;
     m_pSpringArm->bInheritPitch = false;
@@ -485,6 +497,13 @@ void AP_Character::SetAsset()
     if (RMontage.Succeeded())
     {
         RollMontage = RMontage.Object;
+    }
+
+
+    static ConstructorHelpers::FObjectFinder<UAnimMontage> HMontage(TEXT("AnimMontage'/Game/Rewind/Character/Main_Character/Animation/HitMontage'"));
+    if (HMontage.Succeeded())
+    {
+        HitMontage = HMontage.Object;
     }
 }
 
@@ -803,22 +822,26 @@ void AP_Character::ComboAttack()
     UE_LOG(LogTemp, Warning, TEXT("ComboAttack"));
     isComboAttackDown = true;
 
-    UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
-    if (!AnimInstance || !AttackMontage) {
-        UE_LOG(LogTemp, Warning, TEXT("WWComboAttack"));
-        return;
+    if (canAttack) {
+        UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+        if (!AnimInstance || !AttackMontage) {
+            UE_LOG(LogTemp, Warning, TEXT("WWComboAttack"));
+            return;
+        }
+
+        isComboAttacking = true;
+        const char* ComboList[] = { "Attack1","Attack2", "Attack3" };
+
+        if (ComboAttackCount >= 3) {
+            ComboAttackCount = 0;
+        }
+        UE_LOG(LogTemp, Warning, TEXT("ComboAttack%d"), ComboAttackCount);
+
+        AnimInstance->Montage_Play(AttackMontage, 1.5f);
+        AnimInstance->Montage_JumpToSection(FName(ComboList[ComboAttackCount]), AttackMontage);
+
     }
-
-    isComboAttacking = true;
-    const char* ComboList[] = { "Attack1","Attack2", "Attack3" };
-
-    if (ComboAttackCount >= 3) {
-        ComboAttackCount = 0;
-    }
-    UE_LOG(LogTemp, Warning, TEXT("ComboAttack%d"), ComboAttackCount);
-
-    AnimInstance->Montage_Play(AttackMontage, 1.5f);
-    AnimInstance->Montage_JumpToSection(FName(ComboList[ComboAttackCount]), AttackMontage);
+   
 }
 
 void AP_Character::ComboAttackEnd()
@@ -1113,4 +1136,10 @@ void AP_Character::ResetSkill()
     RecallUse = 1.f;
     ControlUse = 1.f;
 }
+
+void AP_Character::hitEndCall()
+{
+    canAttack = true;
+}
+
 

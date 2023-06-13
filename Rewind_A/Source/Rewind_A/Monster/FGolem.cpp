@@ -35,13 +35,29 @@ AFGolem::AFGolem()
         DeathMontage = DMontage.Object;
     }
 
+    static ConstructorHelpers::FObjectFinder<UAnimMontage> HMontage(TEXT("AnimMontage'/Game/Rewind/Character/FireGolem/aim/FGolemHit'"));
+    if (HMontage.Succeeded())
+    {
+        HitMontage = HMontage.Object;
+    }
+   
+
     CollisionComponent = CreateDefaultSubobject<UCapsuleComponent>(TEXT("CapsuleComponent"));
     CollisionComponent->InitCapsuleSize(150.0f, 100.0f);
 
     CollisionComponent->SetCollisionProfileName(TEXT("OverlapAll"));
+    CollisionComponent->SetCollisionObjectType(ECC_GameTraceChannel1);
+
+
+    //GetCapsuleComponent()->SetCollisionProfileName(TEXT("OverlapAll"));
+    //GetCapsuleComponent()->SetCollisionObjectType(ECC_GameTraceChannel1);
+    //GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_WorldStatic, ECR_Block);
+    //GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Pawn, ECR_Ignore);
+
+    //CollisionComponent->SetCollisionProfileName(TEXT("OverlapAll"));
     CollisionComponent->SetupAttachment(RootComponent);
 
-
+    //CollisionComponent->SetCollisionResponseToChannel(ECC_GameTraceChannel1, ECR_Ignore);
 
     MaxHealth = 200.0f;
     CurrentHealth = 100.0f;

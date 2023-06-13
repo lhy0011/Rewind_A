@@ -173,4 +173,21 @@ public:
     void ActivateAttackCollider();
     void DeactivateAttackCollider();
 
+
+    // ÇÇ°Ý
+    UPROPERTY(EditAnywhere, Category = "Animation")
+        class UAnimMontage* HitMontage;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
+        float KnockbackIntensity;
+
+
+
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+        class USpringArmComponent* SpringArm;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+        class UCameraComponent* Camera;
+
 };
