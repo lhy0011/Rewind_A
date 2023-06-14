@@ -83,6 +83,7 @@ void UP_AnimInst::hitEndCall()
 	AP_Character* Character = Cast<AP_Character>(TryGetPawnOwner());
 	if (Character) {
 		Character->canAttack = true;
+		Character->isComboAttacking = false;
 	}
 }
 

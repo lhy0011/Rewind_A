@@ -15,7 +15,12 @@ AFGolem::AFGolem()
         GetMesh()->SetRelativeLocation(FVector(0.f, 0.f, -89.f));
         GetMesh()->SetRelativeRotation(FRotator(0.f, -90.f, 0.f));
         GetMesh()->SetWorldScale3D(FVector(0.3f, 0.3f, 0.3f));
+
+        GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+        GetMesh()->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Block);
     }
+
+
 
     static ConstructorHelpers::FClassFinder<UAnimInstance> AnimBP(TEXT("AnimBlueprint'/Game/Rewind/Character/FireGolem/aim/FGolemBP.FGolemBP_C'"));
     if (AnimBP.Succeeded())

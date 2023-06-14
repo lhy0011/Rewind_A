@@ -447,9 +447,10 @@ void AP_Character::SetCamera()
     m_pSpringArm->SetRelativeRotation(FRotator(-15.f, 90.f, 0.f));
     m_pSpringArm->TargetArmLength = 270.f;
 
-    m_pSpringArm->ProbeChannel = ECC_Camera;
-    //m_pSpringArm->ProbeChannel = ECC_GameTraceChannel1;
 
+    m_pSpringArm->bDoCollisionTest = true;
+    m_pSpringArm->ProbeChannel = ECC_Camera;  // ECC_Camera 또는 원하는 충돌 채널
+    m_pSpringArm->ProbeSize = 12;
 
     // 카메라 따로 회전 설정
     m_pSpringArm->bUsePawnControlRotation = true;
