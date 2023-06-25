@@ -1138,5 +1138,11 @@ void AP_Character::ResetSkill()
     ControlUse = 1.f;
 }
 
+void AP_Character::reduceHP(int damage)
+{
+    CHP -= damage;
+    TakeDamage(1);
+}
+
 
 

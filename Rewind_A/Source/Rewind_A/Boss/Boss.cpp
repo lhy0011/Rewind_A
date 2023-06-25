@@ -3,6 +3,8 @@
 
 #include "Boss.h"
 #include "Kismet/GameplayStatics.h"
+#include "B_AnimInst.h"
+#include "../Character/P_Character.h"
 #include "Meteor.h"
 
 // Sets default values
@@ -52,12 +54,13 @@ ABoss::ABoss()
 
     bIsEarthquakeAttackOnCooldown = false;
     bCanSummonMeteor = false;
+    bCanAttack = true;
 
     MovementSpeed = 100.f;
 
-    MeteorAttackThreshold = 1000.f;
-    EarthquakeAttackThreshold = 500.f;
-    MeleeAttackThreshold = 200.f;
+    MeteorAttackThreshold = 3000.f;
+    EarthquakeAttackThreshold = 1500.f;
+    MeleeAttackThreshold = 300.f;
 }
 
 
@@ -67,6 +70,8 @@ void ABoss::BeginPlay()
     Super::BeginPlay();
 
     GetWorldTimerManager().SetTimer(TimerHandle_MeteorAttack, this, &ABoss::ResetMeteorCooldown, 5.0f, false);
+
+    b_AnimInst = Cast<UB_AnimInst>(GetMesh()->GetAnimInstance());
 
 }
 
@@ -82,17 +87,19 @@ void ABoss::Tick(float DeltaTime)
         float Distance = FVector::Distance(GetActorLocation(), PlayerPawn->GetActorLocation());
 
         // 일반공격
-        if (Distance <= MeleeAttackThreshold)
+        if (Distance <= MeleeAttackThreshold && bCanAttack)
         {
             UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
             if (AnimInstance && ATMontage)
             {
-                AnimInstance->Montage_Play(ATMontage, 0.8f);
+                AnimInstance->Montage_Play(ATMontage, 0.5f);
             }
+            bCanAttack = false;
+            GetWorld()->GetTimerManager().SetTimer(TimerHandle_Attack, this, &ABoss::ResetAttackCooldown, 6.0f, false);
         }
 
         // 지진공격
-        else if (Distance <= EarthquakeAttackThreshold && !bIsEarthquakeAttackOnCooldown)
+        else if (Distance > MeleeAttackThreshold && Distance <= EarthquakeAttackThreshold && !bIsEarthquakeAttackOnCooldown)
         {
 
             UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
@@ -106,16 +113,16 @@ void ABoss::Tick(float DeltaTime)
 
             // 쿨타임
             bIsEarthquakeAttackOnCooldown = true;
-            GetWorld()->GetTimerManager().SetTimer(TimerHandle_EarthquakeAttackCooldown, this, &ABoss::EndEarthquakeCooldown, 60.0f, false);
+            GetWorld()->GetTimerManager().SetTimer(TimerHandle_EarthquakeAttackCooldown, this, &ABoss::EndEarthquakeCooldown, 6.0f, false);
         }
 
         // 메테오
-        else if (Distance > MeteorAttackThreshold)
+        else if (Distance > MeteorAttackThreshold && bCanSummonMeteor)
         {
             UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
             if (AnimInstance && EQMontage)
             {
-                AnimInstance->Montage_Play(MTMontage, 0.8f);
+                AnimInstance->Montage_Play(MTMontage, 1.2f);
             }
             SummonMeteor();
 
@@ -167,6 +174,11 @@ void ABoss::Earthquake()
         if (Distance <= 500.f)
         {
             UGameplayStatics::ApplyDamage(PlayerPawn, 10.f, GetController(), this, UDamageType::StaticClass());
+
+            AP_Character* Character = Cast<AP_Character>(PlayerPawn);
+            if (Character) {
+                Character->TakeDamage(1);
+            }
         }
         else
         {
@@ -182,6 +194,11 @@ void ABoss::EndEarthquakeCooldown()
 
 void ABoss::ResetMeteorCooldown()
 {
-    UE_LOG(LogTemp, Warning, TEXT("Reset mt"));
+    //UE_LOG(LogTemp, Warning, TEXT("Reset mt"));
     bCanSummonMeteor = true;
+}
+
+void ABoss::ResetAttackCooldown()
+{
+    bCanAttack = true;
 }

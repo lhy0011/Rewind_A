@@ -31,6 +31,10 @@ protected:
 	UFUNCTION()
 		void OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
+
+	UFUNCTION()
+		void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
+
 	UPROPERTY(VisibleAnywhere, Category = "Components")
 		class UStaticMeshComponent* MeteorMesh;
 
@@ -44,4 +48,10 @@ protected:
 
 	FTimerHandle DestroyTimerHandle;
 	void DestroyMeteor();
+
+
+	UPROPERTY(EditAnywhere, Category = "Effects")
+		UParticleSystem* ExplosionEffect;
+
+	void PlayExplosionEffect();
 };

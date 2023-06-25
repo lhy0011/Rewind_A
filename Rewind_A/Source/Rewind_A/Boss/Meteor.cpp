@@ -4,6 +4,7 @@
 #include "Meteor.h"
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/Character.h"
+#include "../Character/P_Character.h"
 #include "Components/SphereComponent.h"
 
 // Sets default values
@@ -23,13 +24,22 @@ AMeteor::AMeteor()
 
     CollisionSphere = CreateDefaultSubobject<USphereComponent>(TEXT("CollisionSphere"));
     CollisionSphere->SetupAttachment(MeteorMesh);
+    CollisionSphere->SetSphereRadius(8.0f);
 
     CollisionSphere->OnComponentBeginOverlap.AddDynamic(this, &AMeteor::OnOverlapBegin);
 
-    Speed = 2500.0f;
+    Speed = 5000.0f;
 
 
     MeteorMesh->SetWorldScale3D(FVector(12.0f, 12.0f, 12.0f));
+
+
+
+    static ConstructorHelpers::FObjectFinder<UParticleSystem> ParticleSystemAsset(TEXT("ParticleSystem'/Game/StarterContent/Particles/P_Explosion'"));
+    if (ParticleSystemAsset.Succeeded())
+    {
+        ExplosionEffect = ParticleSystemAsset.Object;
+    }
 }
 
 // Called when the game starts or when spawned
@@ -44,7 +54,7 @@ void AMeteor::BeginPlay()
         InitialTargetLocation = Target->GetActorLocation();
     }
 
-    GetWorldTimerManager().SetTimer(DestroyTimerHandle, this, &AMeteor::DestroyMeteor, 10.0f, false);
+    GetWorldTimerManager().SetTimer(DestroyTimerHandle, this, &AMeteor::DestroyMeteor, 0.7f, false);
 
 }
 
@@ -63,22 +73,42 @@ void AMeteor::Tick(float DeltaTime)
 
 void AMeteor::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-    if (OtherActor && (OtherActor != this) && OtherComp && OtherActor->IsA(ACharacter::StaticClass()))
+    if (OtherActor && (OtherActor != this) && OtherComp)
     {
-        ACharacter* Character = Cast<ACharacter>(OtherActor);
-        if (Character)
+        if (OtherActor->IsA(AP_Character::StaticClass()))
         {
-            //캐릭터 데미지 로직
-            UGameplayStatics::ApplyDamage(Character, 2.0f, GetInstigatorController(), this, UDamageType::StaticClass());
+            AP_Character* Character = Cast<AP_Character>(OtherActor);
+            if (Character)
+            {
+                //캐릭터 데미지 로직
+                UGameplayStatics::ApplyDamage(Character, 2.0f, GetInstigatorController(), this, UDamageType::StaticClass());
 
+                Character->TakeDamage(2);
+                PlayExplosionEffect();
+                Destroy();
+            }
+        }
+        // Check if the overlapped actor is a StaticMeshActor
+        else if (OtherComp->IsA(UStaticMeshComponent::StaticClass()))
+        {
+            PlayExplosionEffect();
             Destroy();
         }
     }
-    //Destroy();
+
 }
 
 void AMeteor::DestroyMeteor()
 {
+    PlayExplosionEffect();
     Destroy();
+}
+
+void AMeteor::PlayExplosionEffect()
+{
+    if (ExplosionEffect)
+    {
+        UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ExplosionEffect, GetActorLocation(), FRotator::ZeroRotator);
+    }
 }
 

@@ -91,14 +91,14 @@ void AMonster::Tick(float DeltaTime)
 	//UE_LOG(LogTemp, Warning, TEXT("%f"), CurrentHealth);
 }
 
-inline void AMonster::OnAttack()
-{
-	if (AttackMontage)
-	{
-		PlayAnimMontage(AttackMontage);
-	}
-	// 각 클래스에 어택 몽타주 설정, 사망 몽타주도
-}
+//inline void AMonster::OnAttack()
+//{
+//	if (AttackMontage)
+//	{
+//		PlayAnimMontage(AttackMontage);
+//	}
+//	// 각 클래스에 어택 몽타주 설정, 사망 몽타주도
+//}
 
 void AMonster::TakeMonsterDamage(float Damage, AActor* DamageCauser)
 {

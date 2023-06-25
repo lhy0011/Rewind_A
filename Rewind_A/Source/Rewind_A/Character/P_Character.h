@@ -405,4 +405,6 @@ public:
 		bool canAttack;
 
 
+
+		void reduceHP(int damage);
 };

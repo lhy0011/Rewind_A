@@ -6,6 +6,10 @@
 #include "GameFramework/Character.h"
 #include "Boss.generated.h"
 
+
+
+class UB_AnimInst;
+
 UCLASS()
 class REWIND_A_API ABoss : public ACharacter
 {
@@ -44,6 +48,8 @@ public:
 
 	FTimerHandle TimerHandle_MeteorAttack;
 
+	FTimerHandle TimerHandle_Attack;
+
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animations")
 		UAnimMontage* ATMontage;
@@ -58,14 +64,18 @@ public:
 
 	bool bIsEarthquakeAttackOnCooldown;
 	bool bCanSummonMeteor;
+	bool bCanAttack;
 
 	void EndEarthquakeCooldown();
 	void ResetMeteorCooldown();
+	void ResetAttackCooldown();
 
 	float MovementSpeed;
 
 	float MeteorAttackThreshold;
 	float EarthquakeAttackThreshold;
 	float MeleeAttackThreshold;
+
+	UB_AnimInst* b_AnimInst;
 
 };
