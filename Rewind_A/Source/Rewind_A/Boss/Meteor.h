@@ -38,4 +38,10 @@ protected:
 		class USphereComponent* CollisionSphere;
 
 	AActor* Target;
+
+
+	FVector InitialTargetLocation;
+
+	FTimerHandle DestroyTimerHandle;
+	void DestroyMeteor();
 };

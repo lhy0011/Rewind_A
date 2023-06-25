@@ -26,7 +26,10 @@ AMeteor::AMeteor()
 
     CollisionSphere->OnComponentBeginOverlap.AddDynamic(this, &AMeteor::OnOverlapBegin);
 
-    Speed = 1300.0f;
+    Speed = 2500.0f;
+
+
+    MeteorMesh->SetWorldScale3D(FVector(12.0f, 12.0f, 12.0f));
 }
 
 // Called when the game starts or when spawned
@@ -35,6 +38,14 @@ void AMeteor::BeginPlay()
 	Super::BeginPlay();
 	
     Target = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
+
+    if (Target)
+    {
+        InitialTargetLocation = Target->GetActorLocation();
+    }
+
+    GetWorldTimerManager().SetTimer(DestroyTimerHandle, this, &AMeteor::DestroyMeteor, 10.0f, false);
+
 }
 
 // Called every frame
@@ -44,7 +55,7 @@ void AMeteor::Tick(float DeltaTime)
 
     if (Target)
     {
-        FVector MoveDirection = (Target->GetActorLocation() - GetActorLocation()).GetSafeNormal();
+        FVector MoveDirection = (InitialTargetLocation - GetActorLocation()).GetSafeNormal();
         FVector NewLocation = GetActorLocation() + MoveDirection * Speed * DeltaTime;
         SetActorLocation(NewLocation);
     }
@@ -63,5 +74,11 @@ void AMeteor::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherA
             Destroy();
         }
     }
+    //Destroy();
+}
+
+void AMeteor::DestroyMeteor()
+{
+    Destroy();
 }
 

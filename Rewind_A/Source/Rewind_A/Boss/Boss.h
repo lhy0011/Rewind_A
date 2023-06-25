@@ -19,7 +19,7 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:	
+public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
@@ -29,7 +29,7 @@ public:
 
 	// 체력
 	float hp;
-	
+
 
 	// 메테오
 	UFUNCTION(BlueprintCallable, Category = "Abilities")
@@ -42,7 +42,30 @@ public:
 
 	FTimerHandle TimerHandle_EarthquakeAttackCooldown;
 
-	bool bIsEarthquakeAttackOnCooldown = false;
+	FTimerHandle TimerHandle_MeteorAttack;
+
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animations")
+		UAnimMontage* ATMontage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animations")
+		UAnimMontage* MTMontage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animations")
+		UAnimMontage* EQMontage;
+
+
+
+	bool bIsEarthquakeAttackOnCooldown;
+	bool bCanSummonMeteor;
 
 	void EndEarthquakeCooldown();
+	void ResetMeteorCooldown();
+
+	float MovementSpeed;
+
+	float MeteorAttackThreshold;
+	float EarthquakeAttackThreshold;
+	float MeleeAttackThreshold;
+
 };
