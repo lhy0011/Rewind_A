@@ -22,4 +22,10 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
+
+	float CSize;
+	float OSize;
+	float BSize;
+	float HSize;
+
 };

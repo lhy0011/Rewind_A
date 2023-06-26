@@ -67,7 +67,7 @@ ABoss::ABoss()
 
     MovementSpeed = 180.f;
 
-    MeteorAttackThreshold = 3000.f;
+    MeteorAttackThreshold = 2500.f;
     EarthquakeAttackThreshold = 1500.f;
     MeleeAttackThreshold = 400.f;
 }
@@ -139,7 +139,7 @@ void ABoss::Tick(float DeltaTime)
             UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
             if (AnimInstance && EQMontage)
             {
-                AnimInstance->Montage_Play(EQMontage, 0.23f);
+                AnimInstance->Montage_Play(EQMontage, 0.25f);
             }
 
             // ÁöÁø

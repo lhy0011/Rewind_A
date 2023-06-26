@@ -8,6 +8,13 @@
 
 AFGolem::AFGolem()
 {
+
+    HSize = 0.3f;
+    CSize = 0.55f;
+    OSize = 0.4f;
+    BSize = 0.82f;
+
+
     static ConstructorHelpers::FObjectFinder<USkeletalMesh> SkeletalMesh(TEXT("SkeletalMesh'/Game/Rewind/Character/FireGolem/FBX/FireGolem'"));
     if (SkeletalMesh.Succeeded())
     {
@@ -174,11 +181,12 @@ void AFGolem::UpdateStats()
 {
     if (Age > 30)
     {
-        setOld();
         CurrentHealth = 250;
     }
     else if (Age <= 30 && Age > 15)
     {
+        setOld();
+        HSize = OSize;
         CurrentHealth = 200;
     }
     else if (Age <= 15 && Age > 5)
@@ -196,17 +204,19 @@ void AFGolem::UpdateStats()
     else if (Age <= -7 && Age > -20)
     {
         CurrentHealth = 60;
+        HSize = CSize;
         setChild();
     }
     else if (Age <= -20)
     {
         setBaby();
+        HSize = BSize;
         CurrentHealth = 40;
     }
 
     //CurrentHealth = FMath::Clamp(CurrentHealth - Age * 2.0f, 20.0f, 300.0f);
 
-    float newScale = 0.3f + Age * 0.005f;
+    float newScale = HSize + Age * 0.005f;
     GetMesh()->SetWorldScale3D(FVector(newScale));
 }
 
