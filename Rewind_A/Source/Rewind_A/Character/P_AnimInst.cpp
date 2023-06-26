@@ -87,9 +87,27 @@ void UP_AnimInst::hitEndCall()
 	}
 }
 
+void UP_AnimInst::RollSCall()
+{
+	AP_Character* Character = Cast<AP_Character>(TryGetPawnOwner());
+	if (Character) {
+		Character->canHit = false;
+		Character->isComboAttacking = false;
+	}
+}
+
+void UP_AnimInst::RollECall()
+{
+	AP_Character* Character = Cast<AP_Character>(TryGetPawnOwner());
+	if (Character) {
+		Character->canHit = true;
+		Character->isComboAttacking = false;
+	}
+}
+
 void UP_AnimInst::AnimNotify_AttackEnd()
 {
-	UE_LOG(LogTemp, Log, TEXT("Attackend"));
+	//UE_LOG(LogTemp, Log, TEXT("Attackend"));
 
 	AP_Character* pOwner = Cast<AP_Character>(TryGetPawnOwner());
 	if (nullptr == pOwner) {

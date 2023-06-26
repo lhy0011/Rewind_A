@@ -24,6 +24,14 @@ ABoss::ABoss()
         GetMesh()->SetWorldScale3D(FVector(4.0f, 4.0f, 4.0f));
     }
 
+
+    CollisionComponent = CreateDefaultSubobject<UCapsuleComponent>(TEXT("CapsuleComponent"));
+    CollisionComponent->InitCapsuleSize(250.0f, 200.0f);
+
+    CollisionComponent->SetCollisionProfileName(TEXT("OverlapAll"));
+
+    CollisionComponent->SetupAttachment(RootComponent);
+
     static ConstructorHelpers::FClassFinder<UAnimInstance> BossAnim(TEXT("AnimBlueprint'/Game/Rewind/Character/FireBoss/aim/BossAnimBP.BossAnimBP_C'"));
     if (BossAnim.Succeeded())
     {
@@ -110,16 +118,6 @@ void ABoss::Tick(float DeltaTime)
     if (PlayerPawn)
     {
 
-        FVector BossLocation = GetActorLocation();
-        FVector PlayerLocation = PlayerPawn->GetActorLocation();
-
-        FVector LookDirection = PlayerLocation - BossLocation;
-        LookDirection.Z = 0.0f; 
-        LookDirection.Normalize();
-
-        // 보스 몬스터의 회전 설정
-        SetActorRotation(LookDirection.Rotation());
-
         float Distance = FVector::Distance(GetActorLocation(), PlayerPawn->GetActorLocation());
 
         // 일반공격
@@ -141,7 +139,7 @@ void ABoss::Tick(float DeltaTime)
             UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
             if (AnimInstance && EQMontage)
             {
-                AnimInstance->Montage_Play(EQMontage, 0.15f);
+                AnimInstance->Montage_Play(EQMontage, 0.23f);
             }
 
             // 지진
@@ -172,6 +170,17 @@ void ABoss::Tick(float DeltaTime)
 
         else // 플레이어에게 이동
         {
+
+            FVector BossLocation = GetActorLocation();
+            FVector PlayerLocation = PlayerPawn->GetActorLocation();
+
+            FVector LookDirection = PlayerLocation - BossLocation;
+            LookDirection.Z = 0.0f;
+            LookDirection.Normalize();
+
+            // 보스 몬스터의 회전 설정
+            SetActorRotation(LookDirection.Rotation());
+
             if (b_eMState != BMonsterAIState::Roaming) {
                 ChangeState(BMonsterAIState::Roaming);
             }
@@ -215,19 +224,11 @@ void ABoss::Earthquake()
     APawn* PlayerPawn = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
     if (PlayerPawn)
     {
-        float Distance = FVector::Distance(GetActorLocation(), PlayerPawn->GetActorLocation());
-        if (Distance <= 500.f)
-        {
-            UGameplayStatics::ApplyDamage(PlayerPawn, 10.f, GetController(), this, UDamageType::StaticClass());
+        UGameplayStatics::ApplyDamage(PlayerPawn, 10.f, GetController(), this, UDamageType::StaticClass());
 
-            AP_Character* Character = Cast<AP_Character>(PlayerPawn);
-            if (Character) {
-                Character->TakeDamage(1);
-            }
-        }
-        else
-        {
-            GetWorld()->GetTimerManager().ClearTimer(TimerHandle_EarthquakeAttack);
+        AP_Character* Character = Cast<AP_Character>(PlayerPawn);
+        if (Character) {
+            Character->TakeDamage(1);
         }
     }
 }

@@ -404,6 +404,9 @@ public:
 		//공격가능여부
 		bool canAttack;
 
+		//피격가능여부
+		bool canHit;
+
 
 
 		void reduceHP(int damage);

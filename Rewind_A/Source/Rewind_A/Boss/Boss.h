@@ -61,6 +61,9 @@ public:
 	float hp;
 
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Info, meta = (AllowPrivateAccess = "true"))
+		class UCapsuleComponent* CollisionComponent;
+
 	// ╦чев©ю
 	UFUNCTION(BlueprintCallable, Category = "Abilities")
 		void SummonMeteor();

@@ -64,6 +64,7 @@ AP_Character::AP_Character()
     AgeValue = 0.f;
 
     canAttack = true;
+    canHit = true;
 }
 
 
@@ -83,16 +84,21 @@ void AP_Character::ChangeState(EPLAYER_STATE _eNextState, bool _bForce)
 
 void AP_Character::TakeDamage(int DamageAmount)
 {
-    CHP -= DamageAmount;
-    if (CHP <= 0.0f)
-    {
-        // 캐릭터가 죽는 로직
+    if (canHit) {
+        CHP -= DamageAmount;
+        if (CHP <= 0.0f)
+        {
+            // 캐릭터가 죽는 로직
+        }
+
+        if (HitMontage) {
+
+            canAttack = false;
+            PlayAnimMontage(HitMontage);
+        }
     }
+    else {
 
-    if (HitMontage) {
-
-        canAttack = false;
-        PlayAnimMontage(HitMontage);
     }
 }
 
@@ -486,7 +492,7 @@ void AP_Character::SetAsset()
     if (ABP.Succeeded())
     {
         GetMesh()->SetAnimInstanceClass(ABP.Class);
-        UE_LOG(LogTemp, Warning, TEXT("Load Anim"));
+        //UE_LOG(LogTemp, Warning, TEXT("Load Anim"));
     }
 
     static ConstructorHelpers::FObjectFinder<UAnimMontage> ATMontage(TEXT("AnimMontage'/Game/Rewind/Character/Main_Character/Animation/ComboAttack'"));
