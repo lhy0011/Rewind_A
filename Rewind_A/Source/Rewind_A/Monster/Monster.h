@@ -16,6 +16,7 @@
 #include "../Character/Weapon.h"
 #include "../Item/FGem.h"
 #include "../Item/DGem.h"
+#include "../Item/GGem.h"
 #include "GameFramework/Character.h"
 #include "Monster.generated.h"
 
@@ -189,5 +190,41 @@ public:
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
         class UCameraComponent* Camera;
+
+
+
+
+    class USkeletalMesh* OldMesh;
+    TSubclassOf<class UAnimInstance> OldAnimation;
+    UAnimMontage* ODeathMontage;
+    UAnimMontage* OAttackMontage;
+    UAnimMontage* OHitMontage;
+
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character Change")
+    class USkeletalMesh* ChildMesh;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character Change")
+        TSubclassOf<class UAnimInstance> ChildAnimation;
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Animation")
+        UAnimMontage* CDeathMontage;
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Animation")
+        UAnimMontage* CAttackMontage;
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Animation")
+        UAnimMontage* CHitMontage;
+
+
+    class USkeletalMesh* BabyMesh;
+    TSubclassOf<class UAnimInstance> BabyAnimation;
+    UAnimMontage* BDeathMontage;
+    UAnimMontage* BAttackMontage;
+    UAnimMontage* BHitMontage;
+
+    void setOld();
+    void setChild();
+    void setBaby();
+    
+
+
+
 
 };

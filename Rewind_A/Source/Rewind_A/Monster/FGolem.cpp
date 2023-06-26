@@ -64,12 +64,117 @@ AFGolem::AFGolem()
     AttackDamage = 1;
 
     GemActor = AFGem::StaticClass();
+
+
+
+
+
+
+
+    // 타임컨트롤
+
+    // 어린이
+    static ConstructorHelpers::FObjectFinder<USkeletalMesh> CSkeletalMeshAsset(TEXT("SkeletalMesh'/Game/Rewind/Character/FireGolem/FBX/FireGolemChild'"));
+    if (CSkeletalMeshAsset.Succeeded())
+    {
+        ChildMesh = CSkeletalMeshAsset.Object;
+    }
+
+    static ConstructorHelpers::FObjectFinder<UAnimBlueprintGeneratedClass> CAnimationAsset(TEXT("AnimBlueprint'/Game/Rewind/Character/FireGolem/aim/Child/FGolemCBP.FGolemCBP_C'"));
+    if (CAnimationAsset.Succeeded())
+    {
+        ChildAnimation = CAnimationAsset.Object;
+    }
+
+    static ConstructorHelpers::FObjectFinder<UAnimMontage> CATMontage(TEXT("AnimMontage'/Game/Rewind/Character/FireGolem/aim/Child/FGolemCAttack'"));
+    if (CATMontage.Succeeded())
+    {
+        CAttackMontage = CATMontage.Object;
+    }
+
+    static ConstructorHelpers::FObjectFinder<UAnimMontage> CDMontage(TEXT("AnimMontage'/Game/Rewind/Character/FireGolem/aim/Child/FGolemCDeath'"));
+    if (CDMontage.Succeeded())
+    {
+        CDeathMontage = CDMontage.Object;
+    }
+
+    static ConstructorHelpers::FObjectFinder<UAnimMontage> CHMontage(TEXT("AnimMontage'/Game/Rewind/Character/FireGolem/aim/Child/FGolemCHit'"));
+    if (CHMontage.Succeeded())
+    {
+        CHitMontage = CHMontage.Object;
+    }
+
+
+    // 노인
+    static ConstructorHelpers::FObjectFinder<USkeletalMesh> OSkeletalMeshAsset(TEXT("SkeletalMesh'/Game/Rewind/Character/FireGolem/FBX/FireGolemOld'"));
+    if (OSkeletalMeshAsset.Succeeded())
+    {
+        OldMesh = OSkeletalMeshAsset.Object;
+    }
+
+    static ConstructorHelpers::FObjectFinder<UAnimBlueprintGeneratedClass> OAnimationAsset(TEXT("AnimBlueprint'/Game/Rewind/Character/FireGolem/aim/Old/FGolemOBP.FGolemOBP_C'"));
+    if (OAnimationAsset.Succeeded())
+    {
+        OldAnimation = OAnimationAsset.Object;
+    }
+
+    static ConstructorHelpers::FObjectFinder<UAnimMontage> OATMontage(TEXT("AnimMontage'/Game/Rewind/Character/FireGolem/aim/Old/OATMontage'"));
+    if (OATMontage.Succeeded())
+    {
+        OAttackMontage = OATMontage.Object;
+    }
+
+    static ConstructorHelpers::FObjectFinder<UAnimMontage> ODMontage(TEXT("AnimMontage'/Game/Rewind/Character/FireGolem/aim/Old/OFGolemDeath'"));
+    if (ODMontage.Succeeded())
+    {
+        ODeathMontage = ODMontage.Object;
+    }
+
+    static ConstructorHelpers::FObjectFinder<UAnimMontage> OHMontage(TEXT("AnimMontage'/Game/Rewind/Character/FireGolem/aim/Old/OFGolemHit'"));
+    if (OHMontage.Succeeded())
+    {
+        OHitMontage = OHMontage.Object;
+    }
+
+
+    // 아기
+    static ConstructorHelpers::FObjectFinder<USkeletalMesh> BSkeletalMeshAsset(TEXT("SkeletalMesh'/Game/Rewind/Character/FireGolem/FBX/FireGolemBaby'"));
+    if (BSkeletalMeshAsset.Succeeded())
+    {
+        BabyMesh = BSkeletalMeshAsset.Object;
+    }
+
+    static ConstructorHelpers::FObjectFinder<UAnimBlueprintGeneratedClass> BAnimationAsset(TEXT("AnimBlueprint'/Game/Rewind/Character/FireGolem/aim/Baby/FGolemBBP.FGolemBBP_C'"));
+    if (BAnimationAsset.Succeeded())
+    {
+        BabyAnimation = BAnimationAsset.Object;
+    }
+
+    static ConstructorHelpers::FObjectFinder<UAnimMontage> BATMontage(TEXT("AnimMontage'/Game/Rewind/Character/FireGolem/aim/Baby/BFGAttack'"));
+    if (BATMontage.Succeeded())
+    {
+        BAttackMontage = BATMontage.Object;
+    }
+
+    static ConstructorHelpers::FObjectFinder<UAnimMontage> BDMontage(TEXT("AnimMontage'/Game/Rewind/Character/FireGolem/aim/Baby/BFGDeath'"));
+    if (BDMontage.Succeeded())
+    {
+        BDeathMontage = BDMontage.Object;
+    }
+
+    static ConstructorHelpers::FObjectFinder<UAnimMontage> BHMontage(TEXT("AnimMontage'/Game/Rewind/Character/FireGolem/aim/Baby/BFGHit'"));
+    if (BHMontage.Succeeded())
+    {
+        BHitMontage = BHMontage.Object;
+    }
+
 }
 
 void AFGolem::UpdateStats()
 {
     if (Age > 30)
     {
+        setOld();
         CurrentHealth = 250;
     }
     else if (Age <= 30 && Age > 15)
@@ -84,16 +189,18 @@ void AFGolem::UpdateStats()
     {
         CurrentHealth = 100;
     }
-    else if (Age<0 && Age>-5)
+    else if (Age<0 && Age>-7)
     {
         CurrentHealth = 80;
     }
-    else if (Age <= -5 && Age > -20)
+    else if (Age <= -7 && Age > -20)
     {
         CurrentHealth = 60;
+        setChild();
     }
     else if (Age <= -20)
     {
+        setBaby();
         CurrentHealth = 40;
     }
 

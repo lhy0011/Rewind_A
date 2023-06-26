@@ -43,6 +43,7 @@ AP_Character::AP_Character()
     CurrentInteractableItem = nullptr;
 
     CHP = 10;
+    CPotion = 10;
 
     // ÄÞº¸ º¯¼ö
     isComboAttacking = false;
@@ -312,7 +313,7 @@ void AP_Character::Interact()
 
 void AP_Character::UseHealP()
 {
-    UE_LOG(LogTemp, Warning, TEXT("UseHealP() called"));
+    //UE_LOG(LogTemp, Warning, TEXT("UseHealP() called"));
     if (CPotion > 0) {
         CHP += 2;
         if (CHP > 10) {
@@ -457,7 +458,7 @@ void AP_Character::SetCamera()
     m_pSpringArm->bInheritPitch = false;
     m_pSpringArm->bInheritRoll = true;
     m_pSpringArm->bInheritYaw = true;
-    m_pSpringArm->bDoCollisionTest = true;
+    m_pSpringArm->bDoCollisionTest = false;
     bUseControllerRotationYaw = false;
     GetCharacterMovement()->bOrientRotationToMovement = true;
     GetCharacterMovement()->RotationRate = FRotator(0.0f, 720.0f, 0.0f);

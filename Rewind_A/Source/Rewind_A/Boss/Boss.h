@@ -4,9 +4,22 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+
+#include "BossAttackCollider.h"
+#include "Components/CapsuleComponent.h"
+#include "Components/SphereComponent.h"
+#include "PhysicsEngine/PhysicsHandleComponent.h"
+#include "Kismet/GameplayStatics.h"
+#include "Engine/World.h"
+
 #include "Boss.generated.h"
 
-
+UENUM(BlueprintType)
+enum class BMonsterAIState : uint8
+{
+	Idle,
+	Roaming
+};
 
 class UB_AnimInst;
 
@@ -18,6 +31,19 @@ class REWIND_A_API ABoss : public ACharacter
 public:
 	// Sets default values for this character's properties
 	ABoss();
+
+
+private:
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Info, meta = (AllowPrivateAccess = "true"))
+		BMonsterAIState b_eMState;
+
+	UB_AnimInst* b_AnimInst;
+
+public:
+
+	BMonsterAIState GetState() { return b_eMState; }
+	void ChangeState(BMonsterAIState _eNextState, bool _bForce = false);
 
 protected:
 	// Called when the game starts or when spawned
@@ -76,6 +102,21 @@ public:
 	float EarthquakeAttackThreshold;
 	float MeleeAttackThreshold;
 
-	UB_AnimInst* b_AnimInst;
+	bool isWalking;
+
+	int AttackDamage;
+
+
+	ABossAttackCollider* Weapon;
+
+	void ActivateAttackCollider();
+	void DeactivateAttackCollider();
+
+
+
+	UFUNCTION()
+		void TakeMonsterDamage(float Damage, AActor* DamageCauser);
+
+	bool bIsDead;
 
 };

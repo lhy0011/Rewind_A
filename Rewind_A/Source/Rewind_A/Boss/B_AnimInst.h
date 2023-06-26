@@ -17,4 +17,20 @@ class REWIND_A_API UB_AnimInst : public UAnimInstance
 {
 	GENERATED_BODY()
 	
+private:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Info, meta = (AllowPrivateAccess = "true"))
+		BMonsterAIState b_eMState;
+
+public:
+	virtual void NativeInitializeAnimation() override; // 积己磊 开且 (按眉 积己 矫)
+	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
+
+	virtual void NativeBeginPlay() override;
+
+
+	UFUNCTION(BlueprintCallable, Category = "My Category")
+		void CallAttackStartNotify();
+
+	UFUNCTION(BlueprintCallable, Category = "My Category")
+		void CallAttackEndNotify();
 };

@@ -9,6 +9,7 @@
 
 // Sets default values
 ABoss::ABoss()
+    :b_eMState(BMonsterAIState::Idle)
 {
     // Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
     PrimaryActorTick.bCanEverTick = true;
@@ -23,7 +24,7 @@ ABoss::ABoss()
         GetMesh()->SetWorldScale3D(FVector(4.0f, 4.0f, 4.0f));
     }
 
-    static ConstructorHelpers::FClassFinder<UAnimInstance> BossAnim(TEXT("AnimBlueprint'/Game/Rewind/Character/FireBoss/aim/BossAnim.BossAnim_C'"));
+    static ConstructorHelpers::FClassFinder<UAnimInstance> BossAnim(TEXT("AnimBlueprint'/Game/Rewind/Character/FireBoss/aim/BossAnimBP.BossAnimBP_C'"));
     if (BossAnim.Succeeded())
     {
         GetMesh()->SetAnimInstanceClass(BossAnim.Class);
@@ -50,19 +51,28 @@ ABoss::ABoss()
 
     hp = 1000;
 
-
+    AttackDamage = 1;
 
     bIsEarthquakeAttackOnCooldown = false;
     bCanSummonMeteor = false;
     bCanAttack = true;
 
-    MovementSpeed = 100.f;
+    MovementSpeed = 180.f;
 
     MeteorAttackThreshold = 3000.f;
     EarthquakeAttackThreshold = 1500.f;
-    MeleeAttackThreshold = 300.f;
+    MeleeAttackThreshold = 400.f;
 }
 
+
+void ABoss::ChangeState(BMonsterAIState _eNextState, bool _bForce)
+{
+    if (b_eMState == _eNextState) {
+        return;
+    }
+
+    b_eMState = _eNextState;
+}
 
 // Called when the game starts or when spawned
 void ABoss::BeginPlay()
@@ -72,6 +82,21 @@ void ABoss::BeginPlay()
     GetWorldTimerManager().SetTimer(TimerHandle_MeteorAttack, this, &ABoss::ResetMeteorCooldown, 5.0f, false);
 
     b_AnimInst = Cast<UB_AnimInst>(GetMesh()->GetAnimInstance());
+
+
+    Weapon = GetWorld()->SpawnActor<ABossAttackCollider>(ABossAttackCollider::StaticClass());
+
+    if (Weapon) {
+        FName SocketName = TEXT("AttackSocket");
+        Weapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, SocketName);
+
+        FVector RelativeLocation = FVector(0.0f, 0.0f, 0.0f);
+        FRotator RelativeRotation = FRotator(0.0f, 0.0f, 0.0f);
+        FVector RelativeScale = FVector(1.0f, 1.0f, 1.0f);
+        //// 세부 조정
+
+        Weapon->OwningCharacter = this;
+    }
 
 }
 
@@ -84,6 +109,17 @@ void ABoss::Tick(float DeltaTime)
     APawn* PlayerPawn = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
     if (PlayerPawn)
     {
+
+        FVector BossLocation = GetActorLocation();
+        FVector PlayerLocation = PlayerPawn->GetActorLocation();
+
+        FVector LookDirection = PlayerLocation - BossLocation;
+        LookDirection.Z = 0.0f; 
+        LookDirection.Normalize();
+
+        // 보스 몬스터의 회전 설정
+        SetActorRotation(LookDirection.Rotation());
+
         float Distance = FVector::Distance(GetActorLocation(), PlayerPawn->GetActorLocation());
 
         // 일반공격
@@ -105,7 +141,7 @@ void ABoss::Tick(float DeltaTime)
             UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
             if (AnimInstance && EQMontage)
             {
-                AnimInstance->Montage_Play(EQMontage, 0.8f);
+                AnimInstance->Montage_Play(EQMontage, 0.15f);
             }
 
             // 지진
@@ -113,7 +149,7 @@ void ABoss::Tick(float DeltaTime)
 
             // 쿨타임
             bIsEarthquakeAttackOnCooldown = true;
-            GetWorld()->GetTimerManager().SetTimer(TimerHandle_EarthquakeAttackCooldown, this, &ABoss::EndEarthquakeCooldown, 6.0f, false);
+            GetWorld()->GetTimerManager().SetTimer(TimerHandle_EarthquakeAttackCooldown, this, &ABoss::EndEarthquakeCooldown, 9.0f, false);
         }
 
         // 메테오
@@ -128,8 +164,17 @@ void ABoss::Tick(float DeltaTime)
 
         }
 
+        if (Distance < 200) {
+            if (b_eMState == BMonsterAIState::Roaming) {
+                ChangeState(BMonsterAIState::Idle);
+            }
+        }
+
         else // 플레이어에게 이동
         {
+            if (b_eMState != BMonsterAIState::Roaming) {
+                ChangeState(BMonsterAIState::Roaming);
+            }
             FVector Direction = (PlayerPawn->GetActorLocation() - GetActorLocation()).GetSafeNormal();
             FVector NewLocation = GetActorLocation() + Direction * MovementSpeed * DeltaTime;
             SetActorLocation(NewLocation);
@@ -201,4 +246,30 @@ void ABoss::ResetMeteorCooldown()
 void ABoss::ResetAttackCooldown()
 {
     bCanAttack = true;
+}
+
+void ABoss::ActivateAttackCollider()
+{
+    if (Weapon) {
+        Weapon->EnableCollision();
+    }
+}
+
+void ABoss::DeactivateAttackCollider()
+{
+    if (Weapon) {
+        Weapon->DisableCollision();
+    }
+}
+
+void ABoss::TakeMonsterDamage(float Damage, AActor* DamageCauser)
+{
+    if (bIsDead)
+    {
+        return;
+    }
+
+    hp -= Damage;
+
+
 }

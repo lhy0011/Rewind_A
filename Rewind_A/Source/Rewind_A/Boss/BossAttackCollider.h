@@ -4,16 +4,19 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "Meteor.generated.h"
+#include "BossAttackCollider.generated.h"
+
+
+class ABoss;
 
 UCLASS()
-class REWIND_A_API AMeteor : public AActor
+class REWIND_A_API ABossAttackCollider : public AActor
 {
 	GENERATED_BODY()
 	
 public:	
 	// Sets default values for this actor's properties
-	AMeteor();
+	ABossAttackCollider();
 
 protected:
 	// Called when the game starts or when spawned
@@ -24,31 +27,16 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 
-	UPROPERTY(EditAnywhere, Category = "Movement")
-		float Speed;
-
-protected:
 	UFUNCTION()
 		void OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
+	void EnableCollision();
 
-	UPROPERTY(VisibleAnywhere, Category = "Components")
-		class UStaticMeshComponent* MeteorMesh;
+	void DisableCollision();
 
-	UPROPERTY(VisibleAnywhere, Category = "Components")
-		class USphereComponent* CollisionSphere;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
+		class USphereComponent* CollisionComponent;
 
-	AActor* Target;
-
-
-	FVector InitialTargetLocation;
-
-	FTimerHandle DestroyTimerHandle;
-	void DestroyMeteor();
-
-
-	UPROPERTY(EditAnywhere, Category = "Effects")
-		UParticleSystem* ExplosionEffect;
-
-	void PlayExplosionEffect();
+	UPROPERTY()
+		ABoss* OwningCharacter;
 };

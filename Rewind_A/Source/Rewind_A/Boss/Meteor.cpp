@@ -54,7 +54,7 @@ void AMeteor::BeginPlay()
         InitialTargetLocation = Target->GetActorLocation();
     }
 
-    GetWorldTimerManager().SetTimer(DestroyTimerHandle, this, &AMeteor::DestroyMeteor, 0.7f, false);
+    GetWorldTimerManager().SetTimer(DestroyTimerHandle, this, &AMeteor::DestroyMeteor, 0.8f, false);
 
 }
 

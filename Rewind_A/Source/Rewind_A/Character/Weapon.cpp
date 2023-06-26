@@ -6,6 +6,7 @@
 #include "P_Character.h"
 #include "../Monster/FGolem.h"
 #include "../Monster/Monster.h"
+#include "../Boss/Boss.h"
 #include "../Item/TimeLockableActor.h"
 
 #include "Components/StaticMeshComponent.h"
@@ -35,7 +36,7 @@ AWeapon::AWeapon()
 
 	PrimaryActorTick.bCanEverTick = true;
 
-	AttackDamage = 15.0f;
+	AttackDamage = 17.0f;
 
 }
 
@@ -86,6 +87,11 @@ void AWeapon::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherA
 					TLac->StoreDamage(AttackDamage);
 					TLac->LastHitDirection = OwningCharacter->GetActorForwardVector();
 				}
+			}
+
+			ABoss* bo = Cast<ABoss>(OtherActor);
+			if (bo) {
+				bo->TakeMonsterDamage(AttackDamage, OwningCharacter);
 			}
 		}
 	}

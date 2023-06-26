@@ -299,3 +299,39 @@ void AMonster::DeactivateAttackCollider()
 	}
 }
 
+void AMonster::setOld()
+{
+	GetMesh()->SetSkeletalMesh(OldMesh);
+
+	GetMesh()->SetAnimInstanceClass(OldAnimation);
+
+	DeathMontage = ODeathMontage;
+	HitMontage = OHitMontage;
+	AttackMontage = OAttackMontage;
+
+}
+
+void AMonster::setChild()
+{
+	GetMesh()->SetSkeletalMesh(ChildMesh);
+
+
+	GetMesh()->SetAnimInstanceClass(ChildAnimation);
+
+	DeathMontage = CDeathMontage;
+	HitMontage = CHitMontage;
+	AttackMontage = CAttackMontage;
+}
+
+void AMonster::setBaby()
+{
+	GetMesh()->SetSkeletalMesh(BabyMesh);
+
+
+	GetMesh()->SetAnimInstanceClass(BabyAnimation);
+
+	DeathMontage = BDeathMontage;
+	HitMontage = BHitMontage;
+	AttackMontage = BAttackMontage;
+}
+
