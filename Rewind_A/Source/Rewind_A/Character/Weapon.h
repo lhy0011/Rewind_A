@@ -4,6 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+
+
+#include "NiagaraSystem.h"
+#include "Niagara/Public/NiagaraComponent.h"
+
 #include "Weapon.generated.h"
 
 class UStaticMeshComponent;
@@ -44,5 +49,7 @@ public:
 
 	void EnableCollision() { WeaponMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics); }
 	void DisableCollision() { WeaponMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision); }
+
+	UNiagaraComponent* NiagaraComponent;
 
 };

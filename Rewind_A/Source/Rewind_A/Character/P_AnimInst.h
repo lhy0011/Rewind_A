@@ -58,6 +58,12 @@ public:
 	UFUNCTION(BlueprintCallable)
 		void RollECall();
 
+	UFUNCTION(BlueprintCallable)
+		void ESCall();
+
+	UFUNCTION(BlueprintCallable)
+		void ECall();
+
 public:
 	void SetDirection(float _fDir) { m_Dir = _fDir; }
 	float  GetDirection() { return m_Dir; }

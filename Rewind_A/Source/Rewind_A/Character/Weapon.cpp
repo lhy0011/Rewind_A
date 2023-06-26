@@ -9,6 +9,7 @@
 #include "../Boss/Boss.h"
 #include "../Item/TimeLockableActor.h"
 
+
 #include "Components/StaticMeshComponent.h"
 #include "Components/BoxComponent.h"
 #include "UObject/ConstructorHelpers.h"
@@ -38,13 +39,28 @@ AWeapon::AWeapon()
 
 	AttackDamage = 17.0f;
 
+
+
+	NiagaraComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("AttackParticle"));
+	NiagaraComponent->SetupAttachment(WeaponMesh);
+
+	static ConstructorHelpers::FObjectFinder<UNiagaraSystem>NiagaraDissolveAsset(TEXT("NiagaraSystem'/Game/Rewind/Practice/Main_Character_swordtrail'"));
+	if (NiagaraDissolveAsset.Succeeded()) {
+		NiagaraComponent->SetAsset(NiagaraDissolveAsset.Object);
+		NiagaraComponent->bAutoActivate = false;
+		NiagaraComponent->SetRelativeScale3D(FVector(0.1f, 0.1f, 0.1f)); 
+		NiagaraComponent->SetRelativeRotation(FRotator(-90.0f, 00.0f, -90.0f));
+		NiagaraComponent->SetRelativeLocation(FVector(0.0f, -0.6f, 0.0f));
+	}
+
+
 }
 
 // Called when the game starts or when spawned
 void AWeapon::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	NiagaraComponent->SetActive(false);
 }
 
 // Called every frame
@@ -96,3 +112,4 @@ void AWeapon::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherA
 		}
 	}
 }
+

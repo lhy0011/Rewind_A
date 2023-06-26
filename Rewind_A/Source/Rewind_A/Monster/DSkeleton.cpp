@@ -34,12 +34,18 @@ ADSkeleton::ADSkeleton()
         DeathMontage = DMontage.Object;
     }
 
+    static ConstructorHelpers::FObjectFinder<UAnimMontage> HMontage(TEXT("AnimMontage'/Game/Rewind/Character/DesertSkeleton/aim/DSkeletonHit'"));
+    if (HMontage.Succeeded())
+    {
+        HitMontage = HMontage.Object;
+    }
+
+
     CollisionComponent = CreateDefaultSubobject<UCapsuleComponent>(TEXT("CapsuleComponent"));
     CollisionComponent->InitCapsuleSize(100.0f, 100.0f);
 
     CollisionComponent->SetCollisionProfileName(TEXT("OverlapAll"));
     CollisionComponent->SetupAttachment(RootComponent);
-
 
 
     MaxHealth = 200.0f;
@@ -49,37 +55,73 @@ ADSkeleton::ADSkeleton()
 
     GemActor = ADGem::StaticClass();
 
+
+
+    // 타임컨트롤
+
+        // 노인
+    static ConstructorHelpers::FObjectFinder<USkeletalMesh> OSkeletalMeshAsset(TEXT("SkeletalMesh'/Game/Rewind/Character/DesertSkeleton/FBX/DesertSkeletonOld'"));
+    if (OSkeletalMeshAsset.Succeeded())
+    {
+        OldMesh = OSkeletalMeshAsset.Object;
+    }
+
+    static ConstructorHelpers::FObjectFinder<UAnimBlueprintGeneratedClass> OAnimationAsset(TEXT("AnimBlueprint'/Game/Rewind/Character/DesertSkeleton/aim/Old/DSOldBP.DSOldBP_C'"));
+    if (OAnimationAsset.Succeeded())
+    {
+        OldAnimation = OAnimationAsset.Object;
+    }
+
+    static ConstructorHelpers::FObjectFinder<UAnimMontage> OATMontage(TEXT("AnimMontage'/Game/Rewind/Character/DesertSkeleton/aim/Old/DSOAttack'"));
+    if (OATMontage.Succeeded())
+    {
+        OAttackMontage = OATMontage.Object;
+    }
+
+    static ConstructorHelpers::FObjectFinder<UAnimMontage> ODMontage(TEXT("AnimMontage'/Game/Rewind/Character/DesertSkeleton/aim/Old/DSODeath'"));
+    if (ODMontage.Succeeded())
+    {
+        ODeathMontage = ODMontage.Object;
+    }
+
+    static ConstructorHelpers::FObjectFinder<UAnimMontage> OHMontage(TEXT("AnimMontage'/Game/Rewind/Character/DesertSkeleton/aim/Old/DSOHit'"));
+    if (OHMontage.Succeeded())
+    {
+        OHitMontage = OHMontage.Object;
+    }
+
 }
 
 void ADSkeleton::UpdateStats()
 {
     if (Age < -30)
     {
-        CurrentHealth = 160;
+        CurrentHealth = 180;
     }
     else if (Age >= -30 && Age < -15)
     {
-        CurrentHealth = 140;
+        CurrentHealth = 160;
     }
     else if (Age >= -15 && Age < -5)
     {
-        CurrentHealth = 120;
+        CurrentHealth = 140;
     }
     else if (Age == 0)
     {
+        CurrentHealth = 120;
+    }
+    else if (Age > 0 && Age < 8)
+    {
         CurrentHealth = 100;
     }
-    else if (Age > 0 && Age < 5)
+    else if (Age >= 8 && Age < 20)
     {
-        CurrentHealth = 80;
-    }
-    else if (Age >= 5 && Age < 20)
-    {
-        CurrentHealth = 60;
+        setOld();
+        CurrentHealth = 85;
     }
     else if (Age >= 20)
     {
-        CurrentHealth = 40;
+        CurrentHealth = 70;
     }
 
     //CurrentHealth = FMath::Clamp(CurrentHealth - Age * 2.0f, 20.0f, 300.0f);
