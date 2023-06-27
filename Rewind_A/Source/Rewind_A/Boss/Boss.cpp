@@ -65,7 +65,7 @@ ABoss::ABoss()
     bCanSummonMeteor = false;
     bCanAttack = true;
 
-    MovementSpeed = 230.f;
+    MovementSpeed = 350.f;
 
     MeteorAttackThreshold = 2500.f;
     EarthquakeAttackThreshold = 1500.f;

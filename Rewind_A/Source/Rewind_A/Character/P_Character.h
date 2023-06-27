@@ -407,7 +407,7 @@ public:
 		//피격가능여부
 		bool canHit;
 
-
+		bool isHitting;
 
 		void reduceHP(int damage);
 };

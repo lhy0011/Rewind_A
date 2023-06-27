@@ -84,6 +84,7 @@ void UP_AnimInst::hitEndCall()
 	if (Character) {
 		Character->canAttack = true;
 		Character->isComboAttacking = false;
+		Character->isHitting = false;
 	}
 }
 

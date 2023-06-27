@@ -65,6 +65,7 @@ AP_Character::AP_Character()
 
     canAttack = true;
     canHit = true;
+    isHitting = false;
 }
 
 
@@ -94,6 +95,7 @@ void AP_Character::TakeDamage(int DamageAmount)
         if (HitMontage) {
 
             canAttack = false;
+            isHitting = true;
             PlayAnimMontage(HitMontage);
         }
     }
@@ -557,7 +559,7 @@ void AP_Character::CharacterMoveFront(float _fScale)
 
     if (0.f != _fScale) // W/D 가 눌렸다면 ( 이동키가 눌렸다면) 
     {
-        if (!isJumping && !isComboAttacking) {
+        if (!isJumping && !isComboAttacking && !isHitting) {
             ChangeState(EPLAYER_STATE::MOVE);
             AddMovementInput(FRotationMatrix(GetControlRotation()).GetUnitAxis(EAxis::X), _fScale);
         }

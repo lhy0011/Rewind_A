@@ -54,7 +54,7 @@ void AMeteor::BeginPlay()
         InitialTargetLocation = Target->GetActorLocation();
     }
 
-    GetWorldTimerManager().SetTimer(DestroyTimerHandle, this, &AMeteor::DestroyMeteor, 0.8f, false);
+    GetWorldTimerManager().SetTimer(DestroyTimerHandle, this, &AMeteor::DestroyMeteor, 0.7f, false);
 
 }
 
@@ -95,7 +95,6 @@ void AMeteor::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherA
             Destroy();
         }
     }
-
 }
 
 void AMeteor::DestroyMeteor()
