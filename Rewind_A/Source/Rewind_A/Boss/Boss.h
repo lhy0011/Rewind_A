@@ -106,6 +106,7 @@ public:
 	float MeleeAttackThreshold;
 
 	bool isWalking;
+	bool canWalking;
 
 	int AttackDamage;
 

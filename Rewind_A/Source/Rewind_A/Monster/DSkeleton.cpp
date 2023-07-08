@@ -59,8 +59,40 @@ ADSkeleton::ADSkeleton()
 
     // 타임컨트롤
 
-        // 노인
-    static ConstructorHelpers::FObjectFinder<USkeletalMesh> OSkeletalMeshAsset(TEXT("SkeletalMesh'/Game/Rewind/Character/DesertSkeleton/FBX/DesertSkeletonOld'"));
+    // 어린이
+    static ConstructorHelpers::FObjectFinder<USkeletalMesh> CSkeletalMeshAsset(TEXT("SkeletalMesh'/Game/Rewind/Character/DesertSkeleton/FBX/DesertSkeletonChild'"));
+    if (CSkeletalMeshAsset.Succeeded())
+    {
+        ChildMesh = CSkeletalMeshAsset.Object;
+    }
+
+    static ConstructorHelpers::FObjectFinder<UAnimBlueprintGeneratedClass> CAnimationAsset(TEXT("AnimBlueprint'/Game/Rewind/Character/DesertSkeleton/aim/Child/DSChildBP.DSChildBP_C'"));
+    if (CAnimationAsset.Succeeded())
+    {
+        ChildAnimation = CAnimationAsset.Object;
+    }
+
+    static ConstructorHelpers::FObjectFinder<UAnimMontage> CATMontage(TEXT("AnimMontage'/Game/Rewind/Character/DesertSkeleton/aim/Child/DSCAttack'"));
+    if (CATMontage.Succeeded())
+    {
+        CAttackMontage = CATMontage.Object;
+    }
+
+    static ConstructorHelpers::FObjectFinder<UAnimMontage> CDMontage(TEXT("AnimMontage'/Game/Rewind/Character/DesertSkeleton/aim/Child/DSCDeath'"));
+    if (CDMontage.Succeeded())
+    {
+        CDeathMontage = CDMontage.Object;
+    }
+
+    static ConstructorHelpers::FObjectFinder<UAnimMontage> CHMontage(TEXT("AnimMontage'/Game/Rewind/Character/DesertSkeleton/aim/Child/DSCHit'"));
+    if (CHMontage.Succeeded())
+    {
+        CHitMontage = CHMontage.Object;
+    }
+
+
+    // 노인
+    static ConstructorHelpers::FObjectFinder<USkeletalMesh> OSkeletalMeshAsset(TEXT("SkeletalMesh'/Game/Rewind/Character/DesertSkeleton/FBX/DesertSkeletonOld1'"));
     if (OSkeletalMeshAsset.Succeeded())
     {
         OldMesh = OSkeletalMeshAsset.Object;
@@ -90,6 +122,38 @@ ADSkeleton::ADSkeleton()
         OHitMontage = OHMontage.Object;
     }
 
+
+    // 아기
+    static ConstructorHelpers::FObjectFinder<USkeletalMesh> BSkeletalMeshAsset(TEXT("SkeletalMesh'/Game/Rewind/Character/DesertSkeleton/FBX/DesertSkeletonBaby'"));
+    if (BSkeletalMeshAsset.Succeeded())
+    {
+        BabyMesh = BSkeletalMeshAsset.Object;
+    }
+
+    static ConstructorHelpers::FObjectFinder<UAnimBlueprintGeneratedClass> BAnimationAsset(TEXT("AnimBlueprint'/Game/Rewind/Character/DesertSkeleton/aim/Baby/DSBabyBP.DSBabyBP_C'"));
+    if (BAnimationAsset.Succeeded())
+    {
+        BabyAnimation = BAnimationAsset.Object;
+    }
+
+    static ConstructorHelpers::FObjectFinder<UAnimMontage> BATMontage(TEXT("AnimMontage'/Game/Rewind/Character/DesertSkeleton/aim/Baby/DSBAttack'"));
+    if (BATMontage.Succeeded())
+    {
+        BAttackMontage = BATMontage.Object;
+    }
+
+    static ConstructorHelpers::FObjectFinder<UAnimMontage> BDMontage(TEXT("AnimMontage'/Game/Rewind/Character/DesertSkeleton/aim/Baby/DSBDeath'"));
+    if (BDMontage.Succeeded())
+    {
+        BDeathMontage = BDMontage.Object;
+    }
+
+    static ConstructorHelpers::FObjectFinder<UAnimMontage> BHMontage(TEXT("AnimMontage'/Game/Rewind/Character/DesertSkeleton/aim/Baby/DSBHit'"));
+    if (BHMontage.Succeeded())
+    {
+        BHitMontage = BHMontage.Object;
+    }
+
 }
 
 void ADSkeleton::UpdateStats()
@@ -100,10 +164,12 @@ void ADSkeleton::UpdateStats()
     }
     else if (Age >= -30 && Age < -15)
     {
+        setBaby();
         CurrentHealth = 160;
     }
     else if (Age >= -15 && Age < -5)
     {
+        setChild();
         CurrentHealth = 140;
     }
     else if (Age == 0)

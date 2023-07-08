@@ -4,6 +4,7 @@
 #include "Meteor.h"
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/Character.h"
+#include "Boss.h"
 #include "../Character/P_Character.h"
 #include "Components/SphereComponent.h"
 
@@ -24,15 +25,16 @@ AMeteor::AMeteor()
 
     CollisionSphere = CreateDefaultSubobject<USphereComponent>(TEXT("CollisionSphere"));
     CollisionSphere->SetupAttachment(MeteorMesh);
-    CollisionSphere->SetSphereRadius(8.0f);
+    CollisionSphere->SetSphereRadius(6.0f);
 
     CollisionSphere->OnComponentBeginOverlap.AddDynamic(this, &AMeteor::OnOverlapBegin);
 
-    Speed = 4500.0f;
-
+    Speed = 4000.0f;
 
     MeteorMesh->SetWorldScale3D(FVector(12.0f, 12.0f, 12.0f));
 
+    MeteorMesh->SetSimulatePhysics(false);
+    MeteorMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
 
     static ConstructorHelpers::FObjectFinder<UParticleSystem> ParticleSystemAsset(TEXT("ParticleSystem'/Game/StarterContent/Particles/P_Explosion'"));
@@ -40,21 +42,27 @@ AMeteor::AMeteor()
     {
         ExplosionEffect = ParticleSystemAsset.Object;
     }
+
+    PCharacter = Cast<AP_Character>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+
 }
 
 // Called when the game starts or when spawned
 void AMeteor::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+
     Target = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
 
     if (Target)
     {
-        InitialTargetLocation = Target->GetActorLocation();
+        FVector RandomOffset = FMath::VRand() * 2000.0f;
+        RandomOffset.Z = -1600.0f;
+        InitialTargetLocation = Target->GetActorLocation() + RandomOffset;
     }
 
-    GetWorldTimerManager().SetTimer(DestroyTimerHandle, this, &AMeteor::DestroyMeteor, 0.7f, false);
+    //GetWorldTimerManager().SetTimer(DestroyTimerHandle, this, &AMeteor::DestroyMeteor, 0.7f, false);
 
 }
 
@@ -67,7 +75,7 @@ void AMeteor::Tick(float DeltaTime)
     {
         FVector MoveDirection = (InitialTargetLocation - GetActorLocation()).GetSafeNormal();
         FVector NewLocation = GetActorLocation() + MoveDirection * Speed * DeltaTime;
-        SetActorLocation(NewLocation);
+        SetActorLocation(NewLocation, false);
     }
 }
 
@@ -88,12 +96,6 @@ void AMeteor::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherA
                 Destroy();
             }
         }
-        // Check if the overlapped actor is a StaticMeshActor
-        else if (OtherComp->IsA(UStaticMeshComponent::StaticClass()))
-        {
-            PlayExplosionEffect();
-            Destroy();
-        }
     }
 }
 
@@ -109,5 +111,20 @@ void AMeteor::PlayExplosionEffect()
     {
         UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ExplosionEffect, GetActorLocation(), FRotator::ZeroRotator);
     }
+}
+
+void AMeteor::Explosion()
+{
+    if (FVector::Distance(GetActorLocation(), PCharacter->GetActorLocation()) <= 300.0f)
+    {
+        // Deal damage to the character.
+        UGameplayStatics::ApplyDamage(PCharacter, 2.0f, GetInstigatorController(), this, UDamageType::StaticClass());
+
+        PCharacter->TakeDamage(2);
+
+    }
+
+    PlayExplosionEffect();
+    Destroy();
 }
 

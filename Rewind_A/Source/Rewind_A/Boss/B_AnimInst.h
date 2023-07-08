@@ -33,4 +33,8 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "My Category")
 		void CallAttackEndNotify();
+
+
+	UFUNCTION(BlueprintCallable, Category = "My Category")
+		void CallMeteorNotify();
 };

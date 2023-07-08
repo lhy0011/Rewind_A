@@ -6,6 +6,8 @@
 #include "GameFramework/Actor.h"
 #include "Meteor.generated.h"
 
+class AP_Character;
+
 UCLASS()
 class REWIND_A_API AMeteor : public AActor
 {
@@ -44,11 +46,21 @@ protected:
 	FVector InitialTargetLocation;
 
 	FTimerHandle DestroyTimerHandle;
+
+	UFUNCTION(BlueprintCallable)
 	void DestroyMeteor();
 
 
 	UPROPERTY(EditAnywhere, Category = "Effects")
 		UParticleSystem* ExplosionEffect;
 
+	UFUNCTION(BlueprintCallable)
 	void PlayExplosionEffect();
+
+
+	UFUNCTION(BlueprintCallable)
+		void Explosion();
+
+
+	AP_Character* PCharacter;
 };

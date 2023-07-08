@@ -65,11 +65,15 @@ ABoss::ABoss()
     bCanSummonMeteor = false;
     bCanAttack = true;
 
+    canWalking = true;
+
     MovementSpeed = 350.f;
 
     MeteorAttackThreshold = 2500.f;
     EarthquakeAttackThreshold = 1500.f;
     MeleeAttackThreshold = 400.f;
+
+
 }
 
 
@@ -156,10 +160,11 @@ void ABoss::Tick(float DeltaTime)
             UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
             if (AnimInstance && EQMontage)
             {
+                //canWalking = false;
                 AnimInstance->Montage_Play(MTMontage, 1.2f);
             }
+          
             SummonMeteor();
-
         }
 
         if (Distance < 200) {
@@ -170,7 +175,6 @@ void ABoss::Tick(float DeltaTime)
 
         else // 플레이어에게 이동
         {
-
             FVector BossLocation = GetActorLocation();
             FVector PlayerLocation = PlayerPawn->GetActorLocation();
 
@@ -205,12 +209,15 @@ void ABoss::SummonMeteor()
         APawn* PlayerPawn = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
         if (PlayerPawn)
         {
-            FActorSpawnParameters SpawnParams;
-            SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+            for (int i = 0; i < 5; i++)
+            {
+                FVector SpawnLocation = PlayerPawn->GetActorLocation() + FVector(FMath::RandRange(-500, 500), FMath::RandRange(-500, 500), 1200);
+                FRotator SpawnRotation = (PlayerPawn->GetActorLocation() - SpawnLocation).Rotation();
+                FActorSpawnParameters SpawnParams;
+                SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 
-            FVector SpawnLocation = GetActorLocation() + FVector(0, 0, 1200);
-            FRotator SpawnRotation = (PlayerPawn->GetActorLocation() - SpawnLocation).Rotation();
-            AMeteor* Meteor = GetWorld()->SpawnActor<AMeteor>(AMeteor::StaticClass(), SpawnLocation, SpawnRotation, SpawnParams);
+                AMeteor* Meteor = GetWorld()->SpawnActor<AMeteor>(AMeteor::StaticClass(), SpawnLocation, SpawnRotation, SpawnParams);
+            }
 
             bCanSummonMeteor = false;
             GetWorldTimerManager().SetTimer(TimerHandle_MeteorAttack, this, &ABoss::ResetMeteorCooldown, 5.0f, false);

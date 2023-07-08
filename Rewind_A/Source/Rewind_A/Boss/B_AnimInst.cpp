@@ -41,3 +41,12 @@ void UB_AnimInst::CallAttackEndNotify()
 		Mst->DeactivateAttackCollider();
 	}
 }
+
+void UB_AnimInst::CallMeteorNotify()
+{
+	ABoss* Mst = Cast<ABoss>(TryGetPawnOwner());
+	if (Mst) {
+		Mst->SummonMeteor();
+		Mst->canWalking = true;
+	}
+}
