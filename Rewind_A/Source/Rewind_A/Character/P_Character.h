@@ -9,6 +9,9 @@
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 
+#include "Camera/CameraShakeBase.h"
+#include "Camera/CameraShakeSourceComponent.h"
+
 #include "Async/Async.h"
 #include "Weapon.h"
 #include "../Item/FGem.h"
@@ -20,6 +23,7 @@
 #include "GameFramework/Character.h"
 #include "P_Character.generated.h"
 
+class AReGameInstance;
 class UP_AnimInst;
 class AAfterIMG;
 class AInteractableItem;
@@ -410,4 +414,26 @@ public:
 		bool isHitting;
 
 		void reduceHP(int damage);
+
+
+		// 도전 과제
+		bool isKillIce;
+		bool isKillDesert;
+		bool isKillFire;
+
+		// 카메라쉐이크
+
+		UPROPERTY()
+			TSubclassOf<UCameraShakeBase> CameraShakeClass; // 지진
+
+		UPROPERTY()
+			TSubclassOf<UCameraShakeBase> CameraShakeClass2; // 공격
+
+		UPROPERTY()
+			TSubclassOf<UCameraShakeBase> CameraShakeClass3; // 피격
+
+		void CSEarthQ();
+		void CSAttack();
+		void CSHit();
+		
 };

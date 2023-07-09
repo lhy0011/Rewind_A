@@ -199,4 +199,6 @@ void ADSkeleton::UpdateStats()
 void ADSkeleton::BeginPlay()
 {
     Super::BeginPlay();
+
+    Weapon->CollisionComponent->InitSphereRadius(200.0f);
 }

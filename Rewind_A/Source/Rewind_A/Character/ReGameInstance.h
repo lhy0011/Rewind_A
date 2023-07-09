@@ -3,6 +3,9 @@
 #pragma once
 
 #include "CoreMinimal.h"
+
+#include "../Goal/ChallengeManager.h"
+
 #include "Engine/GameInstance.h"
 #include "ReGameInstance.generated.h"
 
@@ -16,7 +19,7 @@ class REWIND_A_API UReGameInstance : public UGameInstance
 
 public:
 
-	UReGameInstance();
+	UReGameInstance(const FObjectInitializer& ObjectInitializer);
 
 	UFUNCTION(BlueprintCallable, Category = "Character Data")
 		void setCharacterState(int32 NewPotionCount, int32 NewCHP, float NewRecallUse, float NewControlUse, bool NewFGEMGet, bool NewDGEMGet, bool NewIGEMGet, bool NewMGEMGet);
@@ -47,4 +50,22 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, Category = "Character Data")
 		bool mGemisGotten;
+
+
+
+	virtual void Init() override;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "MyCategory")
+		UChallengeManager* ChallengeManager;
+
+
+	UFUNCTION(BlueprintCallable, Category = "MyCategory")
+		FString GetCurrentChallengeDescription()
+	{
+		if (ChallengeManager)
+		{
+			return ChallengeManager->GetCurrentChallengeDescription();
+		}
+		return TEXT("Clear");
+	}
 };

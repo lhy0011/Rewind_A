@@ -76,11 +76,9 @@ void AWeapon::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherA
 	if (OtherActor != nullptr && OtherActor != this && OtherComp != nullptr)
 	{
 
-		if (OwningCharacter && OwningCharacter->isComboAttacking) {
-
-			UE_LOG(LogTemp, Warning, TEXT("Player Cast"));
-
-
+		if (OwningCharacter && OwningCharacter->isComboAttacking)
+		{
+			//OwningCharacter->CSAttack();
 			AMonster* Mst = Cast<AMonster>(OtherActor);
 			if (Mst) {
 				if (Mst->bIsTimeLocked)
@@ -90,7 +88,6 @@ void AWeapon::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherA
 				else
 				{
 					Mst->TakeMonsterDamage(AttackDamage, OwningCharacter);
-					UE_LOG(LogTemp, Warning, TEXT("attackMonster"));
 				}
 			}
 

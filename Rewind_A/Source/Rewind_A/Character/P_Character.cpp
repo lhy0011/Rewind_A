@@ -66,6 +66,11 @@ AP_Character::AP_Character()
     canAttack = true;
     canHit = true;
     isHitting = false;
+
+    isKillIce = false;
+    isKillDesert = false;
+    isKillFire = false;
+
 }
 
 
@@ -96,6 +101,7 @@ void AP_Character::TakeDamage(int DamageAmount)
 
             canAttack = false;
             isHitting = true;
+            CSHit();
             PlayAnimMontage(HitMontage);
         }
     }
@@ -453,8 +459,8 @@ void AP_Character::SetCamera()
 
     // 스프링암 위치, 회전, 거리값 설정
     m_pSpringArm->SetRelativeLocation(FVector(0.f, 0.f, 900.f));
-    m_pSpringArm->SetRelativeRotation(FRotator(-15.f, 90.f, 0.f));
-    m_pSpringArm->TargetArmLength = 270.f;
+    m_pSpringArm->SetRelativeRotation(FRotator(-25.f, 90.f, 0.f));
+    m_pSpringArm->TargetArmLength = 350.f;
 
 
     m_pSpringArm->bDoCollisionTest = true;
@@ -474,6 +480,25 @@ void AP_Character::SetCamera()
     // 점프 높이 조정
     NewJumpZVelocity = 600.0f;
     GetCharacterMovement()->JumpZVelocity = NewJumpZVelocity;
+
+
+    // 카메라 쉐이크
+    static ConstructorHelpers::FClassFinder<UCameraShakeBase> CameraShakeClassFinder(TEXT("Blueprint'/Game/Rewind/Character/Main_Character/CS_EQ.CS_EQ_C'"));
+    if (CameraShakeClassFinder.Succeeded())
+    {
+        CameraShakeClass = CameraShakeClassFinder.Class;
+    }
+
+    static ConstructorHelpers::FClassFinder<UCameraShakeBase> CameraShakeClassFinder2(TEXT("Blueprint'/Game/Rewind/Character/Main_Character/CS_Attack.CS_Attack_C'"));
+    if (CameraShakeClassFinder2.Succeeded())
+    {
+        CameraShakeClass2 = CameraShakeClassFinder2.Class;
+    }
+    static ConstructorHelpers::FClassFinder<UCameraShakeBase> CameraShakeClassFinder3(TEXT("Blueprint'/Game/Rewind/Character/Main_Character/CS_Hit.CS_Hit_C'"));
+    if (CameraShakeClassFinder3.Succeeded())
+    {
+        CameraShakeClass3 = CameraShakeClassFinder3.Class;
+    }
 }
 
 void AP_Character::SetAsset()
@@ -1151,6 +1176,39 @@ void AP_Character::reduceHP(int damage)
 {
     CHP -= damage;
     TakeDamage(1);
+}
+
+void AP_Character::CSEarthQ()
+{
+    if (APlayerController* PC = Cast<APlayerController>(GetController()))
+    {
+        if (CameraShakeClass)
+        {
+            PC->PlayerCameraManager->StartCameraShake(CameraShakeClass, 1.0f);
+        }
+    }
+}
+
+void AP_Character::CSAttack()
+{
+    if (APlayerController* PC = Cast<APlayerController>(GetController()))
+    {
+        if (CameraShakeClass)
+        {
+            PC->PlayerCameraManager->StartCameraShake(CameraShakeClass2, 1.0f);
+        }
+    }
+}
+
+void AP_Character::CSHit()
+{
+    if (APlayerController* PC = Cast<APlayerController>(GetController()))
+    {
+        if (CameraShakeClass)
+        {
+            PC->PlayerCameraManager->StartCameraShake(CameraShakeClass3, 1.0f);
+        }
+    }
 }
 
 

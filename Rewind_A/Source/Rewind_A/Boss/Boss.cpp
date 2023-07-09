@@ -235,6 +235,7 @@ void ABoss::Earthquake()
 
         AP_Character* Character = Cast<AP_Character>(PlayerPawn);
         if (Character) {
+            Character->CSEarthQ();
             Character->TakeDamage(1);
         }
     }

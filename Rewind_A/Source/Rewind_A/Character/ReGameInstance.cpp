@@ -3,9 +3,12 @@
 
 #include "ReGameInstance.h"
 
-UReGameInstance::UReGameInstance()
+UReGameInstance::UReGameInstance(const FObjectInitializer& ObjectInitializer)
+	: Super(ObjectInitializer)
 {
 	isFirstLoad = true;
+
+	ChallengeManager = NewObject<UChallengeManager>(this, TEXT("ChallengeManager"));
 }
 
 void UReGameInstance::setCharacterState(int32 NewPotionCount, int32 NewCHP, float NewRecallUse, float NewControlUse, bool NewFGEMGet, bool NewDGEMGet, bool NewIGEMGet, bool NewMGEMGet)
@@ -19,6 +22,13 @@ void UReGameInstance::setCharacterState(int32 NewPotionCount, int32 NewCHP, floa
 	dGemisGotten = NewDGEMGet;
 	iGemisGotten = NewIGEMGet;
 	mGemisGotten = NewMGEMGet;
+}
+
+void UReGameInstance::Init()
+{
+	Super::Init();
+
+	ChallengeManager->InitializeChallenges();
 }
 
 
