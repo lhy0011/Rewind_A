@@ -70,6 +70,9 @@ AP_Character::AP_Character()
     isKillIce = false;
     isKillDesert = false;
     isKillFire = false;
+    isVG = false;
+    isVD = false;
+    isVF = false;
 
 }
 
@@ -153,7 +156,14 @@ void AP_Character::BeginPlay()
                 GameInstance->fGemisGotten,
                 GameInstance->dGemisGotten,
                 GameInstance->iGemisGotten,
-                GameInstance->mGemisGotten
+                GameInstance->mGemisGotten,
+
+                GameInstance->mVG,
+                GameInstance->mVD,
+                GameInstance->mVF,
+                GameInstance->mKG,
+                GameInstance->mKD,
+                GameInstance->mKF
             );
         }
         else
@@ -161,6 +171,30 @@ void AP_Character::BeginPlay()
             GameInstance->isFirstLoad = false;
         }
     }
+
+    // 레벨 이름따라 충돌여부 ON 추가
+
+
+    FString currentLevelName = UGameplayStatics::GetCurrentLevelName(GetWorld(), true);
+
+    if (currentLevelName == "Fire_in" || currentLevelName == "Glacier_in") {
+        m_pSpringArm->bDoCollisionTest = true;
+        m_pSpringArm->ProbeChannel = ECC_Camera;
+    }
+    else {
+        m_pSpringArm->bDoCollisionTest = false;
+    }
+
+    if (currentLevelName == "Glacier_out" && !isVG) {
+        isVG = true;
+    }
+    if (currentLevelName == "Desert_out" && !isVG) {
+        isVD = true;
+    }
+    if (currentLevelName == "Fire_out" && !isVG) {
+        isVF = true;
+    }
+
 
 
     GetWorld()->GetTimerManager().SetTimer(MyTimerHandle, this, &AP_Character::RecallCountNsave, 1.f, true, 1.f);
@@ -206,7 +240,7 @@ void AP_Character::Tick(float DeltaTime)
     if (ClosestMonsterDistance < DistMonster)
     {
         // 몬스터가 가까이 있을 때
-        m_pSpringArm->TargetArmLength = FMath::FInterpTo(m_pSpringArm->TargetArmLength, 330.f, DeltaTime, 5.f);
+        m_pSpringArm->TargetArmLength = FMath::FInterpTo(m_pSpringArm->TargetArmLength, 350.f, DeltaTime, 5.f);
     }
     else if (m_pSpringArm->IsCollisionFixApplied())
     {
@@ -216,7 +250,7 @@ void AP_Character::Tick(float DeltaTime)
     else
     {
         // 원위치
-        m_pSpringArm->TargetArmLength = FMath::FInterpTo(m_pSpringArm->TargetArmLength, 270.f, DeltaTime, 5.f);
+        m_pSpringArm->TargetArmLength = FMath::FInterpTo(m_pSpringArm->TargetArmLength, 350.f, DeltaTime, 5.f);
     }
 
 
@@ -790,7 +824,14 @@ void AP_Character::MoveMain()
             getIsGotFG(),
             getIsGotDG(),
             getIsGotIG(),
-            getIsGotMG()
+            getIsGotMG(),
+
+            getIsVG(),
+            getIsVD(),
+            getIsVF(),
+            getIsKillG(),
+            getIsKillD(),
+            getIsKillF()
         );
     }
     UGameplayStatics::OpenLevel(GetWorld(), FName(TEXT("MainLand")));
@@ -941,7 +982,7 @@ void AP_Character::SaveCurLocation()
     }
 }
 
-void AP_Character::setCharacterState(int32 NewPotionCount, int32 NewCHP, float NewRecallUse, float NewControlUse, bool NewFGEMGet, bool NewDGEMGet, bool NewIGEMGet, bool NewMGEMGet)
+void AP_Character::setCharacterState(int32 NewPotionCount, int32 NewCHP, float NewRecallUse, float NewControlUse, bool NewFGEMGet, bool NewDGEMGet, bool NewIGEMGet, bool NewMGEMGet, bool NewVG, bool NewVD, bool NewVF, bool NewKG, bool NewKD, bool NewKF)
 {
     CPotion = NewPotionCount;
     CHP = NewCHP;
@@ -952,6 +993,14 @@ void AP_Character::setCharacterState(int32 NewPotionCount, int32 NewCHP, float N
     dGemisGotten = NewDGEMGet;
     iGemisGotten = NewIGEMGet;
     mGemisGotten = NewMGEMGet;
+
+    isVG = NewVG;
+    isVD = NewVD;
+    isVF = NewVG;
+
+    isKillIce = NewKG;
+    isKillDesert = NewKD;
+    isKillFire = NewKF;
 
 }
 

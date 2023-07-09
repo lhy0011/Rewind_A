@@ -22,7 +22,7 @@ public:
 	UReGameInstance(const FObjectInitializer& ObjectInitializer);
 
 	UFUNCTION(BlueprintCallable, Category = "Character Data")
-		void setCharacterState(int32 NewPotionCount, int32 NewCHP, float NewRecallUse, float NewControlUse, bool NewFGEMGet, bool NewDGEMGet, bool NewIGEMGet, bool NewMGEMGet);
+		void setCharacterState(int32 NewPotionCount, int32 NewCHP, float NewRecallUse, float NewControlUse, bool NewFGEMGet, bool NewDGEMGet, bool NewIGEMGet, bool NewMGEMGet, bool NewVG, bool NewVD, bool NewVF, bool NewKG, bool NewKD, bool NewKF);
 	
 	UPROPERTY(BlueprintReadWrite, Category = "Character Data")
 		int32 PotionCount;
@@ -50,6 +50,26 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, Category = "Character Data")
 		bool mGemisGotten;
+
+
+
+	UPROPERTY(BlueprintReadWrite, Category = "Character Data")
+		bool mVG;
+
+	UPROPERTY(BlueprintReadWrite, Category = "Character Data")
+		bool mVD;
+
+	UPROPERTY(BlueprintReadWrite, Category = "Character Data")
+		bool mVF;
+
+	UPROPERTY(BlueprintReadWrite, Category = "Character Data")
+		bool mKG;
+
+	UPROPERTY(BlueprintReadWrite, Category = "Character Data")
+		bool mKD;
+
+	UPROPERTY(BlueprintReadWrite, Category = "Character Data")
+		bool mKF;
 
 
 

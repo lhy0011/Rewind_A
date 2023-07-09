@@ -43,7 +43,7 @@ AGIceGolem::AGIceGolem()
 
 
     CollisionComponent = CreateDefaultSubobject<UCapsuleComponent>(TEXT("CapsuleComponent"));
-    CollisionComponent->InitCapsuleSize(100.0f, 100.0f);
+    CollisionComponent->InitCapsuleSize(200.0f, 200.0f);
 
     CollisionComponent->SetCollisionProfileName(TEXT("OverlapAll"));
     CollisionComponent->SetupAttachment(RootComponent);
@@ -159,39 +159,41 @@ AGIceGolem::AGIceGolem()
 
 void AGIceGolem::UpdateStats()
 {
-    if (Age < -30)
+    if (Age > 30)
     {
-        CurrentHealth = 160;
+        CurrentHealth = 250;
     }
-    else if (Age >= -30 && Age < -15)
+    else if (Age <= 30 && Age > 15)
     {
-        CurrentHealth = 140;
         setOld();
+        HSize = OSize;
+        CurrentHealth = 200;
     }
-    else if (Age >= -15 && Age < -5)
+    else if (Age <= 15 && Age > 5)
     {
-        CurrentHealth = 120;
+        CurrentHealth = 150;
     }
     else if (Age == 0)
     {
         CurrentHealth = 100;
     }
-    else if (Age > 0 && Age < 5)
+    else if (Age<0 && Age>-7)
     {
         CurrentHealth = 80;
-
-        setChild();
     }
-    else if (Age >= 5 && Age < 15)
+    else if (Age <= -7 && Age > -20)
     {
         CurrentHealth = 60;
+        HSize = CSize;
+        setChild();
     }
-    else if (Age >= 15)
+    else if (Age <= -20)
     {
-        CurrentHealth = 40;
-
         setBaby();
+        HSize = BSize;
+        CurrentHealth = 40;
     }
+
 
     //CurrentHealth = FMath::Clamp(CurrentHealth - Age * 2.0f, 20.0f, 300.0f);
 

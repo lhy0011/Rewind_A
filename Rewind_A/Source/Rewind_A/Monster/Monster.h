@@ -17,6 +17,7 @@
 #include "../Item/FGem.h"
 #include "../Item/DGem.h"
 #include "../Item/GGem.h"
+
 #include "GameFramework/Character.h"
 #include "Monster.generated.h"
 

@@ -298,7 +298,7 @@ public:
 
 
 	UFUNCTION(BlueprintCallable, Category = "Character Data")
-		void setCharacterState(int32 NewPotionCount, int32 NewCHP, float NewRecallUse, float NewControlUse, bool NewFGEMGet, bool NewDGEMGet, bool NewIGEMGet, bool NewMGEMGet);
+		void setCharacterState(int32 NewPotionCount, int32 NewCHP, float NewRecallUse, float NewControlUse, bool NewFGEMGet, bool NewDGEMGet, bool NewIGEMGet, bool NewMGEMGet, bool NewVG, bool NewVD, bool NewVF, bool NewKG, bool NewKD, bool NewKF);
 
 
 
@@ -420,6 +420,27 @@ public:
 		bool isKillIce;
 		bool isKillDesert;
 		bool isKillFire;
+		bool isVG;
+		bool isVD;
+		bool isVF;
+
+		UFUNCTION(BlueprintCallable)
+			bool getIsKillG() const { return isKillIce; }
+
+		UFUNCTION(BlueprintCallable)
+			bool getIsKillD() const { return isKillDesert; }
+
+		UFUNCTION(BlueprintCallable)
+			bool getIsKillF() const { return isKillFire; }
+
+		UFUNCTION(BlueprintCallable)
+			bool getIsVG() const { return isVG; }
+
+		UFUNCTION(BlueprintCallable)
+			bool getIsVD() const { return isVD; }
+
+		UFUNCTION(BlueprintCallable)
+			bool getIsVF() const { return isVF; }
 
 		// 카메라쉐이크
 
