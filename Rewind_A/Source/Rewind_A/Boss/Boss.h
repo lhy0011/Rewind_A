@@ -79,6 +79,8 @@ public:
 
 	FTimerHandle TimerHandle_Attack;
 
+	FTimerHandle UnusedHandle;
+
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animations")
 		UAnimMontage* ATMontage;
@@ -88,6 +90,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animations")
 		UAnimMontage* EQMontage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animations")
+		UAnimMontage* DMontage;
 
 
 
@@ -123,4 +128,18 @@ public:
 
 	bool bIsDead;
 
+
+	UPROPERTY(EditAnywhere, Category = "Sound")
+		USoundBase* HitSound;
+
+	UPROPERTY(EditAnywhere, Category = "Sound")
+		USoundBase* MTSound;
+
+	UPROPERTY(EditAnywhere, Category = "Sound")
+		USoundBase* EQSound;
+
+
+
+	UFUNCTION(BlueprintCallable)
+		float getHPBoss() { return hp; }
 };

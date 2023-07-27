@@ -122,6 +122,14 @@ void UP_AnimInst::ECall()
 	}
 }
 
+void UP_AnimInst::CSATCall()
+{
+	AP_Character* Character = Cast<AP_Character>(TryGetPawnOwner());
+	if (Character) {
+		Character->CSAttack();
+	}
+}
+
 void UP_AnimInst::AnimNotify_AttackEnd()
 {
 	//UE_LOG(LogTemp, Log, TEXT("Attackend"));

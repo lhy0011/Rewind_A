@@ -74,6 +74,8 @@ AP_Character::AP_Character()
     isVD = false;
     isVF = false;
 
+
+
 }
 
 
@@ -163,7 +165,12 @@ void AP_Character::BeginPlay()
                 GameInstance->mVF,
                 GameInstance->mKG,
                 GameInstance->mKD,
-                GameInstance->mKF
+                GameInstance->mKF,
+
+                GameInstance->mVGP,
+                GameInstance->mVDP,
+                GameInstance->mVFP,
+                GameInstance->mVFIN
             );
         }
         else
@@ -188,11 +195,23 @@ void AP_Character::BeginPlay()
     if (currentLevelName == "Glacier_out" && !isVG) {
         isVG = true;
     }
-    if (currentLevelName == "Desert_out" && !isVG) {
+    if (currentLevelName == "Desert_out" && !isVD) {
         isVD = true;
     }
-    if (currentLevelName == "Fire_out" && !isVG) {
+    if (currentLevelName == "Fire_out" && !isVF) {
         isVF = true;
+    }
+    if (currentLevelName == "Glacier_in" && !isVGP) {
+        isVGP = true;
+    }
+    if (currentLevelName == "Desert_in" && !isVDP) {
+        isVDP = true;
+    }
+    if (currentLevelName == "Fire_Puzzle" && !isVFP) {
+        isVFP = true;
+    }
+    if (currentLevelName == "Fire_in" && !isVFIN) {
+        isVFIN = true;
     }
 
 
@@ -331,6 +350,7 @@ void AP_Character::Interact()
         AHealingPotion* HealingPotion = Cast<AHealingPotion>(CurrentInteractableItem);
         AFGem* FireGem = Cast<AFGem>(CurrentInteractableItem);
         ADGem* DesertGem = Cast<ADGem>(CurrentInteractableItem);
+        AGGem* IceGem = Cast<AGGem>(CurrentInteractableItem);
         if (HealingPotion)
         {
             CPotion++;
@@ -342,6 +362,10 @@ void AP_Character::Interact()
         }
         else if (DesertGem) {
             dGemisGotten = true;
+            CurrentInteractableItem->Destroy();
+        }
+        else if (IceGem) {
+            iGemisGotten = true;
             CurrentInteractableItem->Destroy();
         }
         else {
@@ -662,25 +686,52 @@ void AP_Character::CharacterRotationZ(float _fScale)
 
 void AP_Character::CharacterRotationY(float _fScale)
 {
-    FRotator rot = m_pSpringArm->GetRelativeRotation();
-    float Pitch = rot.Pitch;
-    Pitch += 100.f * GetWorld()->GetDeltaSeconds() * _fScale;
+    //FRotator rot = m_pSpringArm->GetRelativeRotation();
+    //float Pitch = rot.Pitch;
+    //Pitch += 100.f * GetWorld()->GetDeltaSeconds() * _fScale;
 
-    if (Pitch < -45.f)
+    //if (Pitch < -45.f)
+    //{
+    //    Pitch = -45.f;
+    //}
+    //else if (Pitch > 45.f)
+    //{
+    //    Pitch = 45.f;
+    //}
+
+    //rot.Pitch = Pitch;
+    //m_pSpringArm->SetRelativeRotation(rot);
+
+    //rot.Roll;
+    //rot.Yaw;
+
+
+    if (m_pSpringArm)
     {
-        Pitch = -45.f;
-    }
-    else if (Pitch > 45.f)
-    {
-        Pitch = 45.f;
+        FRotator CurrentRotation = m_pSpringArm->GetComponentRotation();
+        float InputPitch = _fScale * 100.f * GetWorld()->GetDeltaSeconds();
+        FRotator InputRotation = FRotator(InputPitch, 0, 0);
+        FRotator NewRotation = CurrentRotation + InputRotation;
+
+        float NewPitch = NewRotation.Pitch;
+
+        if (NewPitch > 180.0f)
+        {
+            NewPitch -= 360.0f;
+        }
+        else if (NewPitch < -180.0f)
+        {
+            NewPitch += 360.0f;
+        }
+
+        NewPitch = FMath::Clamp(NewPitch, -60.0f, 15.0f);
+        NewRotation.Pitch = NewPitch;
+
+        m_pSpringArm->SetWorldRotation(NewRotation);
     }
 
-    rot.Pitch = Pitch;
-    m_pSpringArm->SetRelativeRotation(rot);
-
-    rot.Roll;
-    rot.Yaw;
 }
+
 
 
 
@@ -831,7 +882,13 @@ void AP_Character::MoveMain()
             getIsVF(),
             getIsKillG(),
             getIsKillD(),
-            getIsKillF()
+            getIsKillF(),
+
+            getIsVGP(),
+            getIsVDP(),
+            getIsVFP(),
+            getIsVFIN()
+
         );
     }
     UGameplayStatics::OpenLevel(GetWorld(), FName(TEXT("MainLand")));
@@ -982,7 +1039,7 @@ void AP_Character::SaveCurLocation()
     }
 }
 
-void AP_Character::setCharacterState(int32 NewPotionCount, int32 NewCHP, float NewRecallUse, float NewControlUse, bool NewFGEMGet, bool NewDGEMGet, bool NewIGEMGet, bool NewMGEMGet, bool NewVG, bool NewVD, bool NewVF, bool NewKG, bool NewKD, bool NewKF)
+void AP_Character::setCharacterState(int32 NewPotionCount, int32 NewCHP, float NewRecallUse, float NewControlUse, bool NewFGEMGet, bool NewDGEMGet, bool NewIGEMGet, bool NewMGEMGet, bool NewVG, bool NewVD, bool NewVF, bool NewKG, bool NewKD, bool NewKF, bool NewVGP, bool NewVDP, bool NewVFP, bool NewVFIN)
 {
     CPotion = NewPotionCount;
     CHP = NewCHP;
@@ -1001,6 +1058,11 @@ void AP_Character::setCharacterState(int32 NewPotionCount, int32 NewCHP, float N
     isKillIce = NewKG;
     isKillDesert = NewKD;
     isKillFire = NewKF;
+
+    isVGP = NewVGP;
+    isVDP = NewVDP;
+    isVFP = NewVFP;
+    isVFIN = NewVFIN;
 
 }
 

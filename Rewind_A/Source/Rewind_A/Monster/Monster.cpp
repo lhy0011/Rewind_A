@@ -163,16 +163,8 @@ void AMonster::TakeMonsterDamage(float Damage, AActor* DamageCauser)
 			UE_LOG(LogTemp, Warning, TEXT("DeathMontage"));
 			AnimInstance->Montage_Play(DeathMontage, 1.0f);
 
-			//SpawnGem();
-
-			//Destroy();
+			
 		}
-		
-
-		//SpawnGem();
-
-
-		//Destroy();
 	}
 
 }

@@ -8,7 +8,7 @@ public class Rewind_A : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 	
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "UMG", "NavigationSystem", "GameplayTasks", "AIModule", "Niagara" });
+		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "UMG", "NavigationSystem", "GameplayTasks", "AIModule", "Niagara", "AudioMixer", "AudioMixerCore" });
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
 

@@ -4,6 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+
+#include "Components/AudioComponent.h"
+#include "Sound/SoundWave.h"
+
 #include "Meteor.generated.h"
 
 class AP_Character;
@@ -63,4 +67,11 @@ protected:
 
 
 	AP_Character* PCharacter;
+
+
+
+
+	UPROPERTY(EditAnywhere, Category = "Sound")
+		USoundBase* ExplosionSound;
+
 };

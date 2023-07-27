@@ -68,8 +68,7 @@ public:
     //UFUNCTION(BlueprintImplementableEvent, Category = "Monster")
     //    inline void OnAttack();
 
-    UFUNCTION()
-        void TakeMonsterDamage(float Damage, AActor* DamageCauser);
+    virtual void TakeMonsterDamage(float Damage, AActor* DamageCauser);
 
 
     UFUNCTION()
