@@ -56,14 +56,8 @@ ABoss::ABoss()
         EQMontage = EMontage.Object;
     }
 
-    static ConstructorHelpers::FObjectFinder<UAnimMontage> DDMontage(TEXT("AnimMontage'/Game/Rewind/Character/FireBoss/aim/BossDeath'"));
-    if (DDMontage.Succeeded())
-    {
-        DMontage = DDMontage.Object;
-    }
 
-
-    hp = 1000.0f;
+    hp = 1000;
 
     AttackDamage = 1;
 
@@ -79,22 +73,6 @@ ABoss::ABoss()
     EarthquakeAttackThreshold = 1500.f;
     MeleeAttackThreshold = 400.f;
 
-
-
-    static ConstructorHelpers::FObjectFinder<USoundWave> SoundObj(TEXT("SoundWave'/Game/Rewind/BGM/Hit/cutROSEKNIGHT-HEAVE'"));
-    if (SoundObj.Succeeded()) {
-        HitSound = SoundObj.Object;
-    }
-
-    static ConstructorHelpers::FObjectFinder<USoundWave> SoundObj2(TEXT("SoundWave'/Game/Rewind/BGM/FM/dragon_roar09'"));
-    if (SoundObj2.Succeeded()) {
-        MTSound = SoundObj2.Object;
-    }
-
-    static ConstructorHelpers::FObjectFinder<USoundWave> SoundObj3(TEXT("SoundWave'/Game/Rewind/BGM/FM/dragon_roar10'"));
-    if (SoundObj3.Succeeded()) {
-        EQSound = SoundObj3.Object;
-    }
 
 }
 
@@ -131,7 +109,6 @@ void ABoss::BeginPlay()
 
         Weapon->OwningCharacter = this;
     }
-
 
 }
 
@@ -184,11 +161,10 @@ void ABoss::Tick(float DeltaTime)
             if (AnimInstance && EQMontage)
             {
                 //canWalking = false;
-                AnimInstance->Montage_Play(MTMontage, 2.2f);
+                AnimInstance->Montage_Play(MTMontage, 1.2f);
             }
           
-            //SummonMeteor();
-          //  GetWorldTimerManager().SetTimer(UnusedHandle, this, &ABoss::SummonMeteor, 1.0f, false);
+            SummonMeteor();
         }
 
         if (Distance < 200) {
@@ -247,7 +223,6 @@ void ABoss::SummonMeteor()
             GetWorldTimerManager().SetTimer(TimerHandle_MeteorAttack, this, &ABoss::ResetMeteorCooldown, 5.0f, false);
         }
     }
-    UGameplayStatics::PlaySoundAtLocation(this, MTSound, GetActorLocation());
 
 }
 
@@ -257,8 +232,6 @@ void ABoss::Earthquake()
     if (PlayerPawn)
     {
         UGameplayStatics::ApplyDamage(PlayerPawn, 10.f, GetController(), this, UDamageType::StaticClass());
-
-        UGameplayStatics::PlaySoundAtLocation(this, EQSound, GetActorLocation());
 
         AP_Character* Character = Cast<AP_Character>(PlayerPawn);
         if (Character) {
@@ -306,19 +279,6 @@ void ABoss::TakeMonsterDamage(float Damage, AActor* DamageCauser)
     }
 
     hp -= Damage;
-    UGameplayStatics::PlaySoundAtLocation(this, HitSound, GetActorLocation());
-    //UE_LOG(LogTemp, Warning, TEXT("HP: %f"), hp);
 
 
-    if (hp <= 0) {
-
-        UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
-        if (AnimInstance && DMontage)
-        {
-            AnimInstance->Montage_Play(DMontage, 2.2f);
-            Destroy();
-        }
-
-    }
-    
 }

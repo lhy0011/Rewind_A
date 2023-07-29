@@ -19,10 +19,6 @@ public:
 
 	virtual void UpdateStats() override;
 
-	virtual void TakeMonsterDamage(float Damage, AActor* DamageCauser) override;
-
-
-
 protected:
 	virtual void BeginPlay() override;
 

@@ -3,8 +3,6 @@
 
 #include "GIceGolem.h"
 #include "Components/SkeletalMeshComponent.h"
-
-#include "../Character/P_Character.h"
 #include "Animation/AnimInstance.h"
 
 AGIceGolem::AGIceGolem()
@@ -209,78 +207,4 @@ void AGIceGolem::BeginPlay()
 
 
     Weapon->CollisionComponent->InitSphereRadius(200.0f);
-}
-
-
-void AGIceGolem::TakeMonsterDamage(float Damage, AActor* DamageCauser)
-{
-
-    //if (bIsDead) return;
-    //CurrentHealth = FMath::Clamp(CurrentHealth - Damage, 0.0f, MaxHealth);
-    //if (CurrentHealth <= 0.0f)
-    //{
-    //	bIsDead = true;
-    //	if (DeathMontage)
-    //	{
-    //		PlayAnimMontage(DeathMontage);
-    //	}
-    //}
-
-    UE_LOG(LogTemp, Warning, TEXT("CurrentHealth: %f"), CurrentHealth);
-
-    if (bIsDead)
-    {
-        return;
-    }
-
-    CurrentHealth -= Damage;
-
-    if (Damage > 0.f && DamageCauser) {
-        ACharacter* PlayerCharacter = Cast<ACharacter>(DamageCauser);
-        if (PlayerCharacter) {
-            AMonsterAIController* MonsterAIController = Cast<AMonsterAIController>(GetController());
-            if (MonsterAIController) {
-                MonsterAIController->OnPlayerDetected(PlayerCharacter);
-            }
-        }
-
-
-        if (HitMontage)
-        {
-            // 캐릭터 쪽으로 돌기
-            FVector Direction = PlayerCharacter->GetActorLocation() - GetActorLocation();
-            Direction.Normalize();
-            FRotator NewLookAt = FRotationMatrix::MakeFromX(Direction).Rotator();
-            NewLookAt.Pitch = 0.0f;
-            NewLookAt.Roll = 0.0f;
-            SetActorRotation(NewLookAt);
-
-            PlayAnimMontage(HitMontage);
-        }
-
-        //뒤로 물러나기
-        FVector KnockbackDirection = GetActorLocation() - DamageCauser->GetActorLocation();
-        KnockbackDirection.Normalize();
-        LaunchCharacter(KnockbackDirection * KnockbackIntensity, true, true);
-    }
-
-
-    if (CurrentHealth <= 0.0f)
-    {
-        bIsDead = true;
-        //PlayAnimMontage(DeathMontage);
-
-        UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
-        if (AnimInstance) {
-            UE_LOG(LogTemp, Warning, TEXT("DeathMontage"));
-            AnimInstance->Montage_Play(DeathMontage, 1.0f);
-        }
-
-
-        AP_Character* PlayerCharacter1 = Cast<AP_Character>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
-        if (PlayerCharacter1) {
-            PlayerCharacter1->killIce();
-        }
-    }
-
 }

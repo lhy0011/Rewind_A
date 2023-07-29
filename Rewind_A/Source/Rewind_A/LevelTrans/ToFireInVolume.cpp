@@ -58,13 +58,7 @@ void AToFireInVolume::NotifyActorBeginOverlap(AActor* OtherActor)
 				Character->getIsVF(),
 				Character->getIsKillG(),
 				Character->getIsKillD(),
-				Character->getIsKillF(),
-
-				Character->getIsVGP(),
-				Character->getIsVDP(),
-				Character->getIsVFP(),
-				Character->getIsVFIN()
-
+				Character->getIsKillF()
 			);
 
 			UGameplayStatics::OpenLevel(GetWorld(), FName(TransferLevelName));

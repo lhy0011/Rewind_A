@@ -64,10 +64,6 @@ public:
 	UFUNCTION(BlueprintCallable)
 		void ECall();
 
-
-	UFUNCTION(BlueprintCallable)
-		void CSATCall();
-
 public:
 	void SetDirection(float _fDir) { m_Dir = _fDir; }
 	float  GetDirection() { return m_Dir; }
