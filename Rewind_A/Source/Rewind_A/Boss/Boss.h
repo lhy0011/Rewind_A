@@ -18,7 +18,8 @@ UENUM(BlueprintType)
 enum class BMonsterAIState : uint8
 {
 	Idle,
-	Roaming
+	Roaming,
+	Dead1
 };
 
 class UB_AnimInst;
@@ -142,6 +143,10 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 		float getHPBoss() { return hp; }
+
+
+
+	bool isDeadEnd;
 
 
 };
