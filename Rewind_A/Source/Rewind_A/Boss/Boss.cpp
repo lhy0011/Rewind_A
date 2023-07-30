@@ -9,7 +9,7 @@
 
 // Sets default values
 ABoss::ABoss()
-    :b_eMState(BMonsterAIState22::Idle)
+    :b_eMState(BMonsterAIState::Idle)
 {
     // Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
     PrimaryActorTick.bCanEverTick = true;
@@ -102,7 +102,7 @@ ABoss::ABoss()
 }
 
 
-void ABoss::ChangeState(BMonsterAIState22 _eNextState, bool _bForce)
+void ABoss::ChangeState(BMonsterAIState _eNextState, bool _bForce)
 {
     if (b_eMState == _eNextState) {
         return;
@@ -195,8 +195,8 @@ void ABoss::Tick(float DeltaTime)
             }
 
             if (Distance < 200) {
-                if (b_eMState == BMonsterAIState22::Roaming) {
-                    ChangeState(BMonsterAIState22::Idle);
+                if (b_eMState == BMonsterAIState::Roaming) {
+                    ChangeState(BMonsterAIState::Idle);
                 }
             }
 
@@ -212,8 +212,8 @@ void ABoss::Tick(float DeltaTime)
                 // 보스 몬스터의 회전 설정
                 SetActorRotation(LookDirection.Rotation());
 
-                if (b_eMState != BMonsterAIState22::Roaming) {
-                    ChangeState(BMonsterAIState22::Roaming);
+                if (b_eMState != BMonsterAIState::Roaming) {
+                    ChangeState(BMonsterAIState::Roaming);
                 }
                 FVector Direction = (PlayerPawn->GetActorLocation() - GetActorLocation()).GetSafeNormal();
                 FVector NewLocation = GetActorLocation() + Direction * MovementSpeed * DeltaTime;
@@ -225,7 +225,7 @@ void ABoss::Tick(float DeltaTime)
     else {
         if (!isDeadEnd) {
             isDeadEnd = true;
-            ChangeState(BMonsterAIState22::Dead1);
+            ChangeState(BMonsterAIState::Dead1);
            
         }
     }
