@@ -9,7 +9,7 @@
 
 // Sets default values
 ABoss::ABoss()
-    :b_eMState(BMonsterAIState::Idle)
+    :b_eMState(BMonsterAIState22::Idle)
 {
     // Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
     PrimaryActorTick.bCanEverTick = true;
@@ -96,10 +96,13 @@ ABoss::ABoss()
         EQSound = SoundObj3.Object;
     }
 
+
+
+    isDeadEnd = false;
 }
 
 
-void ABoss::ChangeState(BMonsterAIState _eNextState, bool _bForce)
+void ABoss::ChangeState(BMonsterAIState22 _eNextState, bool _bForce)
 {
     if (b_eMState == _eNextState) {
         return;
@@ -140,83 +143,93 @@ void ABoss::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
 
-
-    APawn* PlayerPawn = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
-    if (PlayerPawn)
-    {
-
-        float Distance = FVector::Distance(GetActorLocation(), PlayerPawn->GetActorLocation());
-
-        // 일반공격
-        if (Distance <= MeleeAttackThreshold && bCanAttack)
+    if (!bIsDead) {
+        APawn* PlayerPawn = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
+        if (PlayerPawn)
         {
-            UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
-            if (AnimInstance && ATMontage)
+
+            float Distance = FVector::Distance(GetActorLocation(), PlayerPawn->GetActorLocation());
+
+            // 일반공격
+            if (Distance <= MeleeAttackThreshold && bCanAttack)
             {
-                AnimInstance->Montage_Play(ATMontage, 0.5f);
+                UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+                if (AnimInstance && ATMontage)
+                {
+                    AnimInstance->Montage_Play(ATMontage, 0.5f);
+                }
+                bCanAttack = false;
+                GetWorld()->GetTimerManager().SetTimer(TimerHandle_Attack, this, &ABoss::ResetAttackCooldown, 6.0f, false);
             }
-            bCanAttack = false;
-            GetWorld()->GetTimerManager().SetTimer(TimerHandle_Attack, this, &ABoss::ResetAttackCooldown, 6.0f, false);
-        }
 
-        // 지진공격
-        else if (Distance > MeleeAttackThreshold && Distance <= EarthquakeAttackThreshold && !bIsEarthquakeAttackOnCooldown)
-        {
-
-            UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
-            if (AnimInstance && EQMontage)
+            // 지진공격
+            else if (Distance > MeleeAttackThreshold && Distance <= EarthquakeAttackThreshold && !bIsEarthquakeAttackOnCooldown)
             {
-                AnimInstance->Montage_Play(EQMontage, 0.25f);
+
+                UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+                if (AnimInstance && EQMontage)
+                {
+                    AnimInstance->Montage_Play(EQMontage, 0.25f);
+                }
+
+                // 지진
+                Earthquake();
+
+                // 쿨타임
+                bIsEarthquakeAttackOnCooldown = true;
+                GetWorld()->GetTimerManager().SetTimer(TimerHandle_EarthquakeAttackCooldown, this, &ABoss::EndEarthquakeCooldown, 9.0f, false);
             }
 
-            // 지진
-            Earthquake();
-
-            // 쿨타임
-            bIsEarthquakeAttackOnCooldown = true;
-            GetWorld()->GetTimerManager().SetTimer(TimerHandle_EarthquakeAttackCooldown, this, &ABoss::EndEarthquakeCooldown, 9.0f, false);
-        }
-
-        // 메테오
-        else if (Distance > MeteorAttackThreshold && bCanSummonMeteor)
-        {
-            UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
-            if (AnimInstance && EQMontage)
+            // 메테오
+            else if (Distance > MeteorAttackThreshold && bCanSummonMeteor)
             {
-                //canWalking = false;
-                AnimInstance->Montage_Play(MTMontage, 1.2f);
+                UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+                if (AnimInstance && EQMontage)
+                {
+                    //canWalking = false;
+                    AnimInstance->Montage_Play(MTMontage, 1.2f);
+                }
+
+                //SummonMeteor();
+              //  GetWorldTimerManager().SetTimer(UnusedHandle, this, &ABoss::SummonMeteor, 1.0f, false);
             }
 
-            //SummonMeteor();
-          //  GetWorldTimerManager().SetTimer(UnusedHandle, this, &ABoss::SummonMeteor, 1.0f, false);
+            if (Distance < 200) {
+                if (b_eMState == BMonsterAIState22::Roaming) {
+                    ChangeState(BMonsterAIState22::Idle);
+                }
+            }
+
+            else // 플레이어에게 이동
+            {
+                FVector BossLocation = GetActorLocation();
+                FVector PlayerLocation = PlayerPawn->GetActorLocation();
+
+                FVector LookDirection = PlayerLocation - BossLocation;
+                LookDirection.Z = 0.0f;
+                LookDirection.Normalize();
+
+                // 보스 몬스터의 회전 설정
+                SetActorRotation(LookDirection.Rotation());
+
+                if (b_eMState != BMonsterAIState22::Roaming) {
+                    ChangeState(BMonsterAIState22::Roaming);
+                }
+                FVector Direction = (PlayerPawn->GetActorLocation() - GetActorLocation()).GetSafeNormal();
+                FVector NewLocation = GetActorLocation() + Direction * MovementSpeed * DeltaTime;
+                SetActorLocation(NewLocation);
+            }
         }
 
-        if (Distance < 200) {
-            if (b_eMState == BMonsterAIState::Roaming) {
-                ChangeState(BMonsterAIState::Idle);
-            }
-        }
+    }
+    else {
+        if (!isDeadEnd) {
+            isDeadEnd = true;
+            ChangeState(BMonsterAIState22::Dead1);
 
-        else // 플레이어에게 이동
-        {
-            FVector BossLocation = GetActorLocation();
-            FVector PlayerLocation = PlayerPawn->GetActorLocation();
-
-            FVector LookDirection = PlayerLocation - BossLocation;
-            LookDirection.Z = 0.0f;
-            LookDirection.Normalize();
-
-            // 보스 몬스터의 회전 설정
-            SetActorRotation(LookDirection.Rotation());
-
-            if (b_eMState != BMonsterAIState::Roaming) {
-                ChangeState(BMonsterAIState::Roaming);
-            }
-            FVector Direction = (PlayerPawn->GetActorLocation() - GetActorLocation()).GetSafeNormal();
-            FVector NewLocation = GetActorLocation() + Direction * MovementSpeed * DeltaTime;
-            SetActorLocation(NewLocation);
         }
     }
+
 
 }
 
@@ -312,13 +325,23 @@ void ABoss::TakeMonsterDamage(float Damage, AActor* DamageCauser)
 
     if (hp <= 0) {
 
-        UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
-        if (AnimInstance && DMontage)
-        {
-            AnimInstance->Montage_Play(DMontage, 2.2f);
-            Destroy();
-        }
+        bIsDead = true;
+
+        UGameplayStatics::PlaySoundAtLocation(this, EQSound, GetActorLocation());
+        //UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+        //if (AnimInstance && DMontage)
+        //{
+        //    AnimInstance->Montage_Play(DMontage, 2.2f);
+
+        //    GetCharacterMovement()->DisableMovement();
+        //    AAIController* AIController = Cast<AAIController>(GetController());
+        //    if (AIController != nullptr)
+        //    {
+        //        AIController->StopMovement();
+        //    }
+            //UGameplayStatics::PlaySoundAtLocation(this, DeathSound, GetActorLocation());
 
     }
 
 }
+
