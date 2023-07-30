@@ -15,7 +15,7 @@
 #include "Boss.generated.h"
 
 UENUM(BlueprintType)
-enum class BMonsterAIState : uint8
+enum class BMonsterAIState22 : uint8
 {
 	Idle,
 	Roaming,
@@ -37,14 +37,14 @@ public:
 private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Info, meta = (AllowPrivateAccess = "true"))
-		BMonsterAIState b_eMState;
+		BMonsterAIState22 b_eMState;
 
 	UB_AnimInst* b_AnimInst;
 
 public:
 
-	BMonsterAIState GetState() { return b_eMState; }
-	void ChangeState(BMonsterAIState _eNextState, bool _bForce = false);
+	BMonsterAIState22 GetState() { return b_eMState; }
+	void ChangeState(BMonsterAIState22 _eNextState, bool _bForce = false);
 
 protected:
 	// Called when the game starts or when spawned
