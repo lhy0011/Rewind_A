@@ -10,7 +10,7 @@
 #include "ReGameInstance.generated.h"
 
 /**
- * 
+ *
  */
 UCLASS()
 class REWIND_A_API UReGameInstance : public UGameInstance
@@ -22,8 +22,8 @@ public:
 	UReGameInstance(const FObjectInitializer& ObjectInitializer);
 
 	UFUNCTION(BlueprintCallable, Category = "Character Data")
-		void setCharacterState(int32 NewPotionCount, int32 NewCHP, float NewRecallUse, float NewControlUse, bool NewFGEMGet, bool NewDGEMGet, bool NewIGEMGet, bool NewMGEMGet, bool NewVG, bool NewVD, bool NewVF, bool NewKG, bool NewKD, bool NewKF);
-	
+		void setCharacterState(int32 NewPotionCount, int32 NewCHP, float NewRecallUse, float NewControlUse, bool NewFGEMGet, bool NewDGEMGet, bool NewIGEMGet, bool NewMGEMGet, bool NewVG, bool NewVD, bool NewVF, bool NewKG, bool NewKD, bool NewKF, bool NewVGP, bool NewVDP, bool NewVFP, bool NewVFIN);
+
 	UPROPERTY(BlueprintReadWrite, Category = "Character Data")
 		int32 PotionCount;
 
@@ -71,6 +71,18 @@ public:
 	UPROPERTY(BlueprintReadWrite, Category = "Character Data")
 		bool mKF;
 
+
+	UPROPERTY(BlueprintReadWrite, Category = "Character Data")
+		bool mVGP;
+
+	UPROPERTY(BlueprintReadWrite, Category = "Character Data")
+		bool mVDP;
+
+	UPROPERTY(BlueprintReadWrite, Category = "Character Data")
+		bool mVFP;
+
+	UPROPERTY(BlueprintReadWrite, Category = "Character Data")
+		bool mVFIN;
 
 
 	virtual void Init() override;

@@ -298,7 +298,7 @@ public:
 
 
 	UFUNCTION(BlueprintCallable, Category = "Character Data")
-		void setCharacterState(int32 NewPotionCount, int32 NewCHP, float NewRecallUse, float NewControlUse, bool NewFGEMGet, bool NewDGEMGet, bool NewIGEMGet, bool NewMGEMGet, bool NewVG, bool NewVD, bool NewVF, bool NewKG, bool NewKD, bool NewKF);
+		void setCharacterState(int32 NewPotionCount, int32 NewCHP, float NewRecallUse, float NewControlUse, bool NewFGEMGet, bool NewDGEMGet, bool NewIGEMGet, bool NewMGEMGet, bool NewVG, bool NewVD, bool NewVF, bool NewKG, bool NewKD, bool NewKF, bool NewVGP, bool NewVDP, bool NewVFP, bool NewVFIN);
 
 
 
@@ -420,9 +420,18 @@ public:
 		bool isKillIce;
 		bool isKillDesert;
 		bool isKillFire;
+
+		//¹æ¹®
 		bool isVG;
 		bool isVD;
 		bool isVF;
+
+		//ÆÛÁñ¸Ê
+		bool isVGP;
+		bool isVDP;
+		bool isVFP;
+		bool isVFIN;
+
 
 		UFUNCTION(BlueprintCallable)
 			bool getIsKillG() const { return isKillIce; }
@@ -441,6 +450,29 @@ public:
 
 		UFUNCTION(BlueprintCallable)
 			bool getIsVF() const { return isVF; }
+
+
+		UFUNCTION(BlueprintCallable)
+			bool getIsVGP() const { return isVGP; }
+
+		UFUNCTION(BlueprintCallable)
+			bool getIsVDP() const { return isVDP; }
+
+		UFUNCTION(BlueprintCallable)
+			bool getIsVFP() const { return isVFP; }
+
+		UFUNCTION(BlueprintCallable)
+			bool getIsVFIN() const { return isVFIN; }
+
+
+		void killIce() { isKillIce = true; }
+		void killDes() { isKillDesert = true; }
+		void killFire() { isKillFire = true; }
+
+
+
+
+
 
 		// Ä«¸Þ¶ó½¦ÀÌÅ©
 

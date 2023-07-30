@@ -11,7 +11,7 @@ UReGameInstance::UReGameInstance(const FObjectInitializer& ObjectInitializer)
 	ChallengeManager = NewObject<UChallengeManager>(this, TEXT("ChallengeManager"));
 }
 
-void UReGameInstance::setCharacterState(int32 NewPotionCount, int32 NewCHP, float NewRecallUse, float NewControlUse, bool NewFGEMGet, bool NewDGEMGet, bool NewIGEMGet, bool NewMGEMGet, bool NewVG, bool NewVD, bool NewVF, bool NewKG, bool NewKD, bool NewKF)
+void UReGameInstance::setCharacterState(int32 NewPotionCount, int32 NewCHP, float NewRecallUse, float NewControlUse, bool NewFGEMGet, bool NewDGEMGet, bool NewIGEMGet, bool NewMGEMGet, bool NewVG, bool NewVD, bool NewVF, bool NewKG, bool NewKD, bool NewKF, bool NewVGP, bool NewVDP, bool NewVFP, bool NewVFIN)
 {
 	PotionCount = NewPotionCount;
 	CHP = NewCHP;
@@ -30,6 +30,12 @@ void UReGameInstance::setCharacterState(int32 NewPotionCount, int32 NewCHP, floa
 	mKG = NewKG;
 	mKD = NewKD;
 	mKF = NewKF;
+
+
+	mVGP = NewVGP;
+	mVDP = NewVDP;
+	mVFP = NewVFP;
+	mVFIN = NewVFIN;
 }
 
 void UReGameInstance::Init()

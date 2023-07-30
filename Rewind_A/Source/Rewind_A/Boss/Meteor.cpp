@@ -29,9 +29,9 @@ AMeteor::AMeteor()
 
     CollisionSphere->OnComponentBeginOverlap.AddDynamic(this, &AMeteor::OnOverlapBegin);
 
-    Speed = 4000.0f;
+    Speed = 3500.0f;
 
-    MeteorMesh->SetWorldScale3D(FVector(12.0f, 12.0f, 12.0f));
+    MeteorMesh->SetWorldScale3D(FVector(15.0f, 15.0f, 15.0f));
 
     MeteorMesh->SetSimulatePhysics(false);
     MeteorMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
@@ -44,6 +44,12 @@ AMeteor::AMeteor()
     }
 
     PCharacter = Cast<AP_Character>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+
+
+    static ConstructorHelpers::FObjectFinder<USoundWave> SoundObj(TEXT("SoundWave'/Game/Rewind/BGM/FM/Hq_Explosion_by_Quaker540_Id-245372'"));
+    if (SoundObj.Succeeded()) {
+        ExplosionSound = SoundObj.Object;
+    }
 
 }
 
@@ -93,6 +99,7 @@ void AMeteor::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherA
 
                 Character->TakeDamage(2);
                 PlayExplosionEffect();
+
                 Destroy();
             }
         }
@@ -123,7 +130,7 @@ void AMeteor::Explosion()
         PCharacter->TakeDamage(2);
 
     }
-
+    UGameplayStatics::PlaySoundAtLocation(this, ExplosionSound, GetActorLocation());
     PlayExplosionEffect();
     Destroy();
 }

@@ -63,4 +63,9 @@ protected:
 
 
 	AP_Character* PCharacter;
+
+
+		UPROPERTY(EditAnywhere, Category = "Sound")
+		USoundBase* ExplosionSound;
+
 };
