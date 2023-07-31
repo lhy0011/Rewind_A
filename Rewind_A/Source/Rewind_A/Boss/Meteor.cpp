@@ -29,9 +29,9 @@ AMeteor::AMeteor()
 
     CollisionSphere->OnComponentBeginOverlap.AddDynamic(this, &AMeteor::OnOverlapBegin);
 
-    Speed = 3500.0f;
+    Speed = 3000.0f;
 
-    MeteorMesh->SetWorldScale3D(FVector(15.0f, 15.0f, 15.0f));
+    MeteorMesh->SetWorldScale3D(FVector(18.0f, 18.0f, 18.0f));
 
     MeteorMesh->SetSimulatePhysics(false);
     MeteorMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);

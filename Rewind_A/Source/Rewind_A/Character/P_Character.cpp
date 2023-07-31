@@ -74,8 +74,10 @@ AP_Character::AP_Character()
     isVD = false;
     isVF = false;
 
-
-
+    isVGP = false;
+    isVDP = false;
+    isVFP = false;
+    isVFIN = false;
 }
 
 
@@ -214,6 +216,20 @@ void AP_Character::BeginPlay()
         isVFIN = true;
     }
 
+
+    if (currentLevelName == "Fire_out" || currentLevelName == "Fire_boss" || currentLevelName == "Glacier_out") {
+
+        m_pSpringArm->bDoCollisionTest = false;
+    }
+    else {
+        m_pSpringArm->bDoCollisionTest = true;
+    }
+
+    if (currentLevelName == "Fire_boss") {
+        m_pSpringArm->SetRelativeLocation(FVector(0.f, 0.f, 1200.f));
+        m_pSpringArm->SetRelativeRotation(FRotator(-35.f, 90.f, 0.f));
+        m_pSpringArm->TargetArmLength = 500.f;
+    }
 
 
     GetWorld()->GetTimerManager().SetTimer(MyTimerHandle, this, &AP_Character::RecallCountNsave, 1.f, true, 1.f);
